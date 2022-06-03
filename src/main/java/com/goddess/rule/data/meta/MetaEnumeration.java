@@ -1,4 +1,4 @@
-package com.goddess.rule.mode.meta;
+package com.goddess.rule.data.meta;
 
 import java.util.List;
 
