@@ -2,6 +2,9 @@ package com.goddess.rule.mode;
 
 /**
  * 链接
+ * @author: 失败女神-vinc
+ * @email: 18733123202@163.com
+ * @date: 2022/6/3 21:10
  */
 public class Link {
     /**
@@ -46,5 +49,4 @@ public class Link {
      * 下一跳类型：1分支 2结果 int4
      */
     private Integer nextType;
-
 }
