@@ -1,24 +1,24 @@
-package com.goddess.rule.data;
+package com.goddess.rule.executer;
+
+import com.goddess.rule.executer.context.DecisionContext;
+
 
 /**
- * 操作符
  * @author: 失败女神-vinc
  * @email: 18733123202@163.com
- * @date: 2022/6/3 21:18
+ * @date: 2022/6/3 22:13
  */
 public class Operation {
-    /**
-     * 编码
-     */
+
+    //编码
     private String code;
-    /**
-     * 名称
-     */
+    //名称
     private String name;
-    /**
-     * 备注
-     */
-    private String remark;
+
+    public boolean decision(DecisionContext decisionContext, String dataType,String cover,
+                            Integer coverComplex, String threshold, Integer thresholdComplex) {
+        return true;
+    }
 
     public String getCode() {
         return code;
@@ -34,13 +34,5 @@ public class Operation {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getRemark() {
-        return remark;
-    }
-
-    public void setRemark(String remark) {
-        this.remark = remark;
     }
 }

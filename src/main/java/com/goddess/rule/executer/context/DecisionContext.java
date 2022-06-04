@@ -1,6 +1,6 @@
 package com.goddess.rule.executer.context;
 
-import com.goddess.rule.executer.LinkExecute;
+import com.goddess.rule.executer.Link;
 
 import java.util.LinkedList;
 import java.util.Queue;
@@ -33,8 +33,8 @@ public class DecisionContext {
      * 当flag等于true链接生效 记录 回溯栈，
      * @return
      */
-    public void execLink(LinkExecute linkExecute,boolean flag){
-        PathNode pathNode = new PathNode(linkExecute.getBranchCode(),linkExecute.getCode(),flag);
+    public void execLink(Link link, boolean flag){
+        PathNode pathNode = new PathNode(link.getBranchCode(),link.getCode(),flag);
         if (flag){
             //加入回溯栈
             pathNodeStack.push(pathNode);

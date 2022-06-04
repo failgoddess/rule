@@ -15,7 +15,7 @@ public class Neq extends RelationOperation {
         return Constant.OperationType.NEQ;
     }
     @Override
-    public boolean execute(Integer flag,Integer dataTypeCode,Object data,
+    public boolean execute(Integer flag,String dataTypeCode,Object data,
                            List<String> params){
         Eq eq = (Eq)RelationFactory.getOperation(Constant.OperationType.EQ);
         if(checkData(data,params)){

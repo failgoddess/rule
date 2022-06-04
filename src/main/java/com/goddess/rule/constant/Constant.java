@@ -25,8 +25,8 @@ public class Constant {
      * 下一跳类型
      */
     public class NextType {
-        public static final int BRANCH =1;//分支
-        public static final int RESULT =2;//结果
+        public static final String BRANCH ="BRANCH";//分支
+        public static final String RESULT ="RESULT";//结果
     }
 
     /**
@@ -34,32 +34,29 @@ public class Constant {
      */
     public class DataType {
         //数值
-        public static final int NUMBER=10;
+        public static final String NUMBER="NUMBER";
         //字符串
-        public static final int STRING=20;
+        public static final String STRING="STRING";
         //不区分大小写的字符串
-        public static final int STRING_IC=22;
+        public static final String STRING_IC="STRING_IC";
         //布尔
-        public static final int BOLL=30;
+        public static final String BOLL="BOLL";
         //时间年月日  yyyy-MM-dd
-        public static final int TIME_YMD=40;
+        public static final String TIME_YMD="TIME_YMD";
         //时间年月日时分秒 yyyy-MM-dd HH:mm:ss
-        public static final int TIME_YMDHMS=42;
+        public static final String TIME_YMDHMS="TIME_YMDHMS";
         //时间时分秒  HH:mm:ss
-        public static final int TIME_HMS=44;
+        public static final String TIME_HMS="TIME_HMS";
 
-        public static final int LIST =50;//列表
     }
 
 
     public class ResultType {
         //        10固定值20节点值30指标值
-        public static final int NUMBER =10;//固定值
-        public static final int DATE =20;//时间
-        public static final int DATE_YMD =22;//时间-年月日 YYYY-MM-DD
     }
     public class ThresholdType {
-        public static final int FIXED =10;//固定值
+        //        10固定值20节点值30指标值
+        public static final String FIXED="FIXED";
     }
 
     /**
@@ -111,6 +108,10 @@ public class Constant {
 
         public static final String LP ="lp";//左括号
         public static final String RP ="rp";//右括号
+    }
+
+    public class ConfigType{
+        public static final String XML = "xml";
     }
 
 

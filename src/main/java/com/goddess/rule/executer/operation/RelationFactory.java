@@ -40,7 +40,7 @@ public class RelationFactory {
 
     static {
         //获取该路径下所有类
-        Reflections reflections = new Reflections("com.goddess.rule");
+        Reflections reflections = new Reflections("com.goddess.rule.executer.operation");
         //获取继承了RelationOperation的所有类
         Set<Class<? extends RelationOperation>> classSet = reflections.getSubTypesOf(RelationOperation.class);
         for (Class<? extends RelationOperation> clazz:classSet){

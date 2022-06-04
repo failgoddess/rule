@@ -15,7 +15,7 @@ public class Nbed extends RelationOperation {
         return Constant.OperationType.NBED;
     }
     @Override
-    public boolean execute(Integer flag,Integer dataTypeCode,Object data,
+    public boolean execute(Integer flag,String dataTypeCode,Object data,
                                List<String> params){
         RelationOperation bed = RelationFactory.getOperation(Constant.OperationType.BED);
         if(checkData(data,params)){

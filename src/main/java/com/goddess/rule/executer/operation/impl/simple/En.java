@@ -16,7 +16,7 @@ public class En extends RelationOperation {
         return Constant.OperationType.EN;
     }
     @Override
-    public boolean execute(Integer flag,Integer dataTypeCode,Object data,
+    public boolean execute(Integer flag,String dataTypeCode,Object data,
                            List<String> params){
         if(data==null){
             return true;

@@ -21,7 +21,7 @@ public class Bel extends RelationOperation {
         return Constant.OperationType.BEL;
     }
     @Override
-    public boolean execute(Integer flag,Integer dataTypeCode,Object data,
+    public boolean execute(Integer flag,String dataTypeCode,Object data,
                            List<String> params){
         if(checkData(data,params)){
             return false;

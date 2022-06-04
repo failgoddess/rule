@@ -1,5 +1,7 @@
 package com.goddess.rule.constant;
 
+import cn.hutool.core.util.StrUtil;
+
 /**
  * 业务异常
  * @author: 失败女神-vinc
@@ -75,12 +77,6 @@ public class BlException extends RuntimeException {
         this.code = code;
     }
     private static String handlerMsg(String msg,String[] params){
-        String reMsg = new String(msg);
-        int i=0;
-        for (String param:params){
-            reMsg.replace("["+i+"]",param);
-            i++;
-        }
-        return reMsg;
+        return StrUtil.format(msg, params);
     }
 }

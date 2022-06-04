@@ -20,7 +20,7 @@ public abstract class RelationOperation {
 
     public abstract String getOperationCode();
 
-    public abstract boolean execute(Integer isList,Integer dataTypeCode,Object data, List<String> params);
+    public abstract boolean execute(Integer complex,String dataTypeCode,Object data, List<String> params);
     //获取字符串列表
     protected List<String> getList(Object data){
         List<String> result = new ArrayList<>();

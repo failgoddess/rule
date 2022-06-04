@@ -16,7 +16,7 @@ public class Ge extends RelationOperation {
         return Constant.OperationType.GE;
     }
     @Override
-    public boolean execute(Integer flag,Integer dataTypeCode,Object data,
+    public boolean execute(Integer flag,String dataTypeCode,Object data,
                                List<String> params){
         RelationOperation lt = RelationFactory.getOperation(Constant.OperationType.LT);
         if(checkData(data,params)){

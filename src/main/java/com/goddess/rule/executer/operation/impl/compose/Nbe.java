@@ -15,7 +15,7 @@ public class Nbe extends RelationOperation {
         return Constant.OperationType.NBE;
     }
     @Override
-    public boolean execute(Integer flag,Integer dataTypeCode,Object data,
+    public boolean execute(Integer flag,String dataTypeCode,Object data,
                                List<String> params){
         RelationOperation be = RelationFactory.getOperation(Constant.OperationType.BE);
         if(checkData(data,params)){

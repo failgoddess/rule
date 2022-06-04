@@ -15,7 +15,7 @@ public class Nin extends RelationOperation {
         return Constant.OperationType.NIN;
     }
     @Override
-    public boolean execute(Integer flag,Integer dataTypeCode,Object data,
+    public boolean execute(Integer flag,String dataTypeCode,Object data,
                            List<String> params){
         RelationOperation in = RelationFactory.getOperation(Constant.OperationType.IN);
         if(checkData(data,params)){

@@ -15,7 +15,7 @@ public class Nn extends RelationOperation {
         return Constant.OperationType.NN;
     }
     @Override
-    public boolean execute(Integer flag,Integer dataTypeCode,Object data,
+    public boolean execute(Integer flag,String dataTypeCode,Object data,
                            List<String> params){
         RelationOperation en = RelationFactory.getOperation(Constant.OperationType.EN);
         return !en.execute(flag,dataTypeCode,data,params);

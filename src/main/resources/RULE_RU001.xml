@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rule code = "RU001" name = "店铺底线折扣">
+    <graphs>
+        <graph code = "RU001G1" name = "店铺底线折扣" firstBranchCode ="8101">
+            <branches>
+                <branch code = "8101" name = "设计类型分支">
+                    <links>
+                        <link code="810101" name = "设计类型等于T4" priority="999" nextType = "RESULT" nextResultCode ="801">
+                            <conditions>
+                                <condition priority="999" coverComplex="0" coverType="FIXED" cover="T4" operationCode="eq" dataType="STRING"
+                                           thresholdComplex="0" thresholdType="FIXED" threshold="T4" />
+                            </conditions>
+                        </link>
+                        <link code="810102"  name = "设计类型不为T4" priority="888" nextType = "BRANCH" nextBranchCode ="8102">
+                            <conditions>
+                                <condition priority="999" coverComplex="0" coverType="FIXED" cover="T4" operationCode="neq" dataType="STRING"
+                                           thresholdComplex="0" thresholdType="FIXED" threshold="T4" />
+                            </conditions>
+                        </link>
+                    </links>
+                </branch>
+                <branch code = "8102" name = "款式定位分支">
+                    <links>
+                        <link code="810201" name = "款式定位等于样衣" priority="999" nextType = "RESULT" nextResultCode ="801">
+                            <conditions>
+                                <condition priority="999" coverComplex="0" coverType="FIXED" cover="T4" operationCode="eq" dataType="STRING"
+                                           thresholdComplex="0" thresholdType="FIXED" threshold="T4"/>
+                            </conditions>
+                        </link>
+                        <link code="810202" name = "款式定位等于样衣" priority="888" nextType = "RESULT" nextResultCode ="801">
+                            <conditions>
+                                <condition priority="999" coverComplex="0" coverType="FIXED" cover="T4" operationCode="neq" dataType="STRING"
+                                           thresholdComplex="0" thresholdType="FIXED" threshold="T4"/>
+                            </conditions>
+                        </link>
+                    </links>
+                </branch>
+            </branches>
+        </graph>
+    </graphs>
+
+    <results>
+        <result code="801" name = "款式定位等于样衣" resultType="固定值"/>
+    </results>
+</rule>
