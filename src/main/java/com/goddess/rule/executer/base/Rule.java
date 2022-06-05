@@ -1,8 +1,7 @@
-package com.goddess.rule.executer;
+package com.goddess.rule.executer.base;
 
 import com.alibaba.fastjson2.JSONObject;
 import com.goddess.rule.executer.context.DecisionContext;
-import com.goddess.rule.executer.context.JudgeData;
 
 import java.util.HashMap;
 import java.util.List;
@@ -25,6 +24,8 @@ public class Rule {
     //备注
     private String remark;
 
+    private List<Param> params;
+    private List<InitData> initDatas;
     private List<Graph> graphs;
     private Map<String,Result> resultMap;
 
@@ -91,5 +92,21 @@ public class Rule {
 
     public void setRemark(String remark) {
         this.remark = remark;
+    }
+
+    public List<Graph> getGraphs() {
+        return graphs;
+    }
+
+    public void setParams(List<Param> params) {
+        this.params = params;
+    }
+
+    public List<InitData> getInitDatas() {
+        return initDatas;
+    }
+
+    public void setInitDatas(List<InitData> initDatas) {
+        this.initDatas = initDatas;
     }
 }

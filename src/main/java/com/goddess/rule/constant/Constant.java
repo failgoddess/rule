@@ -7,6 +7,14 @@ package com.goddess.rule.constant;
  * @date: 2022/6/3 21:29
  */
 public class Constant {
+    public class EnumType{
+        public static final String FIXED="FIXED";//固定
+        public static final String DYNAMIC ="DYNAMIC";//动态
+    }
+    public class DataSourceType{
+        public static final String FIXED="FIXED";//固定
+        public static final String FORMULA ="FORMULA";//表达式
+    }
     public class DateFormatter {
         public static final String YYYY_MM_DD_HH_MM_SS = "yyyy-MM-dd HH:mm:ss";
         public static final String YYYY_MM_DD = "yyyy-MM-dd";
@@ -16,8 +24,8 @@ public class Constant {
      * 是否
      */
     public class YesNo {
-        public static final int YES =1;//是
-        public static final int No =0;//否
+        public static final String YES ="YES";//是
+        public static final String NO ="NO";//否
     }
 
 
@@ -53,10 +61,6 @@ public class Constant {
 
     public class ResultType {
         //        10固定值20节点值30指标值
-    }
-    public class ThresholdType {
-        //        10固定值20节点值30指标值
-        public static final String FIXED="FIXED";
     }
 
     /**

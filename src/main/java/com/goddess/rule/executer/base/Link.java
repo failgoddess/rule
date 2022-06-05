@@ -1,4 +1,4 @@
-package com.goddess.rule.executer;
+package com.goddess.rule.executer.base;
 
 import cn.hutool.core.collection.ListUtil;
 import com.alibaba.fastjson2.JSONObject;
@@ -44,13 +44,6 @@ public class Link {
         return flag;
     }
 
-    public List<Condition> getConditionExecutes() {
-        return conditions;
-    }
-
-    public void setConditionExecutes(List<Condition> conditions) {
-        this.conditions = ListUtil.sortByProperty(conditions,"priority");
-    }
 
     public Integer getPriority() {
         return priority;
@@ -81,7 +74,7 @@ public class Link {
     }
 
     public void setConditions(List<Condition> conditions) {
-        this.conditions = conditions;
+        this.conditions = ListUtil.sortByProperty(conditions,"priority");
     }
 
     public String getName() {

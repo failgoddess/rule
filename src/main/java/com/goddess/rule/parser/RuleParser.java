@@ -1,8 +1,6 @@
 package com.goddess.rule.parser;
 
-import com.goddess.rule.executer.Rule;
-
-import java.util.List;
+import com.goddess.rule.executer.base.Rule;
 
 /**
  * @author: 失败女神-vinc

@@ -1,36 +1,73 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rule code = "RU001" name = "店铺底线折扣">
+    <params>
+        <param code="buyStoreCode" name = "销售门店编码" dataType="STRING" necessary="true"/>
+        <param code="sendStoreCode" name = "发货门店编码" dataType="STRING" necessary="true"/>
+        <param code="discount" name = "活动折扣" dataType="NUMBER"/>
+    </params>
+    <initDatas>
+        <initData code="buyStore" name="销售门店" metaClass="store" params="{code:${buyStoreCode}}"/>
+        <initData code="sendStore" name="发货门店" metaClass="store" params="{code:$sendStoreCode}}"/>
+    </initDatas>
+
+    <results>
+        <result code="RU001R1" name = "7折" resultType="FIXED" dataType="NUMBER" data="0.7"/>
+        <result code="RU001R2" name = "8折" resultType="FIXED" dataType="NUMBER" data="0.8"/>
+        <result code="RU001R3" name = "9折" resultType="FIXED" dataType="NUMBER" data="0.9"/>
+        <result code="RU001R4" name = "活动折扣" resultType="FORMULA" dataType="NUMBER" data="${discount}"/>
+    </results>
+
     <graphs>
-        <graph code = "RU001G1" name = "店铺底线折扣" firstBranchCode ="8101">
+        <graph code = "RU001G1" name = "店铺底线折扣" firstBranchCode ="RU001G1B1">
             <branches>
-                <branch code = "8101" name = "设计类型分支">
+                <branch code = "RU001G1B1" name = "门店分支">
                     <links>
-                        <link code="810101" name = "设计类型等于T4" priority="999" nextType = "RESULT" nextResultCode ="801">
+                        <link code="810101" name = "销售门店开业时间 小于  365天" priority="10" nextType = "RESULT" nextResultCode ="RU001R1">
                             <conditions>
-                                <condition priority="999" coverComplex="0" coverType="FIXED" cover="T4" operationCode="eq" dataType="STRING"
-                                           thresholdComplex="0" thresholdType="FIXED" threshold="T4" />
+                                <condition priority="999" coverType="FORMULA" cover="%{gapNowDay(time:${buyStore.startTime})}" operationCode="lt" dataType="NUMBER"
+                                           thresholdType="FIXED" threshold="365" />
                             </conditions>
                         </link>
-                        <link code="810102"  name = "设计类型不为T4" priority="888" nextType = "BRANCH" nextBranchCode ="8102">
+                        <link code="810102"  name = "否则" priority="20" nextType="BRANCH" nextBranchCode="RU001G1B2">
                             <conditions>
-                                <condition priority="999" coverComplex="0" coverType="FIXED" cover="T4" operationCode="neq" dataType="STRING"
-                                           thresholdComplex="0" thresholdType="FIXED" threshold="T4" />
+                                <!--永真条件-->
+                                <condition priority="999" eternal="true"/>
                             </conditions>
                         </link>
                     </links>
                 </branch>
-                <branch code = "8102" name = "款式定位分支">
+                <branch code = "RU001G1B2" name = "区域分支">
                     <links>
-                        <link code="810201" name = "款式定位等于样衣" priority="999" nextType = "RESULT" nextResultCode ="801">
+                        <link code="810201" name ="销售门店区域 包含于 河北,上海" priority="10" nextType = "RESULT" nextResultCode ="RU001R3">
                             <conditions>
-                                <condition priority="999" coverComplex="0" coverType="FIXED" cover="T4" operationCode="eq" dataType="STRING"
-                                           thresholdComplex="0" thresholdType="FIXED" threshold="T4"/>
+                                <condition priority="999"  coverType="FORMULA" cover="${buyStore.area}" operationCode="in" dataType="STRING"
+                                           thresholdComplex="1" thresholdType="FIXED" threshold="河北,上海"/>
                             </conditions>
                         </link>
-                        <link code="810202" name = "款式定位等于样衣" priority="888" nextType = "RESULT" nextResultCode ="801">
+                        <link code="810202" name = "销售区域 等于 发货区域" priority="20" nextType = "RESULT" nextResultCode ="RU001R2">
                             <conditions>
-                                <condition priority="999" coverComplex="0" coverType="FIXED" cover="T4" operationCode="neq" dataType="STRING"
-                                           thresholdComplex="0" thresholdType="FIXED" threshold="T4"/>
+                                <condition priority="999"  coverType="FORMULA" cover="${buyStore.area}" operationCode="eq" dataType="STRING"
+                                            thresholdType="FORMULA" threshold="${sendStore.area}"/>
+                            </conditions>
+                        </link>
+                        <link code="810203"  name = "否则" priority="20" nextType="BRANCH" nextBranchCode="RU001G1B3">
+                            <conditions>
+                                <!--永真条件-->
+                                <condition priority="999" eternal="true"/>
+                            </conditions>
+                        </link>
+                    </links>
+                </branch>
+                <branch code = "RU001G1B3" name = "活动分支">
+                    <links>
+                        <link code="810301" name = "活动折扣 等于 空" priority="10" nextType = "RESULT" nextResultCode ="RU001R2">
+                            <conditions>
+                                <condition priority="10"  coverType="FORMULA" cover="%{discount}" operationCode="en" />
+                            </conditions>
+                        </link>
+                        <link code="810302"  name = "活动折扣 不等于 空" priority="20" nextType = "RESULT" nextResultCode ="RU001R4">
+                            <conditions>
+                                <condition priority="10"  coverType="FORMULA" cover="%{discount}" operationCode="nn" />
                             </conditions>
                         </link>
                     </links>
@@ -38,8 +75,4 @@
             </branches>
         </graph>
     </graphs>
-
-    <results>
-        <result code="801" name = "款式定位等于样衣" resultType="固定值"/>
-    </results>
 </rule>

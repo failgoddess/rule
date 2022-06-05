@@ -1,15 +1,6 @@
-import com.goddess.rule.constant.Constant;
-import com.goddess.rule.executer.Rule;
+import com.goddess.rule.executer.base.Rule;
 import com.goddess.rule.executer.context.RuleConfig;
-import com.goddess.rule.executer.context.XMLRuleConfigBuilder;
-import com.goddess.rule.executer.operation.RelationFactory;
-import com.goddess.rule.executer.operation.RelationOperation;
-import com.goddess.rule.parser.RuleParser;
-import com.goddess.rule.parser.XmlRuleParser;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ServiceLoader;
+import com.goddess.rule.parser.impl.XMLRuleConfigBuilder;
 
 public class Main {
     public static void main(String[] args) throws Exception {

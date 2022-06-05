@@ -1,9 +1,9 @@
 import com.alibaba.fastjson2.JSONObject;
-import com.goddess.rule.executer.DecisionResult;
-import com.goddess.rule.executer.Rule;
+import com.goddess.rule.executer.base.DecisionResult;
+import com.goddess.rule.executer.base.Rule;
 import com.goddess.rule.executer.context.DecisionContext;
 import com.goddess.rule.executer.context.RuleConfig;
-import com.goddess.rule.executer.context.XMLRuleConfigBuilder;
+import com.goddess.rule.parser.impl.XMLRuleConfigBuilder;
 import org.junit.Assert;
 import org.junit.Test;
 

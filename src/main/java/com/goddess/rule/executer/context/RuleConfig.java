@@ -1,12 +1,10 @@
 package com.goddess.rule.executer.context;
 
-import com.goddess.rule.constant.BlException;
-import com.goddess.rule.constant.Constant;
-import com.goddess.rule.constant.ExceptionCode;
-import com.goddess.rule.executer.Rule;
+import com.goddess.rule.executer.base.Rule;
+import com.goddess.rule.executer.handler.ObjectLoaderFactory;
+import com.goddess.rule.executer.meta.MetaClass;
+import com.goddess.rule.executer.meta.MetaEnum;
 import com.goddess.rule.executer.operation.RelationFactory;
-import com.goddess.rule.parser.RuleParser;
-import com.goddess.rule.parser.XmlRuleParser;
 
 import java.util.*;
 
@@ -19,14 +17,23 @@ import java.util.*;
 public class RuleConfig {
     //流程定义资源地址
     private String rulePath;
-    //多配置类型
-//    private Boolean multipleConfigType;
+    //枚举
+    private List<MetaEnum> metaEnums;
+    private Map<String,MetaEnum> metaEnumMap = new HashMap<>();
+    //规则对象类
+    private List<MetaClass> metaClasses;
+    private Map<String,MetaClass> metaClassMap = new HashMap<>();
+
+
 
     //规则缓存
     private List<Rule> rules = new ArrayList<>();
     private Map<String,Rule> ruleMap = new HashMap<>();
 
+    //操作符工厂
     private RelationFactory relationFactory;
+    //加载器工厂
+    private ObjectLoaderFactory objectLoaderFactory;
 
 
 
@@ -66,4 +73,42 @@ public class RuleConfig {
         this.relationFactory = relationFactory;
     }
 
+    public ObjectLoaderFactory getObjectLoaderFactory() {
+        return objectLoaderFactory;
+    }
+
+    public void setObjectLoaderFactory(ObjectLoaderFactory objectLoaderFactory) {
+        this.objectLoaderFactory = objectLoaderFactory;
+    }
+
+    public List<MetaEnum> getMetaEnums() {
+        return metaEnums;
+    }
+
+    public List<MetaClass> getMetaClasses() {
+        return metaClasses;
+    }
+
+    public void setMetaClasses(List<MetaClass> metaClasses) {
+        this.metaClasses = metaClasses;
+    }
+
+    public void setMetaEnums(List<MetaEnum> metaEnums) {
+        this.metaEnums = metaEnums;
+    }
+    public Map<String, MetaClass> getMetaClassMap() {
+        return metaClassMap;
+    }
+
+    public Map<String, MetaEnum> getMetaEnumMap() {
+        return metaEnumMap;
+    }
+
+    public void setMetaClassMap(Map<String, MetaClass> metaClassMap) {
+        this.metaClassMap = metaClassMap;
+    }
+
+    public void setMetaEnumMap(Map<String, MetaEnum> metaEnumMap) {
+        this.metaEnumMap = metaEnumMap;
+    }
 }

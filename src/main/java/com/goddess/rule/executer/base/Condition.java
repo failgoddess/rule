@@ -1,4 +1,4 @@
-package com.goddess.rule.executer;
+package com.goddess.rule.executer.base;
 
 import com.alibaba.fastjson2.JSONObject;
 import com.goddess.rule.constant.BlException;
@@ -14,9 +14,11 @@ import com.goddess.rule.executer.context.DecisionContext;
 public class Condition {
     //条件名称
     private String name;
+    //永真条件
+    private boolean eternal;
     //优先级
     private Integer priority;
-    //被比较的阀值来源类型
+    //被比较的阀值来源类型 Constant.DataSourceType
     private String coverType;
     //被比较的阀值维度
     private Integer coverComplex;
@@ -26,31 +28,42 @@ public class Condition {
     private String operationCode;
     //数据类型
     private String dataType;
-    //阀值类型
+    //阀值类型 Constant.DataSourceType
     private String thresholdType;
     //阀值维度
     private Integer thresholdComplex;
     //阀值
     private String threshold;
 
-    private Operation operationExecute;
+    private Operation operation;
 
     public boolean decision(DecisionContext decisionContext, JSONObject dataJson) {
+        //永真条件的处理
+        if(this.isEternal()){
+            return true;
+        }
         // 1>2  1被比较的阀值 >操作符 2阀值
         String cover = this.getThreshold(dataJson,decisionContext,true);
         String threshold = this.getThreshold(dataJson,decisionContext,false);
-        return operationExecute.decision(decisionContext,this.getDataType(),cover,this.getCoverComplex(),threshold,this.getThresholdComplex());
+        return operation.decision(decisionContext,this.getDataType(),cover,this.getCoverComplex(),threshold,this.getThresholdComplex());
     }
     private String getThreshold(JSONObject dataJson, DecisionContext decisionContext,boolean flag){
         if(flag){
             switch (this.getCoverType()){
-                case Constant.ThresholdType.FIXED:return this.getCover();
+                case Constant.DataSourceType.FIXED:return this.getCover();
+                case Constant.DataSourceType.FORMULA:
+                    return this.getCover();
             }
             throw new BlException(ExceptionCode.EC_0104,this.getName());
         }else {
             switch (this.getThresholdType()){
-                case Constant.ThresholdType.FIXED:return this.getThreshold();
+                case Constant.DataSourceType.FIXED:return this.getThreshold();
             }
+            // EN NN 单操作数操作符
+            if(operation.getCode().equals(Constant.OperationType.EN)||operation.getCode().equals(Constant.OperationType.NN)){
+                return this.getThreshold();
+            }
+            //其他情况认为是异常
             throw new BlException(ExceptionCode.EC_0105,this.getName());
         }
     }
@@ -135,11 +148,19 @@ public class Condition {
         this.threshold = threshold;
     }
 
-    public Operation getOperationExecute() {
-        return operationExecute;
+    public Operation getOperation() {
+        return operation;
     }
 
-    public void setOperationExecute(Operation operationExecute) {
-        this.operationExecute = operationExecute;
+    public void setOperation(Operation operation) {
+        this.operation = operation;
+    }
+
+    public boolean isEternal() {
+        return eternal;
+    }
+
+    public void setEternal(boolean eternal) {
+        this.eternal = eternal;
     }
 }

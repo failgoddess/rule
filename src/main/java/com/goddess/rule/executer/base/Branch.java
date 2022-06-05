@@ -1,4 +1,4 @@
-package com.goddess.rule.executer;
+package com.goddess.rule.executer.base;
 
 import cn.hutool.core.collection.ListUtil;
 import com.alibaba.fastjson2.JSONObject;
@@ -61,10 +61,10 @@ public class Branch {
     public void setLinkExecutes(List<Link> linkExecutes) {
         this.linkExecuteMap = linkExecutes.stream().collect(Collectors.toMap(Link::getCode, o->o));
         this.linkExecutes = ListUtil.sortByProperty(linkExecutes,"priority");
-        Map<String,Integer> codeIndexMap = new HashMap<>(linkExecutes.size());
+        this.codeIndexMap = new HashMap<>(linkExecutes.size());
         int index=0;
         for (Link link:this.linkExecutes){
-            codeIndexMap.put(link.getCode(),index);
+            this.codeIndexMap.put(link.getCode(),index);
             index++;
         }
     }

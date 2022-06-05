@@ -1,4 +1,4 @@
-package com.goddess.rule.executer;
+package com.goddess.rule.executer.base;
 
 import com.alibaba.fastjson2.JSONObject;
 import com.goddess.rule.executer.context.DecisionContext;
@@ -16,15 +16,10 @@ public class Result {
     private String code;
     //名称
     private String name;
-    /**
-     * 指标ID
-     */
-    private String parameter;
-    /**
-     * 结果类型 10固定值20节点值30指标值
-     */
+    //结果类型 Constant.DataSourceType
     private String resultType;
     private String dataType;
+    private String data;
 
 
 
@@ -33,7 +28,13 @@ public class Result {
     }
 
 
+    public String getData() {
+        return data;
+    }
 
+    public void setData(String data) {
+        this.data = data;
+    }
 
     public String getDataType() {
         return dataType;
@@ -57,14 +58,6 @@ public class Result {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getParameter() {
-        return parameter;
-    }
-
-    public void setParameter(String parameter) {
-        this.parameter = parameter;
     }
 
     public String getResultType() {

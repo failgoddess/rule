@@ -1,6 +1,6 @@
 package com.goddess.rule.executer.context;
 
-import com.goddess.rule.executer.Link;
+import com.goddess.rule.executer.base.Link;
 
 import java.util.LinkedList;
 import java.util.Queue;

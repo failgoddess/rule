@@ -1,4 +1,4 @@
-package com.goddess.rule.executer;
+package com.goddess.rule.executer.base;
 
 import com.alibaba.fastjson2.JSONObject;
 import com.goddess.rule.constant.BlException;

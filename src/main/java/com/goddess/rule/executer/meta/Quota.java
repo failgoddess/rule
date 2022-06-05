@@ -1,4 +1,4 @@
-package com.goddess.rule.data;
+package com.goddess.rule.executer.meta;
 
 /**
  * 指标
