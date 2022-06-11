@@ -1,8 +1,16 @@
 package com.goddess.rule.executer.base;
 
 import com.alibaba.fastjson2.JSONObject;
+import com.goddess.rule.constant.BlException;
+import com.goddess.rule.constant.ExceptionCode;
 import com.goddess.rule.executer.context.DecisionContext;
+import com.goddess.rule.executer.context.RuleConfig;
+import com.goddess.rule.executer.handler.FormulaHandler;
+import com.goddess.rule.executer.handler.ObjectLoader;
+import com.goddess.rule.executer.meta.MetaClass;
+import org.apache.commons.lang3.StringUtils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +40,11 @@ public class Rule {
     public Rule(){}
 
     public DecisionResult decision(DecisionContext decisionContext,JSONObject dataJson){
+        //验证参数
+        checkParam(decisionContext,dataJson);
+        //构建 initDatas
+        JSONObject data = buildInitData(decisionContext,dataJson);
+
         DecisionResult decisionResult = new DecisionResult();
 
         //获得决策图的每一个结果 决策图编码为Key 结果为val
@@ -53,7 +66,39 @@ public class Rule {
         return decisionResult;
     }
 
+    private JSONObject buildInitData(DecisionContext context,JSONObject dataJson){
+        JSONObject data = new JSONObject(dataJson);
+        for(InitData initData:initDatas){
+            RuleConfig ruleConfig = context.getRuleConfig();
+            MetaClass metaClass = ruleConfig.getMetaClassMap().get(initData.getMetaClassCode());
+            ObjectLoader loader = ruleConfig.getObjectLoaderFactory().getLoader(metaClass.getLoaderCode());
+            JSONObject params = FormulaHandler.buildParams(dataJson,context,"@{"+initData.getMetaClassCode()+"("+initData.getParams()+")");
+//            Object item = loader.Loader(params);
+//            data.put(initData.getCode(),item);
+        }
+        return data;
+    }
+    private void checkParam(DecisionContext context,JSONObject dataJson){
+        List<String> names = new ArrayList<>();
+        List<Param> params = this.getParams();
+        Map<String,String> nameMap = params.stream().collect(Collectors.toMap(Param::getCode,Param::getName));
+        //筛选出所有需要必须传入的的进行非空校验
+        for(Param param:this.params.stream().filter(o-> o.isNecessary()).collect(Collectors.toList())){
+            Object data = dataJson.get(param.getCode());
+            if(data==null||data.toString().equals("")){
+                names.add(param.getCode()+":"+nameMap.get(param.getCode()));
+            }
+        }
+        if(!names.isEmpty()){
+            throw new BlException(ExceptionCode.EC_0107,String.join(",",names));
+        }
 
+    }
+
+
+    public List<Param> getParams() {
+        return params;
+    }
     public void setGraphs(List<Graph> graphs) {
         this.graphs = graphs;
     }

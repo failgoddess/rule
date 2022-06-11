@@ -6,8 +6,9 @@
         <param code="discount" name = "活动折扣" dataType="NUMBER"/>
     </params>
     <initDatas>
-        <initData code="buyStore" name="销售门店" metaClass="store" params="{code:${buyStoreCode}}"/>
-        <initData code="sendStore" name="发货门店" metaClass="store" params="{code:$sendStoreCode}}"/>
+        <initData code="buyStore" name="销售门店" metaClass="store" params="code:${buyStoreCode},code2:${buyStoreCode}"/>
+        <initData code="sendStore" name="发货门店" metaClass="store" params="code:${sendStoreCode}"/>
+        <initData code="type" name="类型" params="卖出"/>
     </initDatas>
 
     <results>
@@ -24,8 +25,8 @@
                     <links>
                         <link code="810101" name = "销售门店开业时间 小于  365天" priority="10" nextType = "RESULT" nextResultCode ="RU001R1">
                             <conditions>
-                                <condition priority="999" coverType="FORMULA" cover="%{gapNowDay(time:${buyStore.startTime})}" operationCode="lt" dataType="NUMBER"
-                                           thresholdType="FIXED" threshold="365" />
+                                <condition priority="999" cover="%{gapNowDay(time:${buyStore.startTime})}" operationCode="lt" dataType="NUMBER"
+                                           threshold="365" />
                             </conditions>
                         </link>
                         <link code="810102"  name = "否则" priority="20" nextType="BRANCH" nextBranchCode="RU001G1B2">
@@ -40,14 +41,14 @@
                     <links>
                         <link code="810201" name ="销售门店区域 包含于 河北,上海" priority="10" nextType = "RESULT" nextResultCode ="RU001R3">
                             <conditions>
-                                <condition priority="999"  coverType="FORMULA" cover="${buyStore.area}" operationCode="in" dataType="STRING"
-                                           thresholdComplex="1" thresholdType="FIXED" threshold="河北,上海"/>
+                                <condition priority="999" cover="${buyStore.area}" operationCode="in" dataType="STRING"
+                                           thresholdComplex="1" threshold="河北,上海"/>
                             </conditions>
                         </link>
                         <link code="810202" name = "销售区域 等于 发货区域" priority="20" nextType = "RESULT" nextResultCode ="RU001R2">
                             <conditions>
-                                <condition priority="999"  coverType="FORMULA" cover="${buyStore.area}" operationCode="eq" dataType="STRING"
-                                            thresholdType="FORMULA" threshold="${sendStore.area}"/>
+                                <condition priority="999"  cover="${buyStore.area}" operationCode="eq" dataType="STRING"
+                                            threshold="${sendStore.area}"/>
                             </conditions>
                         </link>
                         <link code="810203"  name = "否则" priority="20" nextType="BRANCH" nextBranchCode="RU001G1B3">
@@ -62,12 +63,12 @@
                     <links>
                         <link code="810301" name = "活动折扣 等于 空" priority="10" nextType = "RESULT" nextResultCode ="RU001R2">
                             <conditions>
-                                <condition priority="10"  coverType="FORMULA" cover="%{discount}" operationCode="en" />
+                                <condition priority="10" cover="${discount}" operationCode="en" />
                             </conditions>
                         </link>
                         <link code="810302"  name = "活动折扣 不等于 空" priority="20" nextType = "RESULT" nextResultCode ="RU001R4">
                             <conditions>
-                                <condition priority="10"  coverType="FORMULA" cover="%{discount}" operationCode="nn" />
+                                <condition priority="10" cover="${discount}" operationCode="nn" />
                             </conditions>
                         </link>
                     </links>

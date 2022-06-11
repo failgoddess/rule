@@ -38,8 +38,8 @@ public class RuleConfig {
 
 
 
-    public DecisionContext getDecisionContext(){
-        return new DecisionContext();
+    public DecisionContext buildeDecisionContext(){
+        return new DecisionContext(this);
     }
     public String getRulePath() {
         return rulePath;

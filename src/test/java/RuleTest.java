@@ -18,8 +18,10 @@ public class RuleTest {
         RuleConfig ruleConfig = new XMLRuleConfigBuilder().build("classpath:rule-config.xml");
         Rule rule = ruleConfig.getRuleMap().get("RU001");
         Assert.assertTrue(rule!=null);
-        DecisionContext decisionContext  = ruleConfig.getDecisionContext();
+        DecisionContext decisionContext  = ruleConfig.buildeDecisionContext();
         JSONObject dataJson = new JSONObject();
+        dataJson.put("buyStoreCode","1002");
+        dataJson.put("sendStoreCode","2222");
         DecisionResult decisionResult = rule.decision(decisionContext,dataJson);
         System.out.println(decisionResult);
     }

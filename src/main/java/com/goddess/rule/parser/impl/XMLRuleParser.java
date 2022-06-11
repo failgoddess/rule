@@ -2,6 +2,7 @@ package com.goddess.rule.parser.impl;
 
 import cn.hutool.core.io.resource.ResourceUtil;
 import com.goddess.rule.executer.base.*;
+import com.goddess.rule.executer.handler.FormulaHandler;
 import com.goddess.rule.parser.RuleParser;
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
@@ -181,8 +182,9 @@ public class XMLRuleParser implements RuleParser {
             }else {
                 condition.setCoverComplex(0);
             }
-            condition.setCoverType(coverType);
-            condition.setCover(cover);
+            if(StringUtils.isNotEmpty(cover)){
+                condition.setCover(cover);
+            }
             condition.setOperationCode(operationCode);
             condition.setDataType(dataType);
             if(StringUtils.isNotEmpty(thresholdComplex)){
@@ -190,8 +192,9 @@ public class XMLRuleParser implements RuleParser {
             }else {
                 condition.setThresholdComplex(0);
             }
-            condition.setThresholdType(thresholdType);
-            condition.setThreshold(threshold);
+            if(StringUtils.isNotEmpty(threshold)){
+                condition.setThreshold(threshold);
+            }
             conditions.add(condition);
         }
         return conditions;
@@ -270,6 +273,12 @@ public class XMLRuleParser implements RuleParser {
             initData.setName(name);
             initData.setMetaClassCode(metaClassCode);
             initData.setParams(params);
+            if(StringUtils.isEmpty(metaClassCode)){
+                initData.setFormulaNode(FormulaHandler.getFormulaNode(params));
+            }else {
+                String text = "@{"+metaClassCode+"("+params+")}";
+                initData.setFormulaNode(FormulaHandler.getFormulaNode(text));
+            }
             initDatas.add(initData);
         }
         return initDatas;

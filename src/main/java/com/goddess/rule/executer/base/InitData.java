@@ -1,5 +1,7 @@
 package com.goddess.rule.executer.base;
 
+import com.goddess.rule.executer.base.formula.FormulaNode;
+
 /**
  * @author: 失败女神-vinc
  * @email: 18733123202@163.com
@@ -14,6 +16,7 @@ public class InitData {
     private String metaClassCode;
     //参数映射
     private String params;
+    private FormulaNode formulaNode;
 
     public String getCode() {
         return code;
@@ -45,5 +48,13 @@ public class InitData {
 
     public void setParams(String params) {
         this.params = params;
+    }
+
+    public FormulaNode getFormulaNode() {
+        return formulaNode;
+    }
+
+    public void setFormulaNode(FormulaNode formulaNode) {
+        this.formulaNode = formulaNode;
     }
 }

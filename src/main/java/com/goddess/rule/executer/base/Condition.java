@@ -4,7 +4,9 @@ import com.alibaba.fastjson2.JSONObject;
 import com.goddess.rule.constant.BlException;
 import com.goddess.rule.constant.Constant;
 import com.goddess.rule.constant.ExceptionCode;
+import com.goddess.rule.executer.base.formula.FormulaNode;
 import com.goddess.rule.executer.context.DecisionContext;
+import com.goddess.rule.executer.handler.FormulaHandler;
 
 /**
  * @author: 失败女神-vinc
@@ -18,22 +20,20 @@ public class Condition {
     private boolean eternal;
     //优先级
     private Integer priority;
-    //被比较的阀值来源类型 Constant.DataSourceType
-    private String coverType;
     //被比较的阀值维度
     private Integer coverComplex;
     //被比较的阀值
     private String cover;
+    private FormulaNode coverFormula;
     //操作符编码
     private String operationCode;
     //数据类型
     private String dataType;
-    //阀值类型 Constant.DataSourceType
-    private String thresholdType;
     //阀值维度
     private Integer thresholdComplex;
     //阀值
     private String threshold;
+    private FormulaNode thresholdFormula;
 
     private Operation operation;
 
@@ -48,24 +48,20 @@ public class Condition {
         return operation.decision(decisionContext,this.getDataType(),cover,this.getCoverComplex(),threshold,this.getThresholdComplex());
     }
     private String getThreshold(JSONObject dataJson, DecisionContext decisionContext,boolean flag){
-        if(flag){
-            switch (this.getCoverType()){
-                case Constant.DataSourceType.FIXED:return this.getCover();
-                case Constant.DataSourceType.FORMULA:
-                    return this.getCover();
-            }
-            throw new BlException(ExceptionCode.EC_0104,this.getName());
-        }else {
-            switch (this.getThresholdType()){
-                case Constant.DataSourceType.FIXED:return this.getThreshold();
-            }
-            // EN NN 单操作数操作符
-            if(operation.getCode().equals(Constant.OperationType.EN)||operation.getCode().equals(Constant.OperationType.NN)){
-                return this.getThreshold();
-            }
-            //其他情况认为是异常
-            throw new BlException(ExceptionCode.EC_0105,this.getName());
-        }
+//        if(flag){
+//            return coverFormula
+//        }else {
+//            switch (this.getThresholdType()){
+//                case Constant.DataSourceType.FIXED:return this.getThreshold();
+//            }
+//            // EN NN 单操作数操作符
+//            if(operation.getCode().equals(Constant.OperationType.EN)||operation.getCode().equals(Constant.OperationType.NN)){
+//                return this.getThreshold();
+//            }
+//            //其他情况认为是异常
+//            throw new BlException(ExceptionCode.EC_0105,this.getName());
+//        }
+        return "";
     }
 
     public String getName() {
@@ -84,14 +80,6 @@ public class Condition {
         this.priority = priority;
     }
 
-    public String getCoverType() {
-        return coverType;
-    }
-
-    public void setCoverType(String coverType) {
-        this.coverType = coverType;
-    }
-
     public Integer getCoverComplex() {
         return coverComplex;
     }
@@ -105,6 +93,7 @@ public class Condition {
     }
 
     public void setCover(String cover) {
+        this.coverFormula = FormulaHandler.getFormulaNode(cover);
         this.cover = cover;
     }
 
@@ -124,14 +113,6 @@ public class Condition {
         this.dataType = dataType;
     }
 
-    public String getThresholdType() {
-        return thresholdType;
-    }
-
-    public void setThresholdType(String thresholdType) {
-        this.thresholdType = thresholdType;
-    }
-
     public Integer getThresholdComplex() {
         return thresholdComplex;
     }
@@ -145,6 +126,7 @@ public class Condition {
     }
 
     public void setThreshold(String threshold) {
+        this.thresholdFormula = FormulaHandler.getFormulaNode(threshold);
         this.threshold = threshold;
     }
 

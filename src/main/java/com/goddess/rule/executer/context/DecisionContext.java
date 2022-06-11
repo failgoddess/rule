@@ -1,6 +1,8 @@
 package com.goddess.rule.executer.context;
 
+import com.alibaba.fastjson2.JSONObject;
 import com.goddess.rule.executer.base.Link;
+import com.goddess.rule.executer.base.Rule;
 
 import java.util.LinkedList;
 import java.util.Queue;
@@ -13,11 +15,18 @@ import java.util.Stack;
  * @date: 2022/6/3 23:01
  */
 public class DecisionContext {
+    private Rule rule;
+    private RuleConfig ruleConfig;
+
+    private JSONObject data;
     //回溯栈
     private Stack<PathNode> pathNodeStack = new Stack<>();
     //执行路径
     private Queue<PathNode> pathNodeQueue = new LinkedList<>();
 
+    public DecisionContext(RuleConfig ruleConfig){
+        this.ruleConfig = ruleConfig;
+    }
     /**
      * 回溯栈出栈
      * @return
@@ -41,5 +50,25 @@ public class DecisionContext {
         }
         //记录执行路径
         pathNodeQueue.add(pathNode);
+    }
+
+    public JSONObject getData() {
+        return data;
+    }
+
+    public void setData(JSONObject data) {
+        this.data = data;
+    }
+
+    public RuleConfig getRuleConfig() {
+        return ruleConfig;
+    }
+
+    public Rule getRule() {
+        return rule;
+    }
+
+    public void setRule(Rule rule) {
+        this.rule = rule;
     }
 }
