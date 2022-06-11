@@ -4,8 +4,6 @@ import cn.hutool.core.io.resource.ResourceUtil;
 import com.goddess.rule.constant.BlException;
 import com.goddess.rule.constant.Constant;
 import com.goddess.rule.constant.ExceptionCode;
-import com.goddess.rule.executer.base.Branch;
-import com.goddess.rule.executer.base.Graph;
 import com.goddess.rule.executer.base.Rule;
 import com.goddess.rule.executer.context.RuleConfig;
 import com.goddess.rule.executer.handler.FunctionHandlerFactory;
@@ -14,7 +12,7 @@ import com.goddess.rule.executer.handler.ObjectLoaderFactory;
 import com.goddess.rule.executer.meta.MetaClass;
 import com.goddess.rule.executer.meta.MetaEnum;
 import com.goddess.rule.executer.meta.MetaProperty;
-import com.goddess.rule.executer.operation.RelationFactory;
+import com.goddess.rule.executer.base.operation.OperationFactory;
 import com.goddess.rule.parser.FormulaBuilder;
 import com.goddess.rule.parser.RuleConfigBuilder;
 import com.goddess.rule.parser.RuleParser;
@@ -67,7 +65,7 @@ public class XMLRuleConfigBuilder implements RuleConfigBuilder {
         ruleConfig.setRuleMap(rules.stream().collect(Collectors.toMap(Rule::getCode,o->o)));
 
         //操作符工厂
-        ruleConfig.setRelationFactory(RelationFactory.getInstance());
+        ruleConfig.setRelationFactory(OperationFactory.getInstance());
 
         ruleConfig.setFunctionHandlerFactory(FunctionHandlerFactory.getInstance());
 

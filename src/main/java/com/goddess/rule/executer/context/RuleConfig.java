@@ -6,7 +6,7 @@ import com.goddess.rule.executer.handler.FunctionHandlerFactory;
 import com.goddess.rule.executer.handler.ObjectLoaderFactory;
 import com.goddess.rule.executer.meta.MetaClass;
 import com.goddess.rule.executer.meta.MetaEnum;
-import com.goddess.rule.executer.operation.RelationFactory;
+import com.goddess.rule.executer.base.operation.OperationFactory;
 import com.goddess.rule.parser.FormulaBuilder;
 
 import java.util.*;
@@ -35,7 +35,7 @@ public class RuleConfig {
     //公式解析器
     private FormulaBuilder formulaBuilder;
     //操作符工厂
-    private RelationFactory relationFactory;
+    private OperationFactory relationFactory;
     //加载器工厂
     private ObjectLoaderFactory objectLoaderFactory;
     //扩展方法工厂
@@ -87,11 +87,11 @@ public class RuleConfig {
         this.ruleMap = ruleMap;
     }
 
-    public RelationFactory getRelationFactory() {
+    public OperationFactory getRelationFactory() {
         return relationFactory;
     }
 
-    public void setRelationFactory(RelationFactory relationFactory) {
+    public void setRelationFactory(OperationFactory relationFactory) {
         this.relationFactory = relationFactory;
     }
 

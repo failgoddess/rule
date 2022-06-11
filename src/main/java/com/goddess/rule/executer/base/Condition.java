@@ -1,10 +1,10 @@
 package com.goddess.rule.executer.base;
 
-import com.alibaba.fastjson.JSONObject;
 import com.goddess.rule.executer.base.formula.FormulaNode;
+import com.goddess.rule.executer.base.operation.Operation;
 import com.goddess.rule.executer.context.DecisionContext;
 import com.goddess.rule.executer.context.RuleConfig;
-import com.goddess.rule.parser.impl.DefaultFormulaBuilder;
+import com.goddess.rule.executer.base.operation.OperationFactory;
 
 /**
  * @author: 失败女神-vinc
@@ -34,34 +34,17 @@ public class Condition {
 
     private FormulaNode thresholdFormula;
 
-    private Operation operation;
-
-    public boolean decision(DecisionContext decisionContext) {
+    public boolean decision(DecisionContext context) {
         //永真条件的处理
         if(this.isEternal()){
             return true;
         }
         // 1>2  1被比较的阀值 >操作符 2阀值
-        Object cover = coverFormula.apply(decisionContext);
-        Object threshold = thresholdFormula.apply(decisionContext);
-        return false;
-//        return operation.decision(decisionContext,this.getDataType(),cover,this.getCoverComplex(),threshold,this.getThresholdComplex());
-    }
-    private String getThreshold(DecisionContext decisionContext,boolean flag){
-//        if(flag){
-//            return coverFormula
-//        }else {
-//            switch (this.getThresholdType()){
-//                case Constant.DataSourceType.FIXED:return this.getThreshold();
-//            }
-//            // EN NN 单操作数操作符
-//            if(operation.getCode().equals(Constant.OperationType.EN)||operation.getCode().equals(Constant.OperationType.NN)){
-//                return this.getThreshold();
-//            }
-//            //其他情况认为是异常
-//            throw new BlException(ExceptionCode.EC_0105,this.getName());
-//        }
-        return "";
+        Object cover = coverFormula.apply(context);
+        Object threshold = thresholdFormula.apply(context);
+        Operation operation = OperationFactory.getOperation(operationCode);
+//        return false;
+        return operation.execute(this.getDataType(),this.getCoverComplex(),cover,this.getThresholdComplex(),threshold);
     }
 
     public String getName() {
@@ -130,14 +113,6 @@ public class Condition {
         RuleConfig ruleConfig = RuleConfig.getInstance();
         this.thresholdFormula = ruleConfig.getFormulaBuilder().getFormulaNode(threshold);
         this.threshold = threshold;
-    }
-
-    public Operation getOperation() {
-        return operation;
-    }
-
-    public void setOperation(Operation operation) {
-        this.operation = operation;
     }
 
     public boolean isEternal() {

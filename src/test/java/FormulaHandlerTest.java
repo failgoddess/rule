@@ -24,6 +24,7 @@ public class FormulaHandlerTest {
         FormulaNode formulaNode6 = formulaBuilder.getFormulaNode("%{内置方法()}.val");
         FormulaNode formulaNode7 = formulaBuilder.getFormulaNode("%{内置方法(attr1:23,attr2:%{内置方法2(code:${buyStoreCode})},attr3:${buyStoreCode},attr4:11)}.val");
         FormulaNode formulaNode8 = formulaBuilder.getFormulaNode("12");
+        FormulaNode formulaNode9 = formulaBuilder.getFormulaNode("@{加载器(attr1:23,attr2:%{内置方法2(code:${buyStoreCode})},attr3:${buyStoreCode})}.val");
 
         System.out.println(formulaNode2);
 

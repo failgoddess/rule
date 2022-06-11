@@ -1,4 +1,4 @@
-package com.goddess.rule.executer.operation;
+package com.goddess.rule.executer.base.operation;
 
 import com.goddess.rule.constant.BlException;
 import org.reflections.Reflections;
@@ -12,27 +12,29 @@ import java.util.Set;
  * @email: 18733123202@163.com
  * @date: 2022/6/4 01:50
  */
-public class RelationFactory {
+public class OperationFactory {
 
-    private RelationFactory(){}
-    private static RelationFactory instance = null;
-    public static RelationFactory getInstance() {
+    private OperationFactory(){}
+    private static OperationFactory instance = null;
+    public static OperationFactory getInstance() {
         if (instance != null) {
             return instance;
         }else {
-            synchronized (RelationFactory.class){
+            synchronized (OperationFactory.class){
                 if(instance==null){
-                    instance=new RelationFactory();
+                    instance=new OperationFactory();
                 }
             }
         }
         return instance;
     }
 
-    private static Map<String, RelationOperation> handlerMap = new HashMap<>();
-    public static RelationOperation getOperation(String operationCode) {
+    private static Map<String, Operation> handlerMap = new HashMap<>();
+    public static Operation getOperation(String operationCode) {
         if (handlerMap.containsKey(operationCode)) {
             return handlerMap.get(operationCode);
+        } else if (handlerMap.containsKey(operationCode.toUpperCase())) {
+            return handlerMap.get(operationCode.toUpperCase());
         } else {
             throw new BlException("找不到操作符："+operationCode);
         }
@@ -40,12 +42,12 @@ public class RelationFactory {
 
     static {
         //获取该路径下所有类
-        Reflections reflections = new Reflections("com.goddess.rule.executer.operation");
+        Reflections reflections = new Reflections("com.goddess.rule.executer.base.operation");
         //获取继承了RelationOperation的所有类
-        Set<Class<? extends RelationOperation>> classSet = reflections.getSubTypesOf(RelationOperation.class);
-        for (Class<? extends RelationOperation> clazz:classSet){
+        Set<Class<? extends Operation>> classSet = reflections.getSubTypesOf(Operation.class);
+        for (Class<? extends Operation> clazz:classSet){
             try {
-                RelationOperation operation = clazz.newInstance();
+                Operation operation = clazz.newInstance();
                 handlerMap.put(operation.getOperationCode(),operation);
             } catch (InstantiationException e) {
                 e.printStackTrace();

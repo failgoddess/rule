@@ -52,8 +52,6 @@ public class Constant {
         public static final String NUMBER="NUMBER";
         //字符串
         public static final String STRING="STRING";
-        //不区分大小写的字符串
-        public static final String STRING_IC="STRING_IC";
         //布尔
         public static final String BOLL="BOLL";
         //时间年月日  yyyy-MM-dd
