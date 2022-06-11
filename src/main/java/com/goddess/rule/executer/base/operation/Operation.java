@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public abstract class Operation {
+    protected boolean oneOp = false;
     private static DateTimeFormatter ydmhms = DateTimeFormatter.ofPattern(Constant.DateFormatter.YYYY_MM_DD_HH_MM_SS);
     private static DateTimeFormatter ydm = DateTimeFormatter.ofPattern(Constant.DateFormatter.YYYY_MM_DD);
     private static DateTimeFormatter hdm = DateTimeFormatter.ofPattern(Constant.DateFormatter.HH_MM_SS);
@@ -22,11 +23,24 @@ public abstract class Operation {
 
     public abstract boolean execute(String dataTypeCode,Integer coverComplex,Object cover,
                                     Integer thresholdComplex,Object threshold);
+
+
+    public abstract boolean timeHms(LocalTime t1,LocalTime t2);
+
+    public abstract boolean timeYmdhms(LocalDateTime t1,LocalDateTime t2);
+
+    public abstract boolean timeYmd(LocalDate t1,LocalDate t2);
+    public abstract boolean number(BigDecimal t1 ,BigDecimal t2);
+
+    public abstract boolean boll(Boolean t1 ,Boolean t2);
+
+
+
     //获取字符串列表
     protected List<String> getList(Object data){
         List<String> result = new ArrayList<>();
-        if (data instanceof JSONArray) {
-            for (Object o : (JSONArray) data) {
+        if (data instanceof List) {
+            for (Object o : (List) data) {
                 if(o ==null){
                     result.add(null);
                 }else {
@@ -177,4 +191,170 @@ public abstract class Operation {
     }
 
 
+
+
+    protected boolean timeHms(Integer coverComplex, Object cover,
+                            Integer thresholdComplex, Object threshold){
+        List<LocalTime> t1s = getTimeHmsList(cover);
+        List<LocalTime> t2s = getTimeHmsList(threshold);
+
+        if(isList(coverComplex)&&isList(thresholdComplex)){
+            //  均是列表
+            if(t1s.size()!=t2s.size()){
+                //数量不同
+                return false;
+            }else {
+                //数量相同
+                for(int i=0;i<t1s.size();i++){
+                    LocalTime t1 = t1s.get(i);
+                    LocalTime t2 = t2s.get(i);
+                    boolean flag = timeHms(t1,t2);
+                    if(flag){
+                        return false;
+                    }
+                }
+            }
+        } else if(!isList(coverComplex)&&!isList(thresholdComplex)){
+            //  均不是列表
+            //非列表
+            LocalTime t1 = t1s.get(0);
+            LocalTime t2 = t2s.get(0);
+            return timeHms(t1,t2);
+        }
+        return false;
+    }
+
+
+    protected boolean timeYmdhms(Integer coverComplex, Object cover,
+                               Integer thresholdComplex, Object threshold){
+        List<LocalDateTime> t1s = getTimeYdmhmsList(cover);
+        List<LocalDateTime> t2s = getTimeYdmhmsList(threshold);
+
+        if(isList(coverComplex)&&isList(thresholdComplex)){
+            //  均是列表
+            if(t1s.size()!=t2s.size()){
+                //数量不同
+                return false;
+            }else {
+                //数量相同
+                for(int i=0;i<t1s.size();i++){
+                    LocalDateTime t1 = t1s.get(i);
+                    LocalDateTime t2 = t2s.get(i);
+                    boolean flag = timeYmdhms(t1,t2);
+                    if(flag){
+                        return false;
+                    }
+                }
+            }
+        } else if(!isList(coverComplex)&&!isList(thresholdComplex)){
+            //  均不是列表
+            //非列表
+            LocalDateTime t1 = t1s.get(0);
+            LocalDateTime t2 = t2s.get(0);
+            return timeYmdhms(t1,t2);
+        }
+        return false;
+    }
+
+
+    protected boolean timeYmd(Integer coverComplex, Object cover,
+                            Integer thresholdComplex, Object threshold){
+        List<LocalDate> t1s = getTimeYdmList(cover);
+        List<LocalDate> t2s = getTimeYdmList(threshold);
+
+        if(isList(coverComplex)&&isList(thresholdComplex)){
+            //  均是列表
+            if(t1s.size()!=t2s.size()){
+                //数量不同
+                return false;
+            }else {
+                //数量相同
+                for(int i=0;i<t1s.size();i++){
+                    LocalDate t1 = t1s.get(i);
+                    LocalDate t2 = t2s.get(i);
+                    boolean flag = timeYmd(t1,t2);
+                    if(flag){
+                        return false;
+                    }
+                }
+            }
+        } else if(!isList(coverComplex)&&!isList(thresholdComplex)){
+            //  均不是列表
+            //非列表
+            LocalDate t1 = t1s.get(0);
+            LocalDate t2 = t2s.get(0);
+            return timeYmd(t1,t2);
+        }
+        return false;
+    }
+
+
+    protected boolean number(Integer coverComplex, Object cover,
+                           Integer thresholdComplex, Object threshold){
+
+        List<BigDecimal> t1s = getNumberList(cover);
+        List<BigDecimal> t2s = getNumberList(threshold);
+
+        if(isList(coverComplex)&&isList(thresholdComplex)){
+            //  均是列表
+            if(t1s.size()!=t2s.size()){
+                //数量不同
+                return false;
+            }else {
+                //数量相同
+                for(int i=0;i<t1s.size();i++){
+                    BigDecimal t1 = t1s.get(i);
+                    BigDecimal t2 = t2s.get(i);
+                    boolean flag = number(t1,t2);
+                    if(flag){
+                        return false;
+                    }
+                }
+            }
+        } else if(!isList(coverComplex)&&!isList(thresholdComplex)){
+            //  均不是列表
+            //非列表
+            BigDecimal t1 = t1s.get(0);
+            BigDecimal t2 = t2s.get(0);
+            return number(t1,t2);
+        }
+        return false;
+    }
+
+
+
+    protected boolean boll(Integer coverComplex, Object cover,
+                         Integer thresholdComplex, Object threshold){
+        List<Boolean> t1s = getBollList(cover);
+        List<Boolean> t2s = getBollList(threshold);
+
+        if(isList(coverComplex)&&isList(thresholdComplex)){
+            //  均是列表
+            if(t1s.size()!=t2s.size()){
+                //数量不同
+                return false;
+            }else {
+                //数量相同
+                for(int i=0;i<t1s.size();i++){
+                    Boolean t1 = t1s.get(i);
+                    Boolean t2 = t2s.get(i);
+                    boolean flag = boll(t1,t2);
+                    if(flag){
+                        return false;
+                    }
+                }
+            }
+        } else if(!isList(coverComplex)&&!isList(thresholdComplex)){
+            //  均不是列表
+            //非列表
+            Boolean t1 = t1s.get(0);
+            Boolean t2 = t2s.get(0);
+            return boll(t1,t2);
+        }
+        return false;
+    }
+
+    public boolean isOneOp() {
+        return oneOp;
+    }
 }

@@ -162,12 +162,10 @@ public class XMLRuleParser implements RuleParser {
             priority = item.attributeValue("priority");
             eternal = item.attributeValue("eternal");
             coverComplex = item.attributeValue("coverComplex");
-            coverType = item.attributeValue("coverType");
             cover = item.attributeValue("cover");
             operationCode = item.attributeValue("operationCode");
             dataType = item.attributeValue("dataType");
             thresholdComplex = item.attributeValue("thresholdComplex");
-            thresholdType = item.attributeValue("thresholdType");
             threshold = item.attributeValue("threshold");
 
             condition.setName(name);
@@ -213,12 +211,10 @@ public class XMLRuleParser implements RuleParser {
             String code,name,resultType,dataType,data;
             code = item.attributeValue("code");
             name = item.attributeValue("name");
-            resultType = item.attributeValue("resultType");
             dataType = item.attributeValue("dataType");
             data = item.attributeValue("data");
             result.setCode(code);
             result.setName(name);
-            result.setResultType(resultType);
             result.setDataType(dataType);
             result.setData(data);
             results.add(result);

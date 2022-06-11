@@ -40,11 +40,16 @@ public class Condition {
             return true;
         }
         // 1>2  1被比较的阀值 >操作符 2阀值
-        Object cover = coverFormula.apply(context);
-        Object threshold = thresholdFormula.apply(context);
         Operation operation = OperationFactory.getOperation(operationCode);
-//        return false;
-        return operation.execute(this.getDataType(),this.getCoverComplex(),cover,this.getThresholdComplex(),threshold);
+
+        Object cover = coverFormula.apply(context);
+        Object threshold = null;
+        if(!operation.isOneOp()){
+            threshold = thresholdFormula.apply(context);
+        }
+
+        boolean flag = operation.execute(this.getDataType(),this.getCoverComplex(),cover,this.getThresholdComplex(),threshold);
+        return flag;
     }
 
     public String getName() {

@@ -12,10 +12,10 @@
     </initDatas>
 
     <results>
-        <result code="RU001R1" name = "7折" resultType="FIXED" dataType="NUMBER" data="0.7"/>
-        <result code="RU001R2" name = "8折" resultType="FIXED" dataType="NUMBER" data="0.8"/>
-        <result code="RU001R3" name = "9折" resultType="FIXED" dataType="NUMBER" data="0.9"/>
-        <result code="RU001R4" name = "活动折扣" resultType="FORMULA" dataType="NUMBER" data="${discount}"/>
+        <result code="RU001R1" name = "7折" dataType="NUMBER" data="0.7"/>
+        <result code="RU001R2" name = "8折" dataType="NUMBER" data="0.8"/>
+        <result code="RU001R3" name = "9折" dataType="NUMBER" data="0.9"/>
+        <result code="RU001R4" name = "活动折扣" dataType="NUMBER" data="${discount}"/>
     </results>
 
     <graphs>
@@ -23,10 +23,10 @@
             <branches>
                 <branch code = "RU001G1B1" name = "门店分支">
                     <links>
-                        <link code="810101" name = "销售门店开业时间 小于  365天" priority="10" nextType = "RESULT" nextResultCode ="RU001R1">
+                        <link code="810101" name = "销售门店开业时间 小于  356天" priority="10" nextType = "RESULT" nextResultCode ="RU001R1">
                             <conditions>
                                 <condition priority="999" cover="%{gapNowDay(time:${buyStore.startTime})}" operationCode="lt" dataType="NUMBER"
-                                           threshold="365" />
+                                           threshold="356" />
                             </conditions>
                         </link>
                         <link code="810102"  name = "否则" priority="20" nextType="BRANCH" nextBranchCode="RU001G1B2">

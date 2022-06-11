@@ -1,7 +1,9 @@
 package com.goddess.rule.executer.base;
 
 import com.alibaba.fastjson.JSONObject;
+import com.goddess.rule.executer.base.formula.FormulaNode;
 import com.goddess.rule.executer.context.DecisionContext;
+import com.goddess.rule.executer.context.RuleConfig;
 
 import java.util.Map;
 
@@ -16,15 +18,14 @@ public class Result {
     private String code;
     //名称
     private String name;
-    //结果类型 Constant.DataSourceType
-    private String resultType;
     private String dataType;
     private String data;
+    private FormulaNode formulaNode;
 
 
 
-    public JSONObject decision(DecisionContext decisionContext){
-        return new JSONObject().fluentPut("data",resultType);
+    public Object decision(DecisionContext context){
+        return formulaNode.apply(context);
     }
 
 
@@ -33,6 +34,8 @@ public class Result {
     }
 
     public void setData(String data) {
+        RuleConfig ruleConfig = RuleConfig.getInstance();
+        this.formulaNode = ruleConfig.getFormulaBuilder().getFormulaNode(data);
         this.data = data;
     }
 
@@ -60,11 +63,4 @@ public class Result {
         this.name = name;
     }
 
-    public String getResultType() {
-        return resultType;
-    }
-
-    public void setResultType(String resultType) {
-        this.resultType = resultType;
-    }
 }

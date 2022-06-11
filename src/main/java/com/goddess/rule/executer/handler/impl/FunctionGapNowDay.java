@@ -27,6 +27,6 @@ public class FunctionGapNowDay implements FunctionHandler {
         LocalDateTime now = LocalDateTime.now();
         LocalDate date =LocalDate.parse(data.getString("time"), Constant.Formatter.ydm);
         LocalDateTime time = LocalDateTime.of(date, LocalTime.MIN);
-        return Duration.between(now,time).toDays();
+        return Duration.between(time,now).toDays();
     }
 }
