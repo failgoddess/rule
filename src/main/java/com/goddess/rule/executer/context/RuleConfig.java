@@ -1,10 +1,13 @@
 package com.goddess.rule.executer.context;
 
+import com.alibaba.fastjson.JSONObject;
 import com.goddess.rule.executer.base.Rule;
+import com.goddess.rule.executer.handler.FunctionHandlerFactory;
 import com.goddess.rule.executer.handler.ObjectLoaderFactory;
 import com.goddess.rule.executer.meta.MetaClass;
 import com.goddess.rule.executer.meta.MetaEnum;
 import com.goddess.rule.executer.operation.RelationFactory;
+import com.goddess.rule.parser.FormulaBuilder;
 
 import java.util.*;
 
@@ -29,17 +32,36 @@ public class RuleConfig {
     //规则缓存
     private List<Rule> rules = new ArrayList<>();
     private Map<String,Rule> ruleMap = new HashMap<>();
-
+    //公式解析器
+    private FormulaBuilder formulaBuilder;
     //操作符工厂
     private RelationFactory relationFactory;
     //加载器工厂
     private ObjectLoaderFactory objectLoaderFactory;
+    //扩展方法工厂
+    private FunctionHandlerFactory functionHandlerFactory;
+
+
+    private RuleConfig(){}
+    private static RuleConfig instance = null;
+    public static RuleConfig getInstance() {
+        if (instance != null) {
+            return instance;
+        }else {
+            synchronized (RuleConfig.class){
+                if(instance==null){
+                    instance=new RuleConfig();
+                }
+            }
+        }
+        return instance;
+    }
 
 
 
 
-    public DecisionContext buildeDecisionContext(){
-        return new DecisionContext(this);
+    public DecisionContext buildeDecisionContext(String ruleCode, JSONObject data){
+        return new DecisionContext(this,this.getRuleMap().get(ruleCode),data);
     }
     public String getRulePath() {
         return rulePath;
@@ -110,5 +132,21 @@ public class RuleConfig {
 
     public void setMetaEnumMap(Map<String, MetaEnum> metaEnumMap) {
         this.metaEnumMap = metaEnumMap;
+    }
+
+    public FormulaBuilder getFormulaBuilder() {
+        return formulaBuilder;
+    }
+
+    public void setFormulaBuilder(FormulaBuilder formulaBuilder) {
+        this.formulaBuilder = formulaBuilder;
+    }
+
+    public FunctionHandlerFactory getFunctionHandlerFactory() {
+        return functionHandlerFactory;
+    }
+
+    public void setFunctionHandlerFactory(FunctionHandlerFactory functionHandlerFactory) {
+        this.functionHandlerFactory = functionHandlerFactory;
     }
 }

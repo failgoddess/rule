@@ -1,6 +1,6 @@
 package com.goddess.rule.executer.base;
 
-import com.alibaba.fastjson2.JSONObject;
+import com.alibaba.fastjson.JSONObject;
 import com.goddess.rule.executer.context.DecisionContext;
 
 import java.util.Map;
@@ -23,7 +23,7 @@ public class Result {
 
 
 
-    public JSONObject decision(DecisionContext decisionContext, JSONObject dataJson){
+    public JSONObject decision(DecisionContext decisionContext){
         return new JSONObject().fluentPut("data",resultType);
     }
 

@@ -1,6 +1,6 @@
 package com.goddess.rule.executer.meta;
 
-import com.alibaba.fastjson2.JSONObject;
+import com.alibaba.fastjson.JSONObject;
 
 /**
  * @author: 失败女神-vinc

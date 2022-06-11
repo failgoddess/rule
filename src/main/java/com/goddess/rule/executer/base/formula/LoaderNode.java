@@ -1,7 +1,10 @@
 package com.goddess.rule.executer.base.formula;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.alibaba.fastjson.JSONObject;
+import com.goddess.rule.executer.context.DecisionContext;
+import com.goddess.rule.executer.context.RuleConfig;
+import com.goddess.rule.executer.handler.ObjectLoader;
+import com.goddess.rule.executer.handler.ObjectLoaderFactory;
 
 /**
  * @author: 失败女神-vinc
@@ -16,7 +19,11 @@ public class LoaderNode extends FuncNode{
     }
 
     @Override
-    public Object apply() {
-        return null;
+    public Object apply(DecisionContext context) {
+        RuleConfig ruleConfig  = context.getRuleConfig();
+        ObjectLoaderFactory objectLoaderFactory = ruleConfig.getObjectLoaderFactory();
+        ObjectLoader loader = objectLoaderFactory.getLoader(this.func);
+        Object reData = loader.loader(context,paramsHandler(context));
+        return resultHandler(reData);
     }
 }

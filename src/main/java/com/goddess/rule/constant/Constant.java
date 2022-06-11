@@ -1,5 +1,7 @@
 package com.goddess.rule.constant;
 
+import java.time.format.DateTimeFormatter;
+
 /**
  * 常量枚举类
  * @author: 失败女神-vinc
@@ -19,6 +21,11 @@ public class Constant {
         public static final String YYYY_MM_DD_HH_MM_SS = "yyyy-MM-dd HH:mm:ss";
         public static final String YYYY_MM_DD = "yyyy-MM-dd";
         public static final String HH_MM_SS = "HH:mm:ss";
+    }
+    public static class Formatter{
+        public static DateTimeFormatter ydmhms = DateTimeFormatter.ofPattern(Constant.DateFormatter.YYYY_MM_DD_HH_MM_SS);
+        public static DateTimeFormatter ydm = DateTimeFormatter.ofPattern(Constant.DateFormatter.YYYY_MM_DD);
+        public static DateTimeFormatter hdm = DateTimeFormatter.ofPattern(Constant.DateFormatter.HH_MM_SS);
     }
     /**
      * 是否

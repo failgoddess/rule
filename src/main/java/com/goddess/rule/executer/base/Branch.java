@@ -1,7 +1,7 @@
 package com.goddess.rule.executer.base;
 
 import cn.hutool.core.collection.ListUtil;
-import com.alibaba.fastjson2.JSONObject;
+import com.alibaba.fastjson.JSONObject;
 import com.goddess.rule.executer.context.DecisionContext;
 
 import java.util.HashMap;
@@ -27,11 +27,11 @@ public class Branch {
     private Map<String, Link> linkExecuteMap;
     private Map<String,Integer> codeIndexMap;
 
-    public Link decision(DecisionContext decisionContext, JSONObject dataJson, int start){
+    public Link decision(DecisionContext decisionContext,int start){
         for(int i=0;i<linkExecutes.size();i++){
             if(start<=i){
                 Link linkExecute = linkExecutes.get(i);
-                boolean flag = linkExecute.decision(decisionContext,dataJson);
+                boolean flag = linkExecute.decision(decisionContext);
                 decisionContext.execLink(linkExecute,flag);
                 if(flag == true){
                     return linkExecute;

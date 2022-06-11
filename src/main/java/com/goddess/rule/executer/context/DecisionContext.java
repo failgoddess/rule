@@ -1,6 +1,6 @@
 package com.goddess.rule.executer.context;
 
-import com.alibaba.fastjson2.JSONObject;
+import com.alibaba.fastjson.JSONObject;
 import com.goddess.rule.executer.base.Link;
 import com.goddess.rule.executer.base.Rule;
 
@@ -24,7 +24,9 @@ public class DecisionContext {
     //执行路径
     private Queue<PathNode> pathNodeQueue = new LinkedList<>();
 
-    public DecisionContext(RuleConfig ruleConfig){
+    public DecisionContext(RuleConfig ruleConfig,Rule rule, JSONObject data){
+        this.data = data;
+        this.rule = rule;
         this.ruleConfig = ruleConfig;
     }
     /**
@@ -66,9 +68,5 @@ public class DecisionContext {
 
     public Rule getRule() {
         return rule;
-    }
-
-    public void setRule(Rule rule) {
-        this.rule = rule;
     }
 }

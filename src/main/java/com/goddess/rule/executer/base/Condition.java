@@ -1,12 +1,10 @@
 package com.goddess.rule.executer.base;
 
-import com.alibaba.fastjson2.JSONObject;
-import com.goddess.rule.constant.BlException;
-import com.goddess.rule.constant.Constant;
-import com.goddess.rule.constant.ExceptionCode;
+import com.alibaba.fastjson.JSONObject;
 import com.goddess.rule.executer.base.formula.FormulaNode;
 import com.goddess.rule.executer.context.DecisionContext;
-import com.goddess.rule.executer.handler.FormulaHandler;
+import com.goddess.rule.executer.context.RuleConfig;
+import com.goddess.rule.parser.impl.DefaultFormulaBuilder;
 
 /**
  * @author: 失败女神-vinc
@@ -33,21 +31,23 @@ public class Condition {
     private Integer thresholdComplex;
     //阀值
     private String threshold;
+
     private FormulaNode thresholdFormula;
 
     private Operation operation;
 
-    public boolean decision(DecisionContext decisionContext, JSONObject dataJson) {
+    public boolean decision(DecisionContext decisionContext) {
         //永真条件的处理
         if(this.isEternal()){
             return true;
         }
         // 1>2  1被比较的阀值 >操作符 2阀值
-        String cover = this.getThreshold(dataJson,decisionContext,true);
-        String threshold = this.getThreshold(dataJson,decisionContext,false);
-        return operation.decision(decisionContext,this.getDataType(),cover,this.getCoverComplex(),threshold,this.getThresholdComplex());
+        Object cover = coverFormula.apply(decisionContext);
+        Object threshold = thresholdFormula.apply(decisionContext);
+        return false;
+//        return operation.decision(decisionContext,this.getDataType(),cover,this.getCoverComplex(),threshold,this.getThresholdComplex());
     }
-    private String getThreshold(JSONObject dataJson, DecisionContext decisionContext,boolean flag){
+    private String getThreshold(DecisionContext decisionContext,boolean flag){
 //        if(flag){
 //            return coverFormula
 //        }else {
@@ -93,7 +93,8 @@ public class Condition {
     }
 
     public void setCover(String cover) {
-        this.coverFormula = FormulaHandler.getFormulaNode(cover);
+        RuleConfig ruleConfig = RuleConfig.getInstance();
+        this.coverFormula = ruleConfig.getFormulaBuilder().getFormulaNode(cover);
         this.cover = cover;
     }
 
@@ -126,7 +127,8 @@ public class Condition {
     }
 
     public void setThreshold(String threshold) {
-        this.thresholdFormula = FormulaHandler.getFormulaNode(threshold);
+        RuleConfig ruleConfig = RuleConfig.getInstance();
+        this.thresholdFormula = ruleConfig.getFormulaBuilder().getFormulaNode(threshold);
         this.threshold = threshold;
     }
 

@@ -1,8 +1,13 @@
 package com.goddess.rule.executer.base.formula;
 
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.JSONPath;
 import com.goddess.rule.constant.BlException;
 import com.goddess.rule.constant.ExceptionCode;
-import com.goddess.rule.executer.handler.FormulaHandler;
+import com.goddess.rule.executer.context.DecisionContext;
+import com.goddess.rule.executer.context.RuleConfig;
+import com.goddess.rule.executer.handler.FunctionHandler;
+import com.goddess.rule.executer.handler.FunctionHandlerFactory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,27 +20,25 @@ import java.util.List;
  */
 public class FuncNode extends FormulaNode {
     //内置方法
-    private String func;
+    protected String func;
     //attr1:,
-    private List<Param> params;
+    protected List<Param> params;
     //.val
-    private String lastAttr;
+    protected String lastAttr;
 
 
     public FuncNode(String text){
+        RuleConfig ruleConfig = RuleConfig.getInstance();
         this.type = "FUNC";
         this.text = text;
         this.params = new ArrayList<>();
         CutObj cutObj = cut(text);
-        String tempText = text;
-        if(tempText.endsWith("}")){
+        if(text.endsWith("}")){
             //%{xxxx()}
-            this.lastAttr = ".all";
-            tempText = tempText.substring(0,tempText.length()-1);
+            this.lastAttr = "all";
         }else {
             //%{xxxx()}.val
-            this.lastAttr = tempText.substring(tempText.lastIndexOf("}.")+2);
-            tempText = tempText.substring(0,tempText.lastIndexOf("."));
+            this.lastAttr = text.substring(text.lastIndexOf("}.")+2);
         }
 
         int leftIndex = 0;
@@ -63,11 +66,11 @@ public class FuncNode extends FormulaNode {
                         //attr1:
                         val = cutObj.getStr(startIndex + 1);
                         endIndex = cutObj.getEnd(startIndex + 1);
-                        node = FormulaHandler.getFormulaNode(val);
+                        node = ruleConfig.getFormulaBuilder().getFormulaNode(val);
                     } else {
                         //attr1:固定值 或者 attr1:固定值
                         val = ps.get(i).substring(ps.get(i).indexOf(":") + 1);
-                        node = FormulaHandler.getFormulaNode(val);
+                        node = ruleConfig.getFormulaBuilder().getFormulaNode(val);
                     }
                     params.add(new Param(key, node));
                 }
@@ -76,7 +79,7 @@ public class FuncNode extends FormulaNode {
                 String key = getKey(nowStr);
                 String val = cutObj.getStr(startIndex + 1);
                 endIndex = cutObj.getEnd(startIndex + 1);
-                FormulaNode node = FormulaHandler.getFormulaNode(val);
+                FormulaNode node = ruleConfig.getFormulaBuilder().getFormulaNode(val);
                 params.add(new Param(key, node));
             } else if (!nowStr.endsWith(":")&& !nowStr.trim().equals("")) {
                 //attr1:固定值
@@ -108,8 +111,38 @@ public class FuncNode extends FormulaNode {
     }
 
     @Override
-    public Object apply() {
-        return null;
+    public Object apply(DecisionContext context) {
+        FunctionHandlerFactory handlerFactory = context.getRuleConfig().getFunctionHandlerFactory();
+        FunctionHandler functionHandler = handlerFactory.getFunctionHandler(func);
+        JSONObject attrs = paramsHandler(context);
+        Object reData = functionHandler.execute(context,attrs);
+        return resultHandler(reData);
+    }
+
+    /**
+     * 处理入参
+     * @param context
+     * @return
+     */
+    protected JSONObject paramsHandler(DecisionContext context){
+        JSONObject attrs = new JSONObject();
+        for (Param param:params){
+            attrs.put(param.getCode(),param.getNode().apply(context));
+        }
+        return attrs;
+    }
+
+    /**
+     * 处理出参
+     * @param reData
+     * @return
+     */
+    protected Object resultHandler(Object reData){
+        if(lastAttr.equals("all")){
+            return reData;
+        }else {
+            return JSONPath.eval(reData, "$."+lastAttr,false);
+        }
     }
 
 

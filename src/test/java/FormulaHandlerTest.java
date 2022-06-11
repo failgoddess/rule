@@ -1,5 +1,5 @@
 import com.goddess.rule.executer.base.formula.FormulaNode;
-import com.goddess.rule.executer.handler.FormulaHandler;
+import com.goddess.rule.parser.impl.DefaultFormulaBuilder;
 import org.junit.Test;
 
 /**
@@ -15,24 +15,17 @@ public class FormulaHandlerTest {
 //        JSONObject data = FormulaHandler.buildParams(dataJson,null,"(code:${buyStoreCode})");
 //        System.out.println(data.toString());
 
-        FormulaNode formulaNode1 = FormulaHandler.getFormulaNode("%{内置方法(attr1:23,attr2:%{内置方法2(code:${buyStoreCode})})}.val");
-        FormulaNode formulaNode2 = FormulaHandler.getFormulaNode("%{内置方法(attr1:%{内置方法2(code:${buyStoreCode})},attr2:23)}.val");
-        FormulaNode formulaNode3 = FormulaHandler.getFormulaNode("%{内置方法(attr1:23,attr2:%{内置方法2(code:${buyStoreCode})},attr3:${buyStoreCode})}.val");
-        FormulaNode formulaNode4 = FormulaHandler.getFormulaNode("${buyStoreCode}");
-        FormulaNode formulaNode5 = FormulaHandler.getFormulaNode("%{内置方法()}");
-        FormulaNode formulaNode6 = FormulaHandler.getFormulaNode("%{内置方法()}.val");
-        FormulaNode formulaNode7 = FormulaHandler.getFormulaNode("%{内置方法(attr1:23,attr2:%{内置方法2(code:${buyStoreCode})},attr3:${buyStoreCode},attr4:11)}.val");
-        FormulaNode formulaNode8 = FormulaHandler.getFormulaNode("12");
+        DefaultFormulaBuilder formulaBuilder = new DefaultFormulaBuilder();
+        FormulaNode formulaNode1 = formulaBuilder.getFormulaNode("%{内置方法(attr1:23,attr2:%{内置方法2(code:${buyStoreCode})})}.val");
+        FormulaNode formulaNode2 = formulaBuilder.getFormulaNode("%{内置方法(attr1:%{内置方法2(code:${buyStoreCode})},attr2:23)}.val");
+        FormulaNode formulaNode3 = formulaBuilder.getFormulaNode("%{内置方法(attr1:23,attr2:%{内置方法2(code:${buyStoreCode})},attr3:${buyStoreCode})}.val");
+        FormulaNode formulaNode4 = formulaBuilder.getFormulaNode("${buyStoreCode}");
+        FormulaNode formulaNode5 = formulaBuilder.getFormulaNode("%{内置方法()}");
+        FormulaNode formulaNode6 = formulaBuilder.getFormulaNode("%{内置方法()}.val");
+        FormulaNode formulaNode7 = formulaBuilder.getFormulaNode("%{内置方法(attr1:23,attr2:%{内置方法2(code:${buyStoreCode})},attr3:${buyStoreCode},attr4:11)}.val");
+        FormulaNode formulaNode8 = formulaBuilder.getFormulaNode("12");
 
         System.out.println(formulaNode2);
-//        System.out.println(FormulaHandler.cut("%{内置方法(attr1:23,attr2:%{内置方法2(code:${buyStoreCode})})}.val"));
-        /**
-         * %{内置方法(attr1:23,attr2:%{内置方法2(code:${buyStoreCode})})}.val
-         * %{                                                        }.val
-         *   内置方法(                                               )
-         *           attr1:23,attr2:%{                             }
-         *                            内置方法2(                   })
-         *                                         ${buyStoreCode}
-         */
+
     }
 }

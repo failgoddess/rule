@@ -1,5 +1,8 @@
 package com.goddess.rule.executer.base.formula;
 
+import com.alibaba.fastjson.JSONObject;
+import com.goddess.rule.executer.context.DecisionContext;
+
 /**
  * @author: 失败女神-vinc
  * @email: 18733123202@163.com
@@ -15,7 +18,7 @@ public class DataNode extends FormulaNode {
 
 
     @Override
-    public Object apply() {
+    public Object apply(DecisionContext context) {
         return this.data;
     }
 

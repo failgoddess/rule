@@ -1,14 +1,9 @@
 package com.goddess.rule.executer.base;
 
-import com.alibaba.fastjson2.JSONObject;
+import com.alibaba.fastjson.JSONObject;
 import com.goddess.rule.constant.BlException;
 import com.goddess.rule.constant.ExceptionCode;
 import com.goddess.rule.executer.context.DecisionContext;
-import com.goddess.rule.executer.context.RuleConfig;
-import com.goddess.rule.executer.handler.FormulaHandler;
-import com.goddess.rule.executer.handler.ObjectLoader;
-import com.goddess.rule.executer.meta.MetaClass;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,25 +34,25 @@ public class Rule {
 
     public Rule(){}
 
-    public DecisionResult decision(DecisionContext decisionContext,JSONObject dataJson){
+    public DecisionResult decision(DecisionContext decisionContext){
         //验证参数
-        checkParam(decisionContext,dataJson);
-        //构建 initDatas
-        JSONObject data = buildInitData(decisionContext,dataJson);
+        checkParam(decisionContext);
+        //构建 initDatas 并将 新数据加入到 data
+        buildInitData(decisionContext);
 
         DecisionResult decisionResult = new DecisionResult();
 
         //获得决策图的每一个结果 决策图编码为Key 结果为val
         Map<String,String> graphResult = new HashMap<>();
         graphs.forEach(graphExecute -> {
-            graphResult.put(graphExecute.getCode(),graphExecute.decision(decisionContext,dataJson));
+            graphResult.put(graphExecute.getCode(),graphExecute.decision(decisionContext));
         });
 
         //只有一棵树 直接返回
         if(graphs.size()==1){
             Result result = resultMap.get(graphResult.get(graphs.get(0).getCode()));
             decisionResult.setDataType(result.getDataType());
-            decisionResult.setContent(result.decision(decisionContext,dataJson));
+            decisionResult.setContent(result.decision(decisionContext));
         }
 //        for (String graphCode:graphResult.keySet()){
 //            reMap.put(graphCode,resultMap.get(graphCode).decision(decisionContext,dataJson));
@@ -66,25 +61,18 @@ public class Rule {
         return decisionResult;
     }
 
-    private JSONObject buildInitData(DecisionContext context,JSONObject dataJson){
-        JSONObject data = new JSONObject(dataJson);
+    private void buildInitData(DecisionContext context){
         for(InitData initData:initDatas){
-            RuleConfig ruleConfig = context.getRuleConfig();
-            MetaClass metaClass = ruleConfig.getMetaClassMap().get(initData.getMetaClassCode());
-            ObjectLoader loader = ruleConfig.getObjectLoaderFactory().getLoader(metaClass.getLoaderCode());
-            JSONObject params = FormulaHandler.buildParams(dataJson,context,"@{"+initData.getMetaClassCode()+"("+initData.getParams()+")");
-//            Object item = loader.Loader(params);
-//            data.put(initData.getCode(),item);
+            context.getData().put(initData.getCode(),initData.getFormulaNode().apply(context));
         }
-        return data;
     }
-    private void checkParam(DecisionContext context,JSONObject dataJson){
+    private void checkParam(DecisionContext context){
         List<String> names = new ArrayList<>();
         List<Param> params = this.getParams();
         Map<String,String> nameMap = params.stream().collect(Collectors.toMap(Param::getCode,Param::getName));
         //筛选出所有需要必须传入的的进行非空校验
         for(Param param:this.params.stream().filter(o-> o.isNecessary()).collect(Collectors.toList())){
-            Object data = dataJson.get(param.getCode());
+            Object data = context.getData().get(param.getCode());
             if(data==null||data.toString().equals("")){
                 names.add(param.getCode()+":"+nameMap.get(param.getCode()));
             }

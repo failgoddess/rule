@@ -1,6 +1,7 @@
 package com.goddess.rule.executer.handler;
 
-import com.alibaba.fastjson2.JSONObject;
+import com.alibaba.fastjson.JSONObject;
+import com.goddess.rule.executer.context.DecisionContext;
 import com.goddess.rule.executer.meta.MetaClass;
 
 import java.util.List;
@@ -18,7 +19,7 @@ public abstract class ObjectLoader {
     //类路径
     private String classPath;
 
-    public abstract JSONObject Loader(JSONObject params);
+    public abstract Object loader(DecisionContext context,JSONObject params);
 
     public String getCode() {
         return code;

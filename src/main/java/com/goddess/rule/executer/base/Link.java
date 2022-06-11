@@ -1,7 +1,7 @@
 package com.goddess.rule.executer.base;
 
 import cn.hutool.core.collection.ListUtil;
-import com.alibaba.fastjson2.JSONObject;
+import com.alibaba.fastjson.JSONObject;
 import com.goddess.rule.executer.context.DecisionContext;
 
 import java.util.List;
@@ -30,11 +30,11 @@ public class Link {
 
     private List<Condition> conditions;
 
-    public boolean decision(DecisionContext decisionContext, JSONObject dataJson) {
+    public boolean decision(DecisionContext decisionContext) {
         //链接上边的所有条件之间是 且的关系 必须全部为真 才能让链接生效，如果需要多个条件是或的关系可以用两个连接指向同一个下一跳
         boolean flag = true;
         for(Condition conditionModel: conditions){
-            boolean temp = conditionModel.decision(decisionContext,dataJson);
+            boolean temp = conditionModel.decision(decisionContext);
             if(temp == false){
                 //有不满足的可以直接结束这个链接了
                 flag = false;

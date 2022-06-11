@@ -1,6 +1,6 @@
 package com.goddess.rule.executer.base;
 
-import com.alibaba.fastjson2.JSONObject;
+import com.alibaba.fastjson.JSONObject;
 import com.goddess.rule.constant.BlException;
 import com.goddess.rule.constant.Constant;
 import com.goddess.rule.constant.ExceptionCode;
@@ -33,10 +33,9 @@ public class Graph {
 
     /**
      * 决策返回一个结果编码
-     * @param dataJson
      * @return
      */
-    public String decision(DecisionContext decisionContext, JSONObject dataJson){
+    public String decision(DecisionContext decisionContext){
         //查找第一跳 作为当前处理分支
         Branch thisBranch = branchMap.get(this.getFirstBranchCode());
         if (thisBranch==null) {
@@ -46,7 +45,7 @@ public class Graph {
         Link next= null;
         int start = 0;//回溯指针，用于回溯同一分支执行下一个链接
         do{
-            next=thisBranch.decision(decisionContext,dataJson,start);
+            next=thisBranch.decision(decisionContext,start);
             if(next == null){
                 int index = -1;
                 do {

@@ -1,6 +1,8 @@
 package com.goddess.rule.executer.base.formula;
 
 
+import com.goddess.rule.executer.context.DecisionContext;
+
 import java.util.*;
 
 /**
@@ -11,7 +13,7 @@ import java.util.*;
 public abstract class FormulaNode {
     public String type;
     public String text;
-    public abstract Object apply();
+    public abstract Object apply(DecisionContext context);
 
 
     public static class CutObj{

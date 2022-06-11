@@ -2,7 +2,7 @@ package com.goddess.rule.parser.impl;
 
 import cn.hutool.core.io.resource.ResourceUtil;
 import com.goddess.rule.executer.base.*;
-import com.goddess.rule.executer.handler.FormulaHandler;
+import com.goddess.rule.executer.context.RuleConfig;
 import com.goddess.rule.parser.RuleParser;
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
@@ -260,6 +260,7 @@ public class XMLRuleParser implements RuleParser {
      * @return
      */
     private List<InitData> parseInitDatas(Element element){
+        RuleConfig ruleConfig = RuleConfig.getInstance();
         List<InitData> initDatas = new ArrayList<>();
         List<Element> items = element.elements("initData");
         for (Element item:items){
@@ -274,10 +275,10 @@ public class XMLRuleParser implements RuleParser {
             initData.setMetaClassCode(metaClassCode);
             initData.setParams(params);
             if(StringUtils.isEmpty(metaClassCode)){
-                initData.setFormulaNode(FormulaHandler.getFormulaNode(params));
+                initData.setFormulaNode(ruleConfig.getFormulaBuilder().getFormulaNode(params));
             }else {
                 String text = "@{"+metaClassCode+"("+params+")}";
-                initData.setFormulaNode(FormulaHandler.getFormulaNode(text));
+                initData.setFormulaNode(ruleConfig.getFormulaBuilder().getFormulaNode(text));
             }
             initDatas.add(initData);
         }

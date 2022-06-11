@@ -21,10 +21,6 @@ public class ObjectLoaderFactory {
             synchronized (ObjectLoaderFactory.class){
                 if(instance==null){
                     instance=new ObjectLoaderFactory();
-//                    ServiceLoader<ObjectLoader> serviceLoader = ServiceLoader.load(ObjectLoader.class);
-//                    serviceLoader.forEach(loader->{
-//                        handlerMap.put(loader.getCode(),loader);
-//                    });
                 }
             }
         }
@@ -37,6 +33,8 @@ public class ObjectLoaderFactory {
     public ObjectLoader getLoader(String loaderCode) {
         if (handlerMap.containsKey(loaderCode)) {
             return handlerMap.get(loaderCode);
+        }else if (handlerMap.containsKey(loaderCode.toUpperCase())) {
+            return handlerMap.get(loaderCode.toUpperCase());
         } else {
             throw new BlException("找不到加载器："+loaderCode);
         }

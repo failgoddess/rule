@@ -2,6 +2,7 @@
 <configuration>
     <rulePath>classpath:RULE_RU001.xml</rulePath>
     <metaEnvironment>
+        <formulaBuilder classPath ="com.goddess.rule.parser.impl.DefaultFormulaBuilder"/>
         <objectLoaders>
             <objectLoader code="STORE" name="门店加载器" classPath ="com.goddess.rule.executer.handler.impl.StoreObjectLoader"/>
         </objectLoaders>

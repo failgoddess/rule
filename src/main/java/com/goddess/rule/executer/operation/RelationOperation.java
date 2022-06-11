@@ -1,7 +1,7 @@
 package com.goddess.rule.executer.operation;
 
 
-import com.alibaba.fastjson2.JSONArray;
+import com.alibaba.fastjson.JSONArray;
 import com.goddess.rule.constant.Constant;
 
 import java.math.BigDecimal;

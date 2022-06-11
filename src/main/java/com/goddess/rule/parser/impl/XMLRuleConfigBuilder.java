@@ -8,12 +8,14 @@ import com.goddess.rule.executer.base.Branch;
 import com.goddess.rule.executer.base.Graph;
 import com.goddess.rule.executer.base.Rule;
 import com.goddess.rule.executer.context.RuleConfig;
+import com.goddess.rule.executer.handler.FunctionHandlerFactory;
 import com.goddess.rule.executer.handler.ObjectLoader;
 import com.goddess.rule.executer.handler.ObjectLoaderFactory;
 import com.goddess.rule.executer.meta.MetaClass;
 import com.goddess.rule.executer.meta.MetaEnum;
 import com.goddess.rule.executer.meta.MetaProperty;
 import com.goddess.rule.executer.operation.RelationFactory;
+import com.goddess.rule.parser.FormulaBuilder;
 import com.goddess.rule.parser.RuleConfigBuilder;
 import com.goddess.rule.parser.RuleParser;
 import org.apache.commons.lang3.StringUtils;
@@ -40,8 +42,10 @@ public class XMLRuleConfigBuilder implements RuleConfigBuilder {
         }
         String rulePath =document.getRootElement().element("rulePath").getTextTrim();
         //初始化
-        RuleConfig ruleConfig = new RuleConfig();
+        RuleConfig ruleConfig = RuleConfig.getInstance();
         ruleConfig.setRulePath(rulePath);
+        //解析 公式解析器
+        ruleConfig.setFormulaBuilder(parseFormulaBuilder(document.getRootElement().element("metaEnvironment").element("formulaBuilder")));
         //解析 加载器
         ObjectLoaderFactory objectLoaderFactory = parseObjectLoaderFactory(document.getRootElement().element("metaEnvironment").element("objectLoaders"));
         ruleConfig.setObjectLoaderFactory(objectLoaderFactory);
@@ -64,6 +68,8 @@ public class XMLRuleConfigBuilder implements RuleConfigBuilder {
 
         //操作符工厂
         ruleConfig.setRelationFactory(RelationFactory.getInstance());
+
+        ruleConfig.setFunctionHandlerFactory(FunctionHandlerFactory.getInstance());
 
         return ruleConfig;
     }
@@ -150,6 +156,17 @@ public class XMLRuleConfigBuilder implements RuleConfigBuilder {
             metaEnums.add(metaEnum);
         }
         return metaEnums;
+    }
+    private FormulaBuilder parseFormulaBuilder(Element element){
+        String classPath = element.attributeValue("classPath");
+        try {
+            Class<? extends FormulaBuilder> clszz = (Class<? extends FormulaBuilder>) Class.forName(classPath);
+            FormulaBuilder formulaBuilder = clszz.newInstance();
+            return formulaBuilder;
+        }catch (Exception e){
+            throw new BlException(ExceptionCode.EC_0003,classPath);
+        }
+
     }
     private ObjectLoaderFactory parseObjectLoaderFactory(Element element){
         ObjectLoaderFactory factory = ObjectLoaderFactory.getInstance();
