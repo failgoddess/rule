@@ -107,7 +107,7 @@ public class XMLRuleParser implements RuleParser {
             List<Link> links = parseLinks(item.element("links"),branch);
             branch.setCode(code);
             branch.setName(name);
-            branch.setLinkExecutes(links);
+            branch.setLinks(links);
             branches.add(branch);
         }
         return branches;

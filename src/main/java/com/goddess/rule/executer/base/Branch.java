@@ -1,7 +1,6 @@
 package com.goddess.rule.executer.base;
 
 import cn.hutool.core.collection.ListUtil;
-import com.alibaba.fastjson.JSONObject;
 import com.goddess.rule.executer.context.DecisionContext;
 
 import java.util.HashMap;
@@ -21,16 +20,29 @@ public class Branch {
     private String name;
     //备注
     private String remark;
-
-    private List<Link> linkExecutes;
+    //连接
+    private List<Link> links;
+    //预执行动作
+    private List<Action> actions;
 
     private Map<String, Link> linkExecuteMap;
     private Map<String,Integer> codeIndexMap;
 
     public Link decision(DecisionContext decisionContext,int start){
-        for(int i=0;i<linkExecutes.size();i++){
+        for (Action action:actions) {
+            if(action.isBlock()){
+                action.execute(decisionContext);
+            }else {
+                try {
+                    action.execute(decisionContext);
+                }catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        for(int i = 0; i< links.size(); i++){
             if(start<=i){
-                Link linkExecute = linkExecutes.get(i);
+                Link linkExecute = links.get(i);
                 boolean flag = linkExecute.decision(decisionContext);
                 decisionContext.execLink(linkExecute,flag);
                 if(flag == true){
@@ -44,26 +56,26 @@ public class Branch {
     //获取指定链接编码的下一个链接
     public int getNextLinkExecuteIndex(String linkCode){
         //找不到取最大的
-        int index = codeIndexMap.getOrDefault(linkCode,linkExecutes.size());
+        int index = codeIndexMap.getOrDefault(linkCode, links.size());
         //当前链接的优先级排序索引+1 小于链接个数 才有效
-        if(index+1<linkExecutes.size()){
+        if(index+1< links.size()){
             return index+1;
         }else {
             return -1;
         }
     }
 
-    public List<Link> getLinkExecutes() {
-        return linkExecutes;
+    public List<Link> getLinks() {
+        return links;
     }
 
 
-    public void setLinkExecutes(List<Link> linkExecutes) {
-        this.linkExecuteMap = linkExecutes.stream().collect(Collectors.toMap(Link::getCode, o->o));
-        this.linkExecutes = ListUtil.sortByProperty(linkExecutes,"priority");
-        this.codeIndexMap = new HashMap<>(linkExecutes.size());
+    public void setLinks(List<Link> links) {
+        this.linkExecuteMap = links.stream().collect(Collectors.toMap(Link::getCode, o->o));
+        this.links = ListUtil.sortByProperty(links,"priority");
+        this.codeIndexMap = new HashMap<>(links.size());
         int index=0;
-        for (Link link:this.linkExecutes){
+        for (Link link:this.links){
             this.codeIndexMap.put(link.getCode(),index);
             index++;
         }

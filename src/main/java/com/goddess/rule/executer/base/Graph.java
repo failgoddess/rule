@@ -1,6 +1,5 @@
 package com.goddess.rule.executer.base;
 
-import com.alibaba.fastjson.JSONObject;
 import com.goddess.rule.constant.BlException;
 import com.goddess.rule.constant.Constant;
 import com.goddess.rule.constant.ExceptionCode;
@@ -63,7 +62,7 @@ public class Graph {
                         //为-1表示 回溯栈中的路径节点是所在分支的最后一个链接要 继续回溯
                         start = index;
                         thisBranch = branch;
-                        next = branch.getLinkExecutes().get(start);
+                        next = branch.getLinks().get(start);
                     }
                 }while (index!=-1);
             }else {
