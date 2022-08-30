@@ -1,14 +1,13 @@
 import com.goddess.rule.executer.base.Rule;
 import com.goddess.rule.executer.context.RuleConfig;
 import com.goddess.rule.parser.impl.XMLRuleConfigBuilder;
+import com.goddess.rule.parser.impl.XmlActionDefaultParser;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Main {
     public static void main(String[] args) throws Exception {
-
-
 
         RuleConfig ruleConfig = new XMLRuleConfigBuilder().build("classpath:rule-config.xml");
         Rule rule = ruleConfig.getRuleMap().get("RU001");

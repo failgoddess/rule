@@ -1,6 +1,7 @@
 package com.goddess.rule.executer.context;
 
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.JSONPath;
 import com.goddess.rule.executer.base.Link;
 import com.goddess.rule.executer.base.Rule;
 
@@ -55,12 +56,18 @@ public class DecisionContext {
     }
 
     public JSONObject getData() {
-        return data;
+        //为了不让返回值被修改
+        return JSONObject.parseObject(JSONObject.toJSONString(data));
+    }
+    public void putData(String key,Object values) {
+        if(JSONPath.contains(data,key)){
+
+        }else {
+            data.put(key,values);
+        }
+
     }
 
-    public void setData(JSONObject data) {
-        this.data = data;
-    }
 
     public RuleConfig getRuleConfig() {
         return ruleConfig;

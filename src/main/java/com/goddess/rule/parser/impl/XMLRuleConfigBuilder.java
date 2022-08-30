@@ -13,6 +13,7 @@ import com.goddess.rule.executer.meta.MetaClass;
 import com.goddess.rule.executer.meta.MetaEnum;
 import com.goddess.rule.executer.meta.MetaProperty;
 import com.goddess.rule.executer.base.operation.OperationFactory;
+import com.goddess.rule.parser.ActionParser;
 import com.goddess.rule.parser.FormulaBuilder;
 import com.goddess.rule.parser.RuleConfigBuilder;
 import com.goddess.rule.parser.RuleParser;
@@ -32,8 +33,10 @@ import java.util.stream.Collectors;
  * @date: 2022/6/4 15:51
  */
 public class XMLRuleConfigBuilder implements RuleConfigBuilder {
-
     public RuleConfig build(String configPath) throws Exception{
+        return build(configPath,new XmlActionDefaultParser());
+    }
+    private RuleConfig build(String configPath, XmlActionDefaultParser actionParser) throws Exception{
         Document document = DocumentHelper.parseText(ResourceUtil.readUtf8Str(configPath));
         if(!document.getRootElement().getName().equals("configuration")){
             throw new RuleException(ExceptionCode.EC_0002);
@@ -60,7 +63,7 @@ public class XMLRuleConfigBuilder implements RuleConfigBuilder {
 
 
         //解析规则配置
-        List<Rule> rules = parseRules(ruleConfig.getRulePath());
+        List<Rule> rules = parseRules(ruleConfig.getRulePath(),actionParser);
         ruleConfig.setRules(rules);
         ruleConfig.setRuleMap(rules.stream().collect(Collectors.toMap(Rule::getCode,o->o)));
 
@@ -191,7 +194,7 @@ public class XMLRuleConfigBuilder implements RuleConfigBuilder {
         }
         return factory;
     }
-    private List<Rule> parseRules(String rulePath) throws Exception{
+    private List<Rule> parseRules(String rulePath, XmlActionDefaultParser actionParser) throws Exception{
         List<Rule> rules = new ArrayList<>();
         //解析规则
         List<String> rulePaths = Arrays.asList(rulePath.split(","));
@@ -200,7 +203,7 @@ public class XMLRuleConfigBuilder implements RuleConfigBuilder {
             String type = path.substring(path.lastIndexOf(".")+1).toLowerCase();
             switch (type) {
                 case Constant.ConfigType.XML:
-                    parser = XMLRuleParser.getInstance();
+                    parser = XMLRuleParser.getInstance(actionParser);
                     break;
                 default:
                     throw new RuleException(ExceptionCode.EC_0001,path);

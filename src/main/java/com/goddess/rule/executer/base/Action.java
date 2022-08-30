@@ -11,12 +11,10 @@ public abstract class Action {
     private String code;
     //名称
     private String name;
-    //是否阻断
-    private boolean block;
     //备注
     private String remark;
 
-    public abstract void execute(DecisionContext decisionContext);
+    public abstract void execute(DecisionContext decisionContext) ;
 
 
     public String getCode() {
@@ -33,14 +31,6 @@ public abstract class Action {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public boolean isBlock() {
-        return block;
-    }
-
-    public void setBlock(boolean block) {
-        this.block = block;
     }
 
     public String getRemark() {

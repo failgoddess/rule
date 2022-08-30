@@ -62,7 +62,7 @@ public class Rule {
 
     private void buildInitData(DecisionContext context){
         for(InitData initData:initDatas){
-            context.getData().put(initData.getCode(),initData.getFormulaNode().apply(context));
+            context.putData(initData.getCode(),initData.getFormulaNode().apply(context));
         }
     }
     private void checkParam(DecisionContext context){

@@ -4,6 +4,7 @@ import com.goddess.rule.executer.base.Rule;
 import com.goddess.rule.executer.context.DecisionContext;
 import com.goddess.rule.executer.context.RuleConfig;
 import com.goddess.rule.parser.impl.XMLRuleConfigBuilder;
+import com.goddess.rule.parser.impl.XmlActionDefaultParser;
 import org.junit.Assert;
 import org.junit.Test;
 

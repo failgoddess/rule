@@ -30,14 +30,10 @@ public class Branch {
 
     public Link decision(DecisionContext decisionContext,int start){
         for (Action action:actions) {
-            if(action.isBlock()){
+            try {
                 action.execute(decisionContext);
-            }else {
-                try {
-                    action.execute(decisionContext);
-                }catch (Exception e) {
-                    e.printStackTrace();
-                }
+            }catch (Exception e) {
+                e.printStackTrace();
             }
         }
         for(int i = 0; i< links.size(); i++){
@@ -79,6 +75,14 @@ public class Branch {
             this.codeIndexMap.put(link.getCode(),index);
             index++;
         }
+    }
+
+    public List<Action> getActions() {
+        return actions;
+    }
+
+    public void setActions(List<Action> actions) {
+        this.actions = actions;
     }
 
     public String getCode() {

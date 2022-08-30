@@ -19,15 +19,20 @@ import java.util.List;
  */
 public class XMLRuleParser implements RuleParser {
 
-    private XMLRuleParser(){}
+
     private static XMLRuleParser instance = null;
-    public static XMLRuleParser getInstance() {
+    private XmlActionDefaultParser xmlActionDefaultParser = null;
+
+    private XMLRuleParser(XmlActionDefaultParser xmlActionDefaultParser){
+        this.xmlActionDefaultParser = xmlActionDefaultParser;
+    }
+    public static XMLRuleParser getInstance(XmlActionDefaultParser actionParser) {
         if (instance != null) {
             return instance;
         }else {
             synchronized (XMLRuleParser.class){
                 if(instance==null){
-                    instance=new XMLRuleParser();
+                    instance=new XMLRuleParser(actionParser);
                 }
             }
         }
@@ -108,9 +113,30 @@ public class XMLRuleParser implements RuleParser {
             branch.setCode(code);
             branch.setName(name);
             branch.setLinks(links);
+            branch.setActions(parseActions(item.element("actions")));
             branches.add(branch);
         }
         return branches;
+    }
+
+    /**
+     * 处理action
+     * @return
+     */
+    private List<Action> parseActions(Element element){
+        List<Action> actions = new ArrayList<>();
+        if(element==null){
+            return actions;
+        }
+        List<Element> items = element.elements("action");
+        for (Element item:items){
+            Action action =xmlActionDefaultParser.parse(item);
+            if(action!=null){
+                actions.add(action);
+            }
+
+        }
+        return actions;
     }
 
     /**
