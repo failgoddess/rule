@@ -24,6 +24,7 @@ public class RuleTest {
         dataJson.put("discount","0.88");
         DecisionContext decisionContext  = ruleConfig.buildeDecisionContext("RU001",dataJson);
         DecisionResult decisionResult = rule.decision(decisionContext);
-        System.out.println(decisionResult);
+
+//        System.out.println(decisionResult);
     }
 }

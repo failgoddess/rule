@@ -14,7 +14,7 @@ public class FormulaHandlerTest {
 //        dataJson.put("buyStoreCode","1002");
 //        JSONObject data = FormulaHandler.buildParams(dataJson,null,"(code:${buyStoreCode})");
 //        System.out.println(data.toString());
-
+//        内置方法(23,内置方法2(buyStoreCode)).val
         DefaultFormulaBuilder formulaBuilder = new DefaultFormulaBuilder();
         FormulaNode formulaNode1 = formulaBuilder.getFormulaNode("%{内置方法(attr1:23,attr2:%{内置方法2(code:${buyStoreCode})})}.val");
         FormulaNode formulaNode2 = formulaBuilder.getFormulaNode("%{内置方法(attr1:%{内置方法2(code:${buyStoreCode})},attr2:23)}.val");
