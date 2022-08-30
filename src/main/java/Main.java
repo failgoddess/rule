@@ -1,10 +1,6 @@
 import com.goddess.rule.executer.base.Rule;
 import com.goddess.rule.executer.context.RuleConfig;
 import com.goddess.rule.parser.impl.XMLRuleConfigBuilder;
-import com.goddess.rule.parser.impl.XmlActionDefaultParser;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class Main {
     public static void main(String[] args) throws Exception {
@@ -19,10 +15,10 @@ public class Main {
         //ServiceLoader<RelationOperation> codecSetLoader = ServiceLoader.load(RelationOperation.class);
 
 
-        List<String> paths = new ArrayList<>();
-        paths.add("classpath:RULE_RU001.xml");
+        //List<String> paths = new ArrayList<>();
+        //paths.add("classpath:RULE_RU001.xml");
 //        Document document = DocumentHelper.parseText(ResourceUtil.readUtf8Str("classpath:RULE_RU001.xml"));
-        Rule ruleExecute = new Rule();
+//        Rule ruleExecute = new Rule();
 //        System.out.println(XmlTool.documentToJSONObject(ResourceUtil.readUtf8Str("classpath:RULE_RU001.xml")).toJSONString());
 //        System.out.println("----"+handler.execute(0,Constant.DataType.NUMBER,"12",params));
         System.out.println("----");

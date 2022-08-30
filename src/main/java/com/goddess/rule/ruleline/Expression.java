@@ -1,0 +1,173 @@
+package com.goddess.rule.ruleline;
+
+import com.goddess.rule.constant.Constant;
+import com.goddess.rule.constant.RuleException;
+import com.goddess.rule.executer.base.formula.FormulaNode;
+import com.goddess.rule.executer.base.operation.OperationFactory;
+
+import java.util.List;
+
+/**
+ * @author: 失败女神-vinc
+ * @email: 18733123202@163.com
+ * @date: 2022/8/30 15:53
+ */
+public class Expression {
+
+
+    //操作符类型
+    //逻辑logic  关系relation
+    private String operationType;
+    //操作符编码
+    private String operationCode;
+
+
+    //被比较的阀值维度
+    private Integer coverComplex;
+    //被比较的阀值
+    private String cover;
+    private FormulaNode coverFormula;
+
+    //数据类型
+    private String dataType;
+
+    //阀值维度
+    private Integer thresholdComplex;
+    //阀值
+    private String threshold;
+    private FormulaNode thresholdFormula;
+
+
+    private List<Expression> subExpression;
+
+
+    public boolean check(){
+        if(operationType==null){
+            throw new RuleException("操作符类型");
+        }
+        if(operationCode==null){
+            throw new RuleException("操作符不能为空");
+        }
+
+        if (Constant.ExpressionType.LOGIC.equals(operationType)){
+            if((!Constant.ExpressionLogicType.OR.equals(operationCode))&&(!Constant.ExpressionLogicType.AND.equals(operationCode))){
+                for (Expression t:subExpression) {
+                    t.check();
+                }
+            }
+            return true;
+        }
+        if (Constant.ExpressionType.RELATION.equals(operationType)){
+            if(cover==null){
+                throw new RuleException("操作数字段不能为空");
+            }
+            OperationFactory.getOperation(operationCode);
+            return true;
+        }
+        throw new RuleException("操作符类型 必须为 logic 或者 relation");
+    }
+    //public boolean check(MetaContext metaContext){
+    //    if(operationCode==null){
+    //        throw new RuleException("操作符不能为空");
+    //    }
+    //    if ("logic".equals(operationType)){
+    //        if((!"or".equals(operationCode))&&(!"and".equals(operationCode))){
+    //            for (RuleExpression t:subExpression) {
+    //                t.check(metaContext);
+    //            }
+    //        }
+    //        return true;
+    //    }
+    //    if ("relation".equals(operationType)){
+    //        if(propertyPath==null){
+    //            throw new RuleException("操作数字段不能为空");
+    //        }
+    //        OperationFactory.getOperation(operationCode);
+    //        if(!metaContext.getPropertyMap().containsKey(metaObjectCode+"."+propertyPath)){
+    //            throw new RuleException("操作数字段不存在");
+    //        }
+    //        return true;
+    //    }
+    //    throw new RuleException("操作符类型 必须为 logic 或者 relation");
+    //}
+
+    public String getOperationType() {
+        return operationType;
+    }
+
+    public void setOperationType(String operationType) {
+        this.operationType = operationType;
+    }
+
+    public String getOperationCode() {
+        return operationCode;
+    }
+
+    public void setOperationCode(String operationCode) {
+        this.operationCode = operationCode;
+    }
+
+    public Integer getCoverComplex() {
+        return coverComplex;
+    }
+
+    public void setCoverComplex(Integer coverComplex) {
+        this.coverComplex = coverComplex;
+    }
+
+    public String getCover() {
+        return cover;
+    }
+
+    public void setCover(String cover) {
+        this.cover = cover;
+    }
+
+    public FormulaNode getCoverFormula() {
+        return coverFormula;
+    }
+
+    public void setCoverFormula(FormulaNode coverFormula) {
+        this.coverFormula = coverFormula;
+    }
+
+    public String getDataType() {
+        return dataType;
+    }
+
+    public void setDataType(String dataType) {
+        this.dataType = dataType;
+    }
+
+    public Integer getThresholdComplex() {
+        return thresholdComplex;
+    }
+
+    public void setThresholdComplex(Integer thresholdComplex) {
+        this.thresholdComplex = thresholdComplex;
+    }
+
+    public String getThreshold() {
+        return threshold;
+    }
+
+    public void setThreshold(String threshold) {
+        this.threshold = threshold;
+    }
+
+    public FormulaNode getThresholdFormula() {
+        return thresholdFormula;
+    }
+
+    public void setThresholdFormula(FormulaNode thresholdFormula) {
+        this.thresholdFormula = thresholdFormula;
+    }
+
+    public List<Expression> getSubExpression() {
+        return subExpression;
+    }
+
+    public void setSubExpression(List<Expression> subExpression) {
+        this.subExpression = subExpression;
+    }
+}

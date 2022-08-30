@@ -1,10 +1,6 @@
 package com.goddess.rule.executer.base;
 
-import cn.hutool.core.collection.ListUtil;
-import com.alibaba.fastjson.JSONObject;
 import com.goddess.rule.executer.context.DecisionContext;
-
-import java.util.List;
 
 /**
  * 链接
@@ -28,20 +24,16 @@ public class Link {
     //下一跳类型：分支 结果  Constant.NextType
     private String nextType;
 
-    private List<Condition> conditions;
+    private Condition condition;
 
     public boolean decision(DecisionContext decisionContext) {
         //链接上边的所有条件之间是 且的关系 必须全部为真 才能让链接生效，如果需要多个条件是或的关系可以用两个连接指向同一个下一跳
-        boolean flag = true;
-        for(Condition conditionModel: conditions){
-            boolean temp = conditionModel.decision(decisionContext);
-            if(temp == false){
-                //有不满足的可以直接结束这个链接了
-                flag = false;
-                break;
-            }
+        boolean temp = condition.decision(decisionContext);
+        if(temp == false){
+            //有不满足的可以直接结束这个链接了
+            return false;
         }
-        return flag;
+        return true;
     }
 
 
@@ -51,10 +43,6 @@ public class Link {
 
     public void setPriority(Integer priority) {
         this.priority = priority;
-    }
-
-    public List<Condition> getConditions() {
-        return conditions;
     }
 
     public String getCode() {
@@ -71,10 +59,6 @@ public class Link {
 
     public void setBranchCode(String branchCode) {
         this.branchCode = branchCode;
-    }
-
-    public void setConditions(List<Condition> conditions) {
-        this.conditions = ListUtil.sortByProperty(conditions,"priority");
     }
 
     public String getName() {

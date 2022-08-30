@@ -20,6 +20,7 @@ public class MetaProperty {
     private String dataType;
     //自定义类编码
     private String metaClassCode;
+    private MetaClass metaClass;
     //列表 1是0否
     private Integer complex;
     //枚举范围
@@ -90,4 +91,5 @@ public class MetaProperty {
     public void setEnumCode(String enumCode) {
         this.enumCode = enumCode;
     }
+
 }

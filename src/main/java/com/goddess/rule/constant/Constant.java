@@ -9,6 +9,10 @@ import java.time.format.DateTimeFormatter;
  * @date: 2022/6/3 21:29
  */
 public class Constant {
+    public class ExpressionType{
+        public static final String LOGIC="logic";//逻辑
+        public static final String RELATION ="relation";//关系
+    }
     public class EnumType{
         public static final String FIXED="FIXED";//固定
         public static final String DYNAMIC ="DYNAMIC";//动态
@@ -111,8 +115,8 @@ public class Constant {
 
         public static final String AND ="and";//短路与
         public static final String OR ="or";//短路或
-        public static final String NOT ="not";//非
-        public static final String XOR ="xor";//异或
+        //public static final String NOT ="not";//非
+        //public static final String XOR ="xor";//异或
 
 
         public static final String LP ="lp";//左括号

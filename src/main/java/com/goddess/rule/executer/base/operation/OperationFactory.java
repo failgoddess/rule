@@ -31,6 +31,9 @@ public class OperationFactory {
 
     private static Map<String, Operation> handlerMap = new HashMap<>();
     public static Operation getOperation(String operationCode) {
+        if(instance == null){
+            getInstance();
+        }
         if (handlerMap.containsKey(operationCode)) {
             return handlerMap.get(operationCode);
         } else if (handlerMap.containsKey(operationCode.toUpperCase())) {

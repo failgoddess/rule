@@ -1,10 +1,12 @@
 package com.goddess.rule.parser.impl;
 
 import cn.hutool.core.io.resource.ResourceUtil;
-import com.goddess.rule.constant.RuleException;
 import com.goddess.rule.constant.Constant;
 import com.goddess.rule.constant.ExceptionCode;
+import com.goddess.rule.constant.RuleException;
 import com.goddess.rule.executer.base.Rule;
+import com.goddess.rule.executer.base.operation.OperationFactory;
+import com.goddess.rule.executer.context.MetaContext;
 import com.goddess.rule.executer.context.RuleConfig;
 import com.goddess.rule.executer.handler.FunctionHandlerFactory;
 import com.goddess.rule.executer.handler.ObjectLoader;
@@ -12,8 +14,6 @@ import com.goddess.rule.executer.handler.ObjectLoaderFactory;
 import com.goddess.rule.executer.meta.MetaClass;
 import com.goddess.rule.executer.meta.MetaEnum;
 import com.goddess.rule.executer.meta.MetaProperty;
-import com.goddess.rule.executer.base.operation.OperationFactory;
-import com.goddess.rule.parser.ActionParser;
 import com.goddess.rule.parser.FormulaBuilder;
 import com.goddess.rule.parser.RuleConfigBuilder;
 import com.goddess.rule.parser.RuleParser;
@@ -72,6 +72,7 @@ public class XMLRuleConfigBuilder implements RuleConfigBuilder {
 
         ruleConfig.setFunctionHandlerFactory(FunctionHandlerFactory.getInstance());
 
+        ruleConfig.setMetaContext(new MetaContext(ruleConfig.getMetaClasses(),ruleConfig.getMetaClassMap()));
         return ruleConfig;
     }
 

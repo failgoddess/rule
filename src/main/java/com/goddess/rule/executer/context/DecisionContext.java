@@ -18,6 +18,7 @@ import java.util.Stack;
 public class DecisionContext {
     private Rule rule;
     private RuleConfig ruleConfig;
+    private MetaContext metaContext;
 
     private JSONObject data;
     //回溯栈
@@ -75,5 +76,13 @@ public class DecisionContext {
 
     public Rule getRule() {
         return rule;
+    }
+
+    public MetaContext getMetaContext() {
+        return metaContext;
+    }
+
+    public void setMetaContext(MetaContext metaContext) {
+        this.metaContext = metaContext;
     }
 }

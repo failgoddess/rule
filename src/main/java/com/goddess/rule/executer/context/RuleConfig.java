@@ -26,6 +26,7 @@ public class RuleConfig {
     //规则对象类
     private List<MetaClass> metaClasses;
     private Map<String,MetaClass> metaClassMap = new HashMap<>();
+    private MetaContext metaContext;
 
 
 
@@ -148,5 +149,13 @@ public class RuleConfig {
 
     public void setFunctionHandlerFactory(FunctionHandlerFactory functionHandlerFactory) {
         this.functionHandlerFactory = functionHandlerFactory;
+    }
+
+    public MetaContext getMetaContext() {
+        return metaContext;
+    }
+
+    public void setMetaContext(MetaContext metaContext) {
+        this.metaContext = metaContext;
     }
 }

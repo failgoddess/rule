@@ -24,10 +24,20 @@
                 <branch code = "RU001G1B1" name = "门店分支">
                     <links>
                         <link code="810101" name = "销售门店开业时间 小于  356天" priority="10" nextType = "RESULT" nextResultCode ="RU001R1">
-                            <conditions>
-                                <condition priority="999" cover="%{gapNowDay(time:${buyStore.startTime})}" operationCode="lt" dataType="NUMBER"
-                                           threshold="356" />
-                            </conditions>
+<!--                            <conditions>-->
+<!--                                <condition priority="1" expressionType ="relation" operationCode="lt" dataType="NUMBER" cover="%{gapNowDay(time:${buyStore.startTime})}"-->
+<!--                                           threshold="356" />-->
+<!--                                -->
+<!--                            </conditions>-->
+                            <condition priority="999" expressionType ="logic" operationCode="and" dataType="NUMBER">
+                                <subCondition>
+                                    <condition priority="999" expressionType ="logic" operationCode="and" dataType="NUMBER">
+                                        <subCondition>
+                                            <expression />
+                                        </subCondition>
+                                    </condition>
+                                </subCondition>
+                            </condition>
                         </link>
                         <link code="810102"  name = "否则" priority="20" nextType="BRANCH" nextBranchCode="RU001G1B2">
                             <conditions>
