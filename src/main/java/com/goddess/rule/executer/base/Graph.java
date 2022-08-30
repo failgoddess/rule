@@ -1,7 +1,6 @@
 package com.goddess.rule.executer.base;
 
-import com.alibaba.fastjson.JSONObject;
-import com.goddess.rule.constant.BlException;
+import com.goddess.rule.constant.RuleException;
 import com.goddess.rule.constant.Constant;
 import com.goddess.rule.constant.ExceptionCode;
 import com.goddess.rule.executer.context.DecisionContext;
@@ -40,7 +39,7 @@ public class Graph {
         Branch thisBranch = branchMap.get(this.getFirstBranchCode());
         if (thisBranch==null) {
             //找不到第一跳
-            throw new BlException(ExceptionCode.EC_0101,this.getCode(),this.getName(),this.getFirstBranchCode());
+            throw new RuleException(ExceptionCode.EC_0101,this.getCode(),this.getName(),this.getFirstBranchCode());
         }
         Link next= null;
         int start = 0;//回溯指针，用于回溯同一分支执行下一个链接
@@ -53,7 +52,7 @@ public class Graph {
                     PathNode pathNode = decisionContext.revertLink();
                     if(pathNode == null){
                         //没有在可以回溯的分支了
-                        throw new BlException(ExceptionCode.EC_0103,this.getCode(),this.getName());
+                        throw new RuleException(ExceptionCode.EC_0103,this.getCode(),this.getName());
                     }
                     Branch branch = branchMap.get(pathNode.getBranchCode());
                     //获取当前链接的下一个链接
@@ -78,7 +77,7 @@ public class Graph {
                 }
             }
         }while (next!=null);
-        throw  new BlException(ExceptionCode.EC_0102,this.getCode(),this.getName());
+        throw  new RuleException(ExceptionCode.EC_0102,this.getCode(),this.getName());
     }
 
 

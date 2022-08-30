@@ -1,7 +1,6 @@
 package com.goddess.rule.executer.base;
 
-import com.alibaba.fastjson.JSONObject;
-import com.goddess.rule.constant.BlException;
+import com.goddess.rule.constant.RuleException;
 import com.goddess.rule.constant.ExceptionCode;
 import com.goddess.rule.executer.context.DecisionContext;
 
@@ -78,7 +77,7 @@ public class Rule {
             }
         }
         if(!names.isEmpty()){
-            throw new BlException(ExceptionCode.EC_0107,String.join(",",names));
+            throw new RuleException(ExceptionCode.EC_0107,String.join(",",names));
         }
 
     }

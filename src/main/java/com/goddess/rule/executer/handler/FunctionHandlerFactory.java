@@ -1,6 +1,6 @@
 package com.goddess.rule.executer.handler;
 
-import com.goddess.rule.constant.BlException;
+import com.goddess.rule.constant.RuleException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -36,7 +36,7 @@ public class FunctionHandlerFactory {
         if (handlerMap.containsKey(loaderCode)) {
             return handlerMap.get(loaderCode);
         } else {
-            throw new BlException("扩展方法："+loaderCode);
+            throw new RuleException("扩展方法："+loaderCode);
         }
     }
 }

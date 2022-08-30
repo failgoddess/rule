@@ -1,7 +1,6 @@
 package com.goddess.rule.executer.base.operation.impl.simple;
 
 
-import com.goddess.rule.constant.BlException;
 import com.goddess.rule.constant.Constant;
 import com.goddess.rule.executer.base.operation.Operation;
 
@@ -9,7 +8,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.List;
 
 /**
  * 为空

@@ -1,6 +1,6 @@
 package com.goddess.rule.executer.base.operation;
 
-import com.goddess.rule.constant.BlException;
+import com.goddess.rule.constant.RuleException;
 import org.reflections.Reflections;
 
 import java.util.HashMap;
@@ -36,7 +36,7 @@ public class OperationFactory {
         } else if (handlerMap.containsKey(operationCode.toUpperCase())) {
             return handlerMap.get(operationCode.toUpperCase());
         } else {
-            throw new BlException("找不到操作符："+operationCode);
+            throw new RuleException("找不到操作符："+operationCode);
         }
     }
 

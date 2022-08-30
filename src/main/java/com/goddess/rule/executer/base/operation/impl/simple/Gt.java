@@ -2,7 +2,7 @@ package com.goddess.rule.executer.base.operation.impl.simple;
 
 
 
-import com.goddess.rule.constant.BlException;
+import com.goddess.rule.constant.RuleException;
 import com.goddess.rule.constant.Constant;
 import com.goddess.rule.executer.base.operation.Operation;
 
@@ -40,7 +40,7 @@ public class Gt extends Operation {
             case Constant.DataType.TIME_HMS:
                 return timeHms(coverComplex,cover,thresholdComplex,threshold);
             default:
-                throw new BlException(getOperationCode()+"不支持数据类型: " + dataTypeCode);
+                throw new RuleException(getOperationCode()+"不支持数据类型: " + dataTypeCode);
         }
     }
 
@@ -126,6 +126,6 @@ public class Gt extends Operation {
 
     @Override
     public boolean boll(Boolean t1, Boolean t2) {
-        throw new BlException(getOperationCode()+"不支持数据类型: " + Constant.DataType.BOLL);
+        throw new RuleException(getOperationCode()+"不支持数据类型: " + Constant.DataType.BOLL);
     }
 }
