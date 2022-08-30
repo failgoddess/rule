@@ -1,7 +1,7 @@
 package com.goddess.rule.parser.impl;
 
 import cn.hutool.core.io.resource.ResourceUtil;
-import com.goddess.rule.constant.BlException;
+import com.goddess.rule.constant.RuleException;
 import com.goddess.rule.constant.Constant;
 import com.goddess.rule.constant.ExceptionCode;
 import com.goddess.rule.executer.base.Rule;
@@ -36,7 +36,7 @@ public class XMLRuleConfigBuilder implements RuleConfigBuilder {
     public RuleConfig build(String configPath) throws Exception{
         Document document = DocumentHelper.parseText(ResourceUtil.readUtf8Str(configPath));
         if(!document.getRootElement().getName().equals("configuration")){
-            throw new BlException(ExceptionCode.EC_0002);
+            throw new RuleException(ExceptionCode.EC_0002);
         }
         String rulePath =document.getRootElement().element("rulePath").getTextTrim();
         //初始化
@@ -162,7 +162,7 @@ public class XMLRuleConfigBuilder implements RuleConfigBuilder {
             FormulaBuilder formulaBuilder = clszz.newInstance();
             return formulaBuilder;
         }catch (Exception e){
-            throw new BlException(ExceptionCode.EC_0003,classPath);
+            throw new RuleException(ExceptionCode.EC_0003,classPath);
         }
 
     }
@@ -182,11 +182,11 @@ public class XMLRuleConfigBuilder implements RuleConfigBuilder {
                 loader.setClassPath(classPath);
                 factory.register(loader);
             }catch (ClassNotFoundException e){
-                throw new BlException(ExceptionCode.EC_0003,code,name);
+                throw new RuleException(ExceptionCode.EC_0003,code,name);
             } catch (InstantiationException e) {
-                throw new BlException(ExceptionCode.EC_0004,code,name);
+                throw new RuleException(ExceptionCode.EC_0004,code,name);
             } catch (IllegalAccessException e) {
-                throw new BlException(ExceptionCode.EC_0004,code,name);
+                throw new RuleException(ExceptionCode.EC_0004,code,name);
             }
         }
         return factory;
@@ -203,7 +203,7 @@ public class XMLRuleConfigBuilder implements RuleConfigBuilder {
                     parser = XMLRuleParser.getInstance();
                     break;
                 default:
-                    throw new BlException(ExceptionCode.EC_0001,path);
+                    throw new RuleException(ExceptionCode.EC_0001,path);
             }
             Rule rule = parser.parse(path);
             rules.add(rule);

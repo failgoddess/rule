@@ -2,7 +2,7 @@ package com.goddess.rule.executer.base.formula;
 
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.JSONPath;
-import com.goddess.rule.constant.BlException;
+import com.goddess.rule.constant.RuleException;
 import com.goddess.rule.constant.ExceptionCode;
 import com.goddess.rule.executer.context.DecisionContext;
 import com.goddess.rule.executer.context.RuleConfig;
@@ -88,7 +88,7 @@ public class FuncNode extends FormulaNode {
                 endIndex = cutObj.getEnd(startIndex + 1);
                 params.add(new Param(key, new DataNode(val)));
             } else if (!nowStr.trim().equals("")) {
-                throw new BlException(ExceptionCode.EC_0005,text);
+                throw new RuleException(ExceptionCode.EC_0005,text);
             } else {
 //                throw new BlException(ExceptionCode.EC_0005,text);
             }
@@ -100,7 +100,7 @@ public class FuncNode extends FormulaNode {
                     //},
                     startIndex = endIndex;
                 } else {
-                    throw new BlException(ExceptionCode.EC_0005,text);
+                    throw new RuleException(ExceptionCode.EC_0005,text);
                 }
             }else {
                 break;

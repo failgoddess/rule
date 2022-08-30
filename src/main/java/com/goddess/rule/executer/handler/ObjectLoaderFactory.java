@@ -1,10 +1,9 @@
 package com.goddess.rule.executer.handler;
 
-import com.goddess.rule.constant.BlException;
+import com.goddess.rule.constant.RuleException;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.ServiceLoader;
 
 /**
  * @author: 失败女神-vinc
@@ -36,7 +35,7 @@ public class ObjectLoaderFactory {
         }else if (handlerMap.containsKey(loaderCode.toUpperCase())) {
             return handlerMap.get(loaderCode.toUpperCase());
         } else {
-            throw new BlException("找不到加载器："+loaderCode);
+            throw new RuleException("找不到加载器："+loaderCode);
         }
     }
 }

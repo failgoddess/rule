@@ -1,6 +1,6 @@
 package com.goddess.rule.executer.base.operation.impl.simple;
 
-import com.goddess.rule.constant.BlException;
+import com.goddess.rule.constant.RuleException;
 import com.goddess.rule.constant.Constant;
 import com.goddess.rule.executer.base.operation.Operation;
 
@@ -88,26 +88,26 @@ public class Eqd extends Operation {
 
     @Override
     public boolean timeHms(LocalTime t1, LocalTime t2) {
-        throw new BlException(getOperationCode()+"不支持数据类型: " + Constant.DataType.TIME_HMS);
+        throw new RuleException(getOperationCode()+"不支持数据类型: " + Constant.DataType.TIME_HMS);
     }
 
     @Override
     public boolean timeYmdhms(LocalDateTime t1, LocalDateTime t2) {
-        throw new BlException(getOperationCode()+"不支持数据类型: " + Constant.DataType.TIME_YMDHMS);
+        throw new RuleException(getOperationCode()+"不支持数据类型: " + Constant.DataType.TIME_YMDHMS);
     }
 
     @Override
     public boolean timeYmd(LocalDate t1, LocalDate t2) {
-        throw new BlException(getOperationCode()+"不支持数据类型: " + Constant.DataType.TIME_YMD);
+        throw new RuleException(getOperationCode()+"不支持数据类型: " + Constant.DataType.TIME_YMD);
     }
 
     @Override
     public boolean number(BigDecimal t1, BigDecimal t2) {
-        throw new BlException(getOperationCode()+"不支持数据类型: " + Constant.DataType.NUMBER);
+        throw new RuleException(getOperationCode()+"不支持数据类型: " + Constant.DataType.NUMBER);
     }
 
     @Override
     public boolean boll(Boolean t1, Boolean t2) {
-        throw new BlException(getOperationCode()+"不支持数据类型: " + Constant.DataType.BOLL);
+        throw new RuleException(getOperationCode()+"不支持数据类型: " + Constant.DataType.BOLL);
     }
 }
