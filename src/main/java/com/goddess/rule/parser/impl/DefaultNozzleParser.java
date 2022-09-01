@@ -1,5 +1,6 @@
 package com.goddess.rule.parser.impl;
 
+import com.goddess.rule.executer.context.DecisionContext;
 import com.goddess.rule.executer.handler.loader.ObjectLoaderFactory;
 import com.goddess.rule.executer.handler.nozzle.Nozzle;
 import com.goddess.rule.executer.handler.source.Source;
@@ -36,12 +37,12 @@ public class DefaultNozzleParser implements NozzleParser {
         if(baseNozzleParser==null){
             return new Nozzle() {
                 @Override
-                public void setSource(Source source) {
+                public void setSource(Source source){
 
                 }
 
                 @Override
-                public void extend() {
+                public void extend(DecisionContext context) {
 
                 }
             };

@@ -64,9 +64,12 @@ public  class XMLRuleConfigBuilder implements RuleConfigBuilder {
 
         //解析数据源
         List<Source> sources = parseSources(document.getRootElement().element("metaEnvironment").element("sources"),ruleConfig.getSourceParser());
+        ruleConfig.setSources(sources);
+        ruleConfig.setSourceMap(sources.stream().collect(Collectors.toMap(Source::getCode,o->o)));
         //解析管道
         List<Nozzle> nozzles = parseNozzles(document.getRootElement().element("metaEnvironment").element("nozzles"),ruleConfig.getNozzleParser());
-
+        ruleConfig.setNozzles(nozzles);
+        ruleConfig.setNozzleMap(nozzles.stream().collect(Collectors.toMap(Nozzle::getCode,o->o)));
 
         //解析枚举配置
         List<MetaEnum> metaEnums = parseMetaEnums(document.getRootElement().element("metaEnvironment").element("metaEnums"));

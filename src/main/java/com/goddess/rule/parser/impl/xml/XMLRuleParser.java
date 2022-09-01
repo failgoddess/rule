@@ -185,8 +185,11 @@ public class XMLRuleParser implements RuleParser {
      * @param element
      * @return
      */
-    private Expression parseExpression(Element element){
+    public static Expression parseExpression(Element element){
 
+        if(element ==null){
+            return null;
+        }
         Expression expression = new Expression();
         String name,coverComplex,expressionType,cover,operationCode,dataType,thresholdComplex,thresholdType,threshold;
 

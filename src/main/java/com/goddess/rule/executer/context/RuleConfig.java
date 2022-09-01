@@ -1,9 +1,12 @@
 package com.goddess.rule.executer.context;
 
 import com.alibaba.fastjson.JSONObject;
+import com.goddess.rule.executer.base.Action;
 import com.goddess.rule.executer.base.Rule;
 import com.goddess.rule.executer.handler.function.FunctionHandlerFactory;
 import com.goddess.rule.executer.handler.loader.ObjectLoaderFactory;
+import com.goddess.rule.executer.handler.nozzle.Nozzle;
+import com.goddess.rule.executer.handler.source.Source;
 import com.goddess.rule.executer.meta.MetaClass;
 import com.goddess.rule.executer.meta.MetaEnum;
 import com.goddess.rule.executer.base.operation.OperationFactory;
@@ -41,9 +44,14 @@ public class RuleConfig {
     //公式解析器
     private FormulaBuilder formulaBuilder;
 
+    private List<Source> sources = new ArrayList<>();
+    private Map<String,Source> sourceMap = new HashMap<>();
     private SourceParser sourceParser;
 
     private ActionParser actionParser;
+
+    private List<Nozzle> nozzles = new ArrayList<>();
+    private Map<String,Nozzle> nozzleMap = new HashMap<>();
     private NozzleParser nozzleParser;
 
 
@@ -193,5 +201,39 @@ public class RuleConfig {
 
     public void setNozzleParser(NozzleParser nozzleParser) {
         this.nozzleParser = nozzleParser;
+    }
+
+
+    public List<Source> getSources() {
+        return sources;
+    }
+
+    public void setSources(List<Source> sources) {
+        this.sources = sources;
+    }
+
+    public Map<String, Source> getSourceMap() {
+        return sourceMap;
+    }
+
+    public void setSourceMap(Map<String, Source> sourceMap) {
+        this.sourceMap = sourceMap;
+    }
+
+
+    public List<Nozzle> getNozzles() {
+        return nozzles;
+    }
+
+    public void setNozzles(List<Nozzle> nozzles) {
+        this.nozzles = nozzles;
+    }
+
+    public Map<String, Nozzle> getNozzleMap() {
+        return nozzleMap;
+    }
+
+    public void setNozzleMap(Map<String, Nozzle> nozzleMap) {
+        this.nozzleMap = nozzleMap;
     }
 }
