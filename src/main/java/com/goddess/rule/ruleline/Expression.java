@@ -50,7 +50,7 @@ public class Expression {
         }
 
         if (Constant.ExpressionType.LOGIC.equals(operationType)){
-            if((!Constant.ExpressionLogicType.OR.equals(operationCode))&&(!Constant.ExpressionLogicType.AND.equals(operationCode))){
+            if((!Constant.OperationType.OR.equals(operationCode))&&(!Constant.OperationType.AND.equals(operationCode))){
                 for (Expression t:subExpression) {
                     t.check();
                 }

@@ -24,11 +24,17 @@ public class Link {
     //下一跳类型：分支 结果  Constant.NextType
     private String nextType;
 
-    private Condition condition;
+    //永真条件
+    private boolean eternal;
+
+    private Expression expression;
 
     public boolean decision(DecisionContext decisionContext) {
-        //链接上边的所有条件之间是 且的关系 必须全部为真 才能让链接生效，如果需要多个条件是或的关系可以用两个连接指向同一个下一跳
-        boolean temp = condition.decision(decisionContext);
+        //永真条件的处理
+        if(isEternal()){
+            return true;
+        }
+        boolean temp =  new JavaActuator(expression).execute(decisionContext,true);
         if(temp == false){
             //有不满足的可以直接结束这个链接了
             return false;
@@ -91,5 +97,21 @@ public class Link {
 
     public void setNextType(String nextType) {
         this.nextType = nextType;
+    }
+
+    public Expression getExpression() {
+        return expression;
+    }
+
+    public void setExpression(Expression expression) {
+        this.expression = expression;
+    }
+
+    public boolean isEternal() {
+        return eternal;
+    }
+
+    public void setEternal(boolean eternal) {
+        this.eternal = eternal;
     }
 }

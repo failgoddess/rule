@@ -1,4 +1,4 @@
-package com.goddess.rule.executer.handler;
+package com.goddess.rule.executer.handler.loader;
 
 import com.goddess.rule.constant.RuleException;
 

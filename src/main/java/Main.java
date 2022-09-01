@@ -1,6 +1,6 @@
 import com.goddess.rule.executer.base.Rule;
 import com.goddess.rule.executer.context.RuleConfig;
-import com.goddess.rule.parser.impl.XMLRuleConfigBuilder;
+import com.goddess.rule.parser.impl.xml.XMLRuleConfigBuilder;
 
 public class Main {
     public static void main(String[] args) throws Exception {

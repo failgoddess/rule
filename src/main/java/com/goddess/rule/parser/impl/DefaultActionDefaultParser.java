@@ -5,7 +5,7 @@ import com.goddess.rule.parser.ActionParser;
 
 import org.dom4j.Element;
 
-public class XmlActionDefaultParser implements ActionParser {
+public class DefaultActionDefaultParser implements ActionParser {
     public Action parse(Object dataObj){
 //        Element item =(Element)dataObj;
 //        String code, name,block,remark;

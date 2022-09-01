@@ -22,8 +22,6 @@ public class Expression {
     //操作符编码
     private String operationCode;
 
-    //优先级
-    private Integer priority;
 
     //被比较的阀值维度
     private Integer coverComplex;
@@ -43,6 +41,10 @@ public class Expression {
 
     private List<Expression> subExpression;
 
+    //简答描述
+    private String name;
+    //完整描述
+    private String desc;
 
     public boolean check(){
         if(expressionType ==null){
@@ -170,12 +172,19 @@ public class Expression {
     public void setSubExpression(List<Expression> subExpression) {
         this.subExpression = subExpression;
     }
-    public Integer getPriority() {
-        return priority;
+      public String getName() {
+        return name;
     }
 
-    public void setPriority(Integer priority) {
-        this.priority = priority;
+    public void setName(String name) {
+        this.name = name;
     }
 
+    public String getDesc() {
+        return desc;
+    }
+
+    public void setDesc(String desc) {
+        this.desc = desc;
+    }
 }

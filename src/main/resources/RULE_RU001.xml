@@ -23,63 +23,37 @@
             <branches>
                 <branch code = "RU001G1B1" name = "门店分支">
                     <links>
-                        <link code="810101" name = "销售门店开业时间 小于  356天" priority="10" nextType = "RESULT" nextResultCode ="RU001R1">
-<!--                            <conditions>-->
-<!--                                <condition priority="1" expressionType ="relation" operationCode="lt" dataType="NUMBER" cover="%{gapNowDay(time:${buyStore.startTime})}"-->
-<!--                                           threshold="356" />-->
-<!--                                -->
-<!--                            </conditions>-->
-                            <condition priority="999" expressionType ="logic" operationCode="and" dataType="NUMBER">
-                                <subCondition>
-                                    <condition priority="999" expressionType ="logic" operationCode="and" dataType="NUMBER">
-                                        <subCondition>
-                                            <expression />
-                                        </subCondition>
-                                    </condition>
-                                </subCondition>
-                            </condition>
+                        <link code="810101" name = "销售门店开业时间 小于  356天 并且1=1" priority="10" nextType = "RESULT" nextResultCode ="RU001R1">
+                            <expression expressionType ="logic" operationCode="and" dataType="NUMBER">
+                                <subExpressions>
+                                    <expression expressionType ="relation" operationCode="lt" dataType="NUMBER" cover="%{gapNowDay(time:${buyStore.startTime})}" threshold="356" />
+                                    <expression expressionType ="relation" operationCode="eq" dataType="NUMBER" cover="1" threshold="356" />
+                                </subExpressions>
+                            </expression>
                         </link>
-                        <link code="810102"  name = "否则" priority="20" nextType="BRANCH" nextBranchCode="RU001G1B2">
-                            <conditions>
-                                <!--永真条件-->
-                                <condition priority="999" eternal="true"/>
-                            </conditions>
-                        </link>
+                        <link code="810102"  name = "否则" eternal="true" priority="20" nextType="BRANCH" nextBranchCode="RU001G1B2"/>
                     </links>
                 </branch>
                 <branch code = "RU001G1B2" name = "区域分支">
                     <links>
                         <link code="810201" name ="销售门店区域 包含于 河北,上海" priority="10" nextType = "RESULT" nextResultCode ="RU001R3">
-                            <conditions>
-                                <condition priority="999" cover="${buyStore.area}" operationCode="in" dataType="STRING"
-                                           thresholdComplex="1" threshold="河北,上海"/>
-                            </conditions>
+                            <expression  expressionType ="relation" cover="${buyStore.area}" operationCode="in" dataType="STRING"
+                                       thresholdComplex="1" threshold="河北,上海"/>
                         </link>
                         <link code="810202" name = "销售区域 等于 发货区域" priority="20" nextType = "RESULT" nextResultCode ="RU001R2">
-                            <conditions>
-                                <condition priority="999"  cover="${buyStore.area}" operationCode="eq" dataType="STRING"
-                                            threshold="${sendStore.area}"/>
-                            </conditions>
+                            <expression expressionType ="relation"  cover="${buyStore.area}" operationCode="eq" dataType="STRING"
+                                       threshold="${sendStore.area}"/>
                         </link>
-                        <link code="810203"  name = "否则" priority="20" nextType="BRANCH" nextBranchCode="RU001G1B3">
-                            <conditions>
-                                <!--永真条件-->
-                                <condition priority="999" eternal="true"/>
-                            </conditions>
-                        </link>
+                        <link code="810203"  name = "否则" eternal="true" priority="20" nextType="BRANCH" nextBranchCode="RU001G1B3"/>
                     </links>
                 </branch>
                 <branch code = "RU001G1B3" name = "活动分支">
                     <links>
                         <link code="810301" name = "活动折扣 等于 空" priority="10" nextType = "RESULT" nextResultCode ="RU001R2">
-                            <conditions>
-                                <condition priority="10" cover="${discount}" operationCode="en" />
-                            </conditions>
+                            <expression expressionType ="relation" cover="${discount}" operationCode="en" />
                         </link>
                         <link code="810302"  name = "活动折扣 不等于 空" priority="20" nextType = "RESULT" nextResultCode ="RU001R4">
-                            <conditions>
-                                <condition priority="10" cover="${discount}" operationCode="nn" />
-                            </conditions>
+                            <expression expressionType ="relation" cover="${discount}" operationCode="nn" />
                         </link>
                     </links>
                 </branch>

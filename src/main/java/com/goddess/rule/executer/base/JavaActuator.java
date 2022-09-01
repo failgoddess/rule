@@ -1,4 +1,4 @@
-package com.goddess.rule.ruleline;
+package com.goddess.rule.executer.base;
 
 import com.goddess.rule.constant.Constant;
 import com.goddess.rule.executer.base.operation.Operation;
@@ -20,10 +20,10 @@ public class JavaActuator {
         this.expression = expression;
     }
 
-    public boolean execute(final Object data, DecisionContext context, boolean logFlag){
+    public boolean execute( DecisionContext context, boolean logFlag){
         //逻辑
-        if(Constant.ExpressionType.LOGIC.equals(expression.getOperationType())){
-            return execute(expression.getOperationCode(), expression.getSubExpression(),data,context,logFlag);
+        if(Constant.ExpressionType.LOGIC.equals(expression.getExpressionType())){
+            return execute(expression.getOperationCode(), expression.getSubExpression(),context,logFlag);
         }else {
 
             // 1>2  1被比较的阀值 >操作符 2阀值
@@ -46,8 +46,8 @@ public class JavaActuator {
     }
 
 
-    public boolean execute(final Object data,DecisionContext context){
-        return execute(data,context,true);
+    public boolean execute(DecisionContext context){
+        return execute(context,true);
     }
     //关系
     private boolean execute(String operationCode,MetaProperty property,Object attrVal, List<String> params){
@@ -55,16 +55,16 @@ public class JavaActuator {
         return operation.execute(property.getDataType(),1,attrVal,1,params);
     }
     //逻辑
-    private boolean execute(String operationCode, List<Expression> subExpressions, Object data, DecisionContext context, boolean logFlag){
+    private boolean execute(String operationCode, List<Expression> subExpressions,DecisionContext context, boolean logFlag){
         if("or".equals(operationCode)){
             for (Expression expression :subExpressions){
-                boolean flag = new JavaActuator(expression).execute(data,context,logFlag);
+                boolean flag = new JavaActuator(expression).execute(context,logFlag);
                 if (flag){return true;}
             }
             return false;
         }else {
             for (Expression expression :subExpressions){
-                boolean flag = new JavaActuator(expression).execute(data,context,logFlag);
+                boolean flag = new JavaActuator(expression).execute(context,logFlag);
                 if (!flag){return false;}
             }
             return true;

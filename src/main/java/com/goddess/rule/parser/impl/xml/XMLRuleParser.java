@@ -1,9 +1,11 @@
-package com.goddess.rule.parser.impl;
+package com.goddess.rule.parser.impl.xml;
 
 import cn.hutool.core.io.resource.ResourceUtil;
+import com.goddess.rule.constant.Constant;
 import com.goddess.rule.executer.base.*;
 import com.goddess.rule.executer.context.RuleConfig;
 import com.goddess.rule.parser.RuleParser;
+import com.goddess.rule.parser.impl.DefaultActionDefaultParser;
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
@@ -21,12 +23,12 @@ public class XMLRuleParser implements RuleParser {
 
 
     private static XMLRuleParser instance = null;
-    private XmlActionDefaultParser xmlActionDefaultParser = null;
+    private DefaultActionDefaultParser xmlActionDefaultParser = null;
 
-    private XMLRuleParser(XmlActionDefaultParser xmlActionDefaultParser){
+    private XMLRuleParser(DefaultActionDefaultParser xmlActionDefaultParser){
         this.xmlActionDefaultParser = xmlActionDefaultParser;
     }
-    public static XMLRuleParser getInstance(XmlActionDefaultParser actionParser) {
+    public static XMLRuleParser getInstance(DefaultActionDefaultParser actionParser) {
         if (instance != null) {
             return instance;
         }else {
@@ -150,7 +152,8 @@ public class XMLRuleParser implements RuleParser {
         List<Element> items = element.elements("link");
         for (Element item:items){
             Link link = new Link();
-            String code,name,priority,nextType,nextResultCode,nextBranchCode;
+            String code,name,priority,nextType,nextResultCode,nextBranchCode,eternal;
+            eternal = item.attributeValue("eternal");
             code = item.attributeValue("code");
             name = item.attributeValue("name");
             priority = item.attributeValue("priority");
@@ -158,7 +161,6 @@ public class XMLRuleParser implements RuleParser {
             nextResultCode = item.attributeValue("nextResultCode");
             nextBranchCode = item.attributeValue("nextBranchCode");
 
-            List<Condition> conditions = parseConditions(item.element("conditions"));
             link.setCode(code);
             link.setName(name);
             link.setBranchCode(branch.getCode());
@@ -166,7 +168,13 @@ public class XMLRuleParser implements RuleParser {
             link.setNextType(nextType);
             link.setNextBranchCode(nextBranchCode);
             link.setNextResultCode(nextResultCode);
-            link.setConditions(conditions);
+            if("true".equalsIgnoreCase(eternal)){
+                link.setEternal(true);
+            }else {
+                link.setEternal(false);
+                link.setExpression(parseExpression(item.element("expression")));
+            }
+
             links.add(link);
         }
         return links;
@@ -177,51 +185,56 @@ public class XMLRuleParser implements RuleParser {
      * @param element
      * @return
      */
-    private List<Condition> parseConditions(Element element){
-        List<Condition> conditions = new ArrayList<>();
-        List<Element> items = element.elements("condition");
-        for (Element item:items){
-            Condition condition = new Condition();
-            String name,priority,eternal,coverComplex,coverType,cover,operationCode,dataType,thresholdComplex,thresholdType,threshold;
+    private Expression parseExpression(Element element){
 
-            name = item.attributeValue("name");
-            priority = item.attributeValue("priority");
-            eternal = item.attributeValue("eternal");
-            coverComplex = item.attributeValue("coverComplex");
-            cover = item.attributeValue("cover");
-            operationCode = item.attributeValue("operationCode");
-            dataType = item.attributeValue("dataType");
-            thresholdComplex = item.attributeValue("thresholdComplex");
-            threshold = item.attributeValue("threshold");
+        Expression expression = new Expression();
+        String name,coverComplex,expressionType,cover,operationCode,dataType,thresholdComplex,thresholdType,threshold;
 
-            condition.setName(name);
-            condition.setPriority(Integer.parseInt(priority));
-            if(StringUtils.isNotEmpty(eternal)&&eternal.equalsIgnoreCase("true")){
-                condition.setEternal(true);
-            }else {
-                condition.setEternal(false);
-            }
+        name = element.attributeValue("name");
+        expressionType = element.attributeValue("expressionType");
+        operationCode = element.attributeValue("operationCode");
+        dataType = element.attributeValue("dataType");
+        if(Constant.ExpressionType.RELATION.equalsIgnoreCase(expressionType)){
+            expressionType = Constant.ExpressionType.RELATION;
+
+            coverComplex = element.attributeValue("coverComplex");
+            cover = element.attributeValue("cover");
+            thresholdComplex = element.attributeValue("thresholdComplex");
+            threshold = element.attributeValue("threshold");
+
+
             if(StringUtils.isNotEmpty(coverComplex)){
-                condition.setCoverComplex(Integer.parseInt(coverComplex));
+                expression.setCoverComplex(Integer.parseInt(coverComplex));
             }else {
-                condition.setCoverComplex(0);
+                expression.setCoverComplex(0);
             }
             if(StringUtils.isNotEmpty(cover)){
-                condition.setCover(cover);
+                expression.setCover(cover);
             }
-            condition.setOperationCode(operationCode);
-            condition.setDataType(dataType);
+
             if(StringUtils.isNotEmpty(thresholdComplex)){
-                condition.setThresholdComplex(Integer.parseInt(thresholdComplex));
+                expression.setThresholdComplex(Integer.parseInt(thresholdComplex));
             }else {
-                condition.setThresholdComplex(0);
+                expression.setThresholdComplex(0);
             }
             if(StringUtils.isNotEmpty(threshold)){
-                condition.setThreshold(threshold);
+                expression.setThreshold(threshold);
             }
-            conditions.add(condition);
+
+        }else if(Constant.ExpressionType.LOGIC.equalsIgnoreCase(expressionType)){
+            expressionType = Constant.ExpressionType.LOGIC;
+            List<Expression> subConditions = new ArrayList<>();
+            List<Element>items = element.element("subExpressions").elements("expression");
+            for(Element item:items){
+                subConditions.add(parseExpression(item));
+            }
+            expression.setSubExpression(subConditions);
         }
-        return conditions;
+        expression.setName(name);
+        expression.setExpressionType(expressionType);
+        expression.setOperationCode(operationCode);
+        expression.setDataType(dataType);
+        return expression;
     }
 
     /**
@@ -258,11 +271,12 @@ public class XMLRuleParser implements RuleParser {
         List<Element> items = element.elements("param");
         for (Element item:items){
             Param param = new Param();
-            String code,name,dataType,necessary;
+            String code,name,dataType,necessary,data;
             code = item.attributeValue("code");
             name = item.attributeValue("name");
             dataType = item.attributeValue("dataType");
             necessary = item.attributeValue("necessary");
+            data = item.attributeValue("data");
             param.setCode(code);
             param.setName(name);
             param.setDataType(dataType);
@@ -270,6 +284,9 @@ public class XMLRuleParser implements RuleParser {
                 param.setNecessary(true);
             }else {
                 param.setNecessary(false);
+            }
+            if(StringUtils.isNotEmpty(data)){
+                param.setData(data);
             }
             params.add(param);
         }

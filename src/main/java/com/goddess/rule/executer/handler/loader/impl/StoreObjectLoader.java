@@ -1,8 +1,8 @@
-package com.goddess.rule.executer.handler.impl;
+package com.goddess.rule.executer.handler.loader.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.goddess.rule.executer.context.DecisionContext;
-import com.goddess.rule.executer.handler.ObjectLoader;
+import com.goddess.rule.executer.handler.loader.ObjectLoader;
 
 /**
  * @author: 失败女神-vinc
