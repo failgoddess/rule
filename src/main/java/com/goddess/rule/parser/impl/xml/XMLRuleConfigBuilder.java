@@ -4,8 +4,6 @@ import cn.hutool.core.io.resource.ResourceUtil;
 import com.goddess.rule.constant.Constant;
 import com.goddess.rule.constant.ExceptionCode;
 import com.goddess.rule.constant.RuleException;
-import com.goddess.rule.executer.base.Rule;
-import com.goddess.rule.executer.base.operation.OperationFactory;
 import com.goddess.rule.executer.context.MetaContext;
 import com.goddess.rule.executer.context.RuleConfig;
 import com.goddess.rule.executer.handler.function.FunctionHandlerFactory;
@@ -16,6 +14,9 @@ import com.goddess.rule.executer.handler.source.Source;
 import com.goddess.rule.executer.meta.MetaClass;
 import com.goddess.rule.executer.meta.MetaEnum;
 import com.goddess.rule.executer.meta.MetaProperty;
+import com.goddess.rule.executer.mode.Param;
+import com.goddess.rule.executer.mode.Rule;
+import com.goddess.rule.executer.mode.operation.OperationFactory;
 import com.goddess.rule.parser.*;
 import com.goddess.rule.parser.impl.DefaultActionDefaultParser;
 import com.goddess.rule.parser.impl.DefaultNozzleParser;
@@ -49,16 +50,37 @@ public  class XMLRuleConfigBuilder implements RuleConfigBuilder {
         RuleConfig ruleConfig = RuleConfig.getInstance();
         ruleConfig.setRulePath(rulePath);
 
+        //操作符工厂
+        ruleConfig.setRelationFactory(OperationFactory.getInstance());
+
         //解析 公式解析器
         ruleConfig.setFormulaBuilder(parseFormulaBuilder(document.getRootElement().element("metaEnvironment").element("formulaBuilder")));
+
         //解析自定义 sourceParser解析器
         ruleConfig.setSourceParser(parseSourceParser(document.getRootElement().element("metaEnvironment").element("sourceParser")));
+
         //解析自定义 actionParser解析器
         ruleConfig.setActionParser(parseActionParser(document.getRootElement().element("metaEnvironment").element("actionParser")));
+
         //解析自定义 nozzleParser解析器
         ruleConfig.setNozzleParser(parseNozzleParser(document.getRootElement().element("metaEnvironment").element("nozzleParser")));
 
-        //解析 加载器
+        //解析扩展方法
+        ruleConfig.setFunctionHandlerFactory(FunctionHandlerFactory.getInstance());
+
+        //解析枚举配置
+        List<MetaEnum> metaEnums = parseMetaEnums(document.getRootElement().element("metaEnvironment").element("metaEnums"));
+        ruleConfig.setMetaEnums(metaEnums);
+        ruleConfig.setMetaEnumMap(metaEnums.stream().collect(Collectors.toMap(MetaEnum::getCode,o->o)));
+
+        //解析元数据配置
+        List<MetaClass> metaClasses = parseMetaClasses(document.getRootElement().element("metaEnvironment").element("metaClasses"));
+        ruleConfig.setMetaClasses(metaClasses);
+        ruleConfig.setMetaClassMap(metaClasses.stream().collect(Collectors.toMap(MetaClass::getCode,o->o)));
+
+        ruleConfig.setMetaContext(new MetaContext(ruleConfig.getMetaClasses(),ruleConfig.getMetaClassMap()));
+
+        //解析加载器
         ObjectLoaderFactory objectLoaderFactory = parseObjectLoaderFactory(document.getRootElement().element("metaEnvironment").element("objectLoaders"));
         ruleConfig.setObjectLoaderFactory(objectLoaderFactory);
 
@@ -66,20 +88,15 @@ public  class XMLRuleConfigBuilder implements RuleConfigBuilder {
         List<Source> sources = parseSources(document.getRootElement().element("metaEnvironment").element("sources"),ruleConfig.getSourceParser());
         ruleConfig.setSources(sources);
         ruleConfig.setSourceMap(sources.stream().collect(Collectors.toMap(Source::getCode,o->o)));
+
         //解析管道
         List<Nozzle> nozzles = parseNozzles(document.getRootElement().element("metaEnvironment").element("nozzles"),ruleConfig.getNozzleParser());
         ruleConfig.setNozzles(nozzles);
         ruleConfig.setNozzleMap(nozzles.stream().collect(Collectors.toMap(Nozzle::getCode,o->o)));
 
-        //解析枚举配置
-        List<MetaEnum> metaEnums = parseMetaEnums(document.getRootElement().element("metaEnvironment").element("metaEnums"));
-        ruleConfig.setMetaEnums(metaEnums);
-        ruleConfig.setMetaEnumMap(metaEnums.stream().collect(Collectors.toMap(MetaEnum::getCode,o->o)));
-
-        //解析枚举配置
-        List<MetaClass> metaClasses = parseMetaClasses(document.getRootElement().element("metaEnvironment").element("metaClasses"));
-        ruleConfig.setMetaClasses(metaClasses);
-        ruleConfig.setMetaClassMap(metaClasses.stream().collect(Collectors.toMap(MetaClass::getCode,o->o)));
+        //解析公共参数
+        List<Param> globalParams = parseParams(document.getRootElement().element("metaEnvironment").element("globalParams"));
+        ruleConfig.setGlobalParams(globalParams);
 
 
         //解析规则配置
@@ -87,13 +104,43 @@ public  class XMLRuleConfigBuilder implements RuleConfigBuilder {
         ruleConfig.setRules(rules);
         ruleConfig.setRuleMap(rules.stream().collect(Collectors.toMap(Rule::getCode,o->o)));
 
-        //操作符工厂
-        ruleConfig.setRelationFactory(OperationFactory.getInstance());
 
-        ruleConfig.setFunctionHandlerFactory(FunctionHandlerFactory.getInstance());
 
-        ruleConfig.setMetaContext(new MetaContext(ruleConfig.getMetaClasses(),ruleConfig.getMetaClassMap()));
+
+
+
         return ruleConfig;
+    }
+    /**
+     * 处理参数节点
+     * @param element
+     * @return
+     */
+    public static List<Param> parseParams(Element element){
+        List<Param> params = new ArrayList<>();
+        List<Element> items = element.elements("param");
+        for (Element item:items){
+            Param param = new Param();
+            String code,name,dataType,necessary,data;
+            code = item.attributeValue("code");
+            name = item.attributeValue("name");
+            dataType = item.attributeValue("dataType");
+            necessary = item.attributeValue("necessary");
+            data = item.attributeValue("data");
+            param.setCode(code);
+            param.setName(name);
+            param.setDataType(dataType);
+            if(StringUtils.isNotEmpty(necessary)&&necessary.equalsIgnoreCase("true")){
+                param.setNecessary(true);
+            }else {
+                param.setNecessary(false);
+            }
+            if(StringUtils.isNotEmpty(data)){
+                param.setData(data);
+            }
+            params.add(param);
+        }
+        return params;
     }
     private List<Source> parseSources(Element element,SourceParser sourceParser){
         List<Source> sources = new ArrayList<>();
@@ -233,6 +280,9 @@ public  class XMLRuleConfigBuilder implements RuleConfigBuilder {
         }
     }
     private SourceParser parseSourceParser(Element element){
+        if(element ==null){
+            return null;
+        }
         String classPath = element.attributeValue("classPath");
         try {
             Class<? extends SourceParser> clszz = (Class<? extends SourceParser>) Class.forName(classPath);

@@ -2,8 +2,8 @@ package com.goddess.rule.executer.context;
 
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.JSONPath;
-import com.goddess.rule.executer.base.Link;
-import com.goddess.rule.executer.base.Rule;
+import com.goddess.rule.executer.mode.Link;
+import com.goddess.rule.executer.mode.Rule;
 
 import java.util.LinkedList;
 import java.util.Queue;
@@ -20,6 +20,7 @@ public class DecisionContext {
     private RuleConfig ruleConfig;
     private MetaContext metaContext;
 
+    //params graph action
     private JSONObject data;
     //回溯栈
     private Stack<PathNode> pathNodeStack = new Stack<>();

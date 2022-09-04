@@ -1,15 +1,15 @@
 package com.goddess.rule.executer.context;
 
 import com.alibaba.fastjson.JSONObject;
-import com.goddess.rule.executer.base.Action;
-import com.goddess.rule.executer.base.Rule;
+import com.goddess.rule.executer.mode.Param;
+import com.goddess.rule.executer.mode.Rule;
 import com.goddess.rule.executer.handler.function.FunctionHandlerFactory;
 import com.goddess.rule.executer.handler.loader.ObjectLoaderFactory;
 import com.goddess.rule.executer.handler.nozzle.Nozzle;
 import com.goddess.rule.executer.handler.source.Source;
 import com.goddess.rule.executer.meta.MetaClass;
 import com.goddess.rule.executer.meta.MetaEnum;
-import com.goddess.rule.executer.base.operation.OperationFactory;
+import com.goddess.rule.executer.mode.operation.OperationFactory;
 import com.goddess.rule.parser.ActionParser;
 import com.goddess.rule.parser.FormulaBuilder;
 import com.goddess.rule.parser.NozzleParser;
@@ -29,6 +29,9 @@ public class RuleConfig {
     //枚举
     private List<MetaEnum> metaEnums;
     private Map<String,MetaEnum> metaEnumMap = new HashMap<>();
+
+    //全局共参
+    private List<Param> globalParams;
     //规则对象类
     private List<MetaClass> metaClasses;
     private Map<String,MetaClass> metaClassMap = new HashMap<>();
@@ -220,6 +223,13 @@ public class RuleConfig {
         this.sourceMap = sourceMap;
     }
 
+    public List<Param> getGlobalParams() {
+        return globalParams;
+    }
+
+    public void setGlobalParams(List<Param> globalParams) {
+        this.globalParams = globalParams;
+    }
 
     public List<Nozzle> getNozzles() {
         return nozzles;

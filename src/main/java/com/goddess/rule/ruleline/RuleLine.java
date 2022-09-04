@@ -1,8 +1,6 @@
 package com.goddess.rule.ruleline;
 
-import com.alibaba.fastjson.JSONObject;
-
-import java.time.LocalDateTime;
+import com.goddess.rule.executer.mode.Expression;
 
 /**
  * @author: 失败女神-vinc
@@ -10,26 +8,24 @@ import java.time.LocalDateTime;
  * @date: 2022/8/30 15:52
  */
 public class RuleLine {
-    private LocalDateTime startTime;
-    private LocalDateTime endTime;
-    private Integer priority;
 
-    private JSONObject result;
-    private JSONObject condition;
 
-    public JSONObject getResult() {
+    private Object result;
+    private Expression expression;
+
+    public Object getResult() {
         return result;
     }
 
-    public void setResult(JSONObject result) {
+    public void setResult(Object result) {
         this.result = result;
     }
 
-    public JSONObject getCondition() {
-        return condition;
+    public Expression getExpression() {
+        return expression;
     }
 
-    public void setCondition(JSONObject condition) {
-        this.condition = condition;
+    public void setExpression(Expression expression) {
+        this.expression = expression;
     }
 }

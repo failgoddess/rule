@@ -1,7 +1,6 @@
 package com.goddess.rule.parser;
 
-import com.goddess.rule.executer.base.Rule;
-import com.goddess.rule.executer.context.RuleConfig;
+import com.goddess.rule.executer.mode.Rule;
 
 /**
  * @author: 失败女神-vinc

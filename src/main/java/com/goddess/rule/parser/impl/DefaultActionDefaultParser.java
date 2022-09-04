@@ -1,9 +1,7 @@
 package com.goddess.rule.parser.impl;
 
-import com.goddess.rule.executer.base.Action;
+import com.goddess.rule.executer.mode.Action;
 import com.goddess.rule.parser.ActionParser;
-
-import org.dom4j.Element;
 
 public class DefaultActionDefaultParser implements ActionParser {
     public Action parse(Object dataObj){

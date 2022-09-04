@@ -1,4 +1,4 @@
-import com.goddess.rule.executer.base.formula.FormulaNode;
+import com.goddess.rule.executer.mode.formula.FormulaNode;
 import com.goddess.rule.parser.impl.DefaultFormulaBuilder;
 import org.junit.Test;
 

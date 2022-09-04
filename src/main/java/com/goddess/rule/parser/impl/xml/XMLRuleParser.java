@@ -2,7 +2,7 @@ package com.goddess.rule.parser.impl.xml;
 
 import cn.hutool.core.io.resource.ResourceUtil;
 import com.goddess.rule.constant.Constant;
-import com.goddess.rule.executer.base.*;
+import com.goddess.rule.executer.mode.*;
 import com.goddess.rule.executer.context.RuleConfig;
 import com.goddess.rule.parser.RuleParser;
 import com.goddess.rule.parser.impl.DefaultActionDefaultParser;
@@ -61,7 +61,7 @@ public class XMLRuleParser implements RuleParser {
             name = document.getRootElement().attributeValue("name");
             List<Graph> graphs = parseGraphs(document.getRootElement().element("graphs"));
             List<Result> results = parseResults(document.getRootElement().element("results"));
-            List<Param> params = parseParams(document.getRootElement().element("params"));
+            List<Param> params = XMLRuleConfigBuilder.parseParams(document.getRootElement().element("params"));
             List<InitData> initDatas = parseInitDatas(document.getRootElement().element("initDatas"));
 
             rule.setCode(code);
@@ -264,37 +264,7 @@ public class XMLRuleParser implements RuleParser {
         return results;
     }
 
-    /**
-     * 处理参数节点
-     * @param element
-     * @return
-     */
-    private List<Param> parseParams(Element element){
-        List<Param> params = new ArrayList<>();
-        List<Element> items = element.elements("param");
-        for (Element item:items){
-            Param param = new Param();
-            String code,name,dataType,necessary,data;
-            code = item.attributeValue("code");
-            name = item.attributeValue("name");
-            dataType = item.attributeValue("dataType");
-            necessary = item.attributeValue("necessary");
-            data = item.attributeValue("data");
-            param.setCode(code);
-            param.setName(name);
-            param.setDataType(dataType);
-            if(StringUtils.isNotEmpty(necessary)&&necessary.equalsIgnoreCase("true")){
-                param.setNecessary(true);
-            }else {
-                param.setNecessary(false);
-            }
-            if(StringUtils.isNotEmpty(data)){
-                param.setData(data);
-            }
-            params.add(param);
-        }
-        return params;
-    }
+
 
     /**
      * 处理初始数据节点
@@ -317,10 +287,10 @@ public class XMLRuleParser implements RuleParser {
             initData.setMetaClassCode(metaClassCode);
             initData.setParams(params);
             if(StringUtils.isEmpty(metaClassCode)){
-                initData.setFormulaNode(ruleConfig.getFormulaBuilder().getFormulaNode(params));
+                initData.setDataFormulaNode(ruleConfig.getFormulaBuilder().getFormulaNode(params));
             }else {
                 String text = "@{"+metaClassCode+"("+params+")}";
-                initData.setFormulaNode(ruleConfig.getFormulaBuilder().getFormulaNode(text));
+                initData.setDataFormulaNode(ruleConfig.getFormulaBuilder().getFormulaNode(text));
             }
             initDatas.add(initData);
         }
