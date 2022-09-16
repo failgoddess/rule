@@ -2,6 +2,7 @@ package com.goddess.rule.executer.context;
 
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.JSONPath;
+import com.goddess.rule.executer.mode.Graph;
 import com.goddess.rule.executer.mode.Link;
 import com.goddess.rule.executer.mode.Rule;
 
@@ -17,59 +18,129 @@ import java.util.Stack;
  */
 public class DecisionContext {
     private Rule rule;
+    private Graph nowGraph;
     private RuleConfig ruleConfig;
     private MetaContext metaContext;
 
-    //params graph action
+    //globalParams rule graph data
     private JSONObject data;
-    //回溯栈
-    private Stack<PathNode> pathNodeStack = new Stack<>();
-    //执行路径
-    private Queue<PathNode> pathNodeQueue = new LinkedList<>();
+    private Stack<JSONObject> dataStack = new Stack<>();
 
-    public DecisionContext(RuleConfig ruleConfig,Rule rule, JSONObject data){
-        this.data = data;
+    private JSONObject graphData;
+    private JSONObject ruleData;
+    private JSONObject globalParams;
+    //回溯栈
+    private Stack<JudgePath> judgePathStack = new Stack<>();
+    //执行路径
+    private Queue<JudgePath> judgePathQueue = new LinkedList<>();
+
+    public DecisionContext(RuleConfig ruleConfig,Rule rule){
+        this.globalParams = new JSONObject(ruleConfig.getGlobalParamsObject());
         this.rule = rule;
         this.ruleConfig = ruleConfig;
     }
+
     /**
      * 回溯栈出栈
      * @return
      */
-    public PathNode revertLink(){
-        if(this.pathNodeStack.empty()){
+    public JudgePath revertLink(){
+        if(this.judgePathStack.empty()){
             return null;
         }
-        PathNode pathNode = this.pathNodeStack.pop();
-        return pathNode;
+        JudgePath judgePath = this.judgePathStack.pop();
+        return judgePath;
     }
     /**
      * 当flag等于true链接生效 记录 回溯栈，
      * @return
      */
     public void execLink(Link link, boolean flag){
-        PathNode pathNode = new PathNode(link.getBranchCode(),link.getCode(),flag);
+        JudgePath judgePath = new JudgePath(this.nowGraph.getCode(),link.getBranchCode(),link.getCode(),flag);
         if (flag){
             //加入回溯栈
-            pathNodeStack.push(pathNode);
+            judgePathStack.push(judgePath);
         }
         //记录执行路径
-        pathNodeQueue.add(pathNode);
+        judgePathQueue.add(judgePath);
+    }
+
+    public JSONObject getGraphData() {
+        //返回值不要被修改
+        return graphData;
+    }
+
+    public JSONObject removeData() {
+        JSONObject re =  this.data;
+        this.data = dataStack.pop();
+        return  re;
     }
 
     public JSONObject getData() {
-        //为了不让返回值被修改
-        return JSONObject.parseObject(JSONObject.toJSONString(data));
+        return data;
     }
-    public void putData(String key,Object values) {
-        if(JSONPath.contains(data,key)){
 
-        }else {
-            data.put(key,values);
+    public void pushData(JSONObject data) {
+        dataStack.push(this.data);
+        this.data = data;
+    }
+
+    public void putGraphData(String key, Object values) {
+        if(graphData==null){
+            graphData = new JSONObject();
         }
+        JSONObject json = new JSONObject();
+        json.put(key,values);
+        graphData.put(this.nowGraph.getCode(),json);
+    }
+    public void putGraphData(JSONObject json){
+        if(graphData==null){
+            graphData = new JSONObject();
+        }else {
+            graphData.put(this.nowGraph.getCode(),json);
+        }
+    }
+    public JSONObject getRuleData() {
+        //返回值不要被修改
+        return ruleData;
+    }
+    public void putRuleData(String key, Object values) {
+        if(ruleData==null){
+            ruleData = new JSONObject();
+        }
+        ruleData.put(key,values);
+    }
+    public void putRuleData(JSONObject json){
+        if(ruleData==null){
+            ruleData = new JSONObject();
+        }
+        ruleData.putAll(json);
 
     }
+    public Object getObject(String path){
+        Object data = JSONPath.eval(this.data, path,false);
+        if(data==null){
+            data = JSONPath.eval(this.graphData, path,false);
+            if(data==null) {
+                data = JSONPath.eval(this.ruleData, path, false);
+                if (data == null) {
+                    data = JSONPath.eval(this.globalParams, path, false);
+                }
+            }
+        }
+        return data;
+    }
+    public String getString(String path){
+        Object data = getObject(path);
+        if(data==null){
+            return null;
+        }
+        return data.toString();
+    }
 
+    public void setNowGraph(Graph nowGraph) {
+        this.nowGraph = nowGraph;
+    }
 
     public RuleConfig getRuleConfig() {
         return ruleConfig;
@@ -85,5 +156,13 @@ public class DecisionContext {
 
     public void setMetaContext(MetaContext metaContext) {
         this.metaContext = metaContext;
+    }
+
+    public JSONObject getGlobalParams() {
+        return globalParams;
+    }
+
+    public void setGlobalParams(JSONObject globalParams) {
+        this.globalParams = globalParams;
     }
 }

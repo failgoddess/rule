@@ -1,11 +1,9 @@
 package com.goddess.rule.parser.impl;
 
 import com.goddess.rule.executer.context.DecisionContext;
-import com.goddess.rule.executer.handler.loader.ObjectLoaderFactory;
 import com.goddess.rule.executer.handler.nozzle.Nozzle;
-import com.goddess.rule.executer.handler.source.Source;
 import com.goddess.rule.parser.NozzleParser;
-import com.goddess.rule.parser.SourceParser;
+import org.dom4j.Element;
 
 /**
  * @author: 失败女神-vinc
@@ -22,7 +20,7 @@ public class DefaultNozzleParser implements NozzleParser {
         if (instance != null) {
             return instance;
         }else {
-            synchronized (ObjectLoaderFactory.class){
+            synchronized (DefaultNozzleParser.class){
                 if(instance==null){
                     instance=new DefaultNozzleParser();
                     baseNozzleParser = nozzleParser;
@@ -31,23 +29,31 @@ public class DefaultNozzleParser implements NozzleParser {
         }
         return instance;
     }
+    public static DefaultNozzleParser getInstance(){
+        return instance;
+    }
 
     @Override
     public Nozzle parse(Object dataObj) {
+        Nozzle nozzle = null;
         if(baseNozzleParser==null){
-            return new Nozzle() {
+            nozzle = new Nozzle() {
                 @Override
-                public void setSource(Source source){
-
-                }
-
-                @Override
-                public void extend(DecisionContext context) {
-
+                public Object extend(DecisionContext context) {
+                    return null;
                 }
             };
         }else {
-            return baseNozzleParser.parse(dataObj);
+            nozzle = baseNozzleParser.parse(dataObj);
         }
+        Element item =(Element)dataObj;
+        String code, name,remark;
+        code = item.attributeValue("code");
+        name = item.attributeValue("name");
+        remark = item.attributeValue("remark");
+        nozzle.setCode(code);
+        nozzle.setName(name);
+        nozzle.setRemark(remark);
+        return nozzle;
     }
 }

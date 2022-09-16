@@ -8,8 +8,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public abstract class Operation {
@@ -19,6 +18,27 @@ public abstract class Operation {
     private static DateTimeFormatter hdm = DateTimeFormatter.ofPattern(Constant.DateFormatter.HH_MM_SS);
 
     public abstract String getOperationCode();
+
+
+    public String executeStr(String dataTypeCode,Integer coverComplex,Object cover,
+                             Integer thresholdComplex,Object threshold){
+        switch (dataTypeCode){
+            case Constant.DataType.NUMBER:
+                return String.format(" %s %s %s ", cover,convertOp(getOperationCode()),threshold);
+            case Constant.DataType.BOLL:
+                return String.format(" %s %s %s ", cover,convertOp(getOperationCode()),threshold);
+            case Constant.DataType.STRING:
+                return String.format(" %s %s '%s' ", cover,convertOp(getOperationCode()),threshold);
+            case Constant.DataType.TIME_YMD:
+                return String.format(" %s %s '%s' ", cover,convertOp(getOperationCode()),getTimeYdm(threshold));
+            case Constant.DataType.TIME_HMS:
+                return String.format(" %s %s '%s' ", cover,convertOp(getOperationCode()),getTimeHms(threshold));
+            case Constant.DataType.TIME_YMDHMS:
+                return String.format(" %s %s '%s' ", cover,convertOp(getOperationCode()),getTimeYdmhms(threshold));
+        }
+
+        return "";
+    }
 
     public abstract boolean execute(String dataTypeCode,Integer coverComplex,Object cover,
                                     Integer thresholdComplex,Object threshold);
@@ -33,10 +53,11 @@ public abstract class Operation {
 
     public abstract boolean boll(Boolean t1 ,Boolean t2);
 
-
-
+    public static List<String> getListStr(Object data){
+        return Arrays.asList(data.toString().split(","));
+    }
     //获取字符串列表
-    protected List<String> getList(Object data){
+    public static List<String> getList(Object data){
         List<String> result = new ArrayList<>();
         if (data instanceof List) {
             for (Object o : (List) data) {
@@ -47,17 +68,20 @@ public abstract class Operation {
                 }
             }
         }else {
-            if(data ==null){
-                result.add(null);
-            }else {
-                result.add(data.toString());
+            if(data != null) {
+                if (data.toString().indexOf(",") != -1) {
+                    String[] datas = data.toString().split(",");
+                    result = Arrays.asList(datas);
+                } else {
+                    result.add(data.toString());
+                }
             }
         }
         return result;
     }
 
     //获取数值
-    protected BigDecimal getNumber(Object data){
+    public static BigDecimal getNumber(Object data){
         if(data == null){
             return null;
         }else {
@@ -65,7 +89,7 @@ public abstract class Operation {
         }
     }
     //获取数值列表
-    protected List<BigDecimal> getNumberList(Object data){
+    public static List<BigDecimal> getNumberList(Object data){
         List<BigDecimal> result = new ArrayList<>();
         for (String temp:getList(data)){
             result.add(getNumber(temp));
@@ -74,14 +98,14 @@ public abstract class Operation {
     }
 
     //获取布尔值
-    protected Boolean getBoll(Object data){
+    public static Boolean getBoll(Object data){
         if(data ==null){
             return null;
         }else {
             return new Boolean(data.toString());
         }
     }
-    protected List<Boolean> getBollList(Object data){
+    public static List<Boolean> getBollList(Object data){
         List<String> params = getList(data);
         List<Boolean> result = new ArrayList<>();
         for (String temp:params){
@@ -92,7 +116,7 @@ public abstract class Operation {
 
 
     //获取时间 年月日时分秒
-    protected LocalTime getTimeHms(Object data){
+    public static LocalTime getTimeHms(Object data){
         if(data==null){
             return null;
         }else {
@@ -100,7 +124,7 @@ public abstract class Operation {
         }
     }
     //获取时间 年月日时分秒 列表
-    protected List<LocalTime> getTimeHmsList(Object data){
+    public static List<LocalTime> getTimeHmsList(Object data){
         List<String> params = getList(data);
         List<LocalTime> result = new ArrayList<>();
         for (String temp:params){
@@ -109,7 +133,7 @@ public abstract class Operation {
         //这里会过滤去重
         return result.stream().distinct().sorted().collect(Collectors.toList());
     }
-    protected List<LocalTime> getTimeHmsList(List<String> params){
+    public static List<LocalTime> getTimeHmsList(List<String> params){
         List<LocalTime> result = new ArrayList<>();
         for (String temp:params){
             result.add(getTimeHms(temp));
@@ -120,11 +144,11 @@ public abstract class Operation {
 
 
     //获取时间 年月日时分秒
-    protected LocalDateTime getTimeYdmhms(Object data){
+    public static LocalDateTime getTimeYdmhms(Object data){
         return LocalDateTime.parse(data.toString(),ydmhms);
     }
     //获取时间 年月日时分秒 列表
-    protected List<LocalDateTime> getTimeYdmhmsList(Object data){
+    public static List<LocalDateTime> getTimeYdmhmsList(Object data){
         List<String> params = getList(data);
         List<LocalDateTime> result = new ArrayList<>();
         for (String temp:params){
@@ -133,7 +157,7 @@ public abstract class Operation {
         //这里会过滤去重
         return result.stream().distinct().sorted().collect(Collectors.toList());
     }
-    protected List<LocalDateTime> getTimeYdmhmsList(List<String> params){
+    public static List<LocalDateTime> getTimeYdmhmsList(List<String> params){
         List<LocalDateTime> result = new ArrayList<>();
         for (String temp:params){
             result.add(getTimeYdmhms(temp));
@@ -144,7 +168,7 @@ public abstract class Operation {
 
 
     //获取时间 年月日
-    protected LocalDate getTimeYdm(Object data){
+    public static LocalDate getTimeYdm(Object data){
         if(data==null){
             return null;
         }else {
@@ -153,7 +177,7 @@ public abstract class Operation {
 
     }
     //获取时间 年月日 列表
-    protected List<LocalDate> getTimeYdmList(Object data){
+    public static List<LocalDate> getTimeYdmList(Object data){
         List<String> params = getList(data);
         List<LocalDate> result = new ArrayList<>();
         for (String temp:params){
@@ -166,7 +190,7 @@ public abstract class Operation {
 
 
 
-    protected boolean checkData(Object data,Object params){
+    public static boolean checkData(Object data,Object params){
         if(null==data){
             return true;
         }
@@ -179,7 +203,7 @@ public abstract class Operation {
 
 
     //判断是不是列表
-    protected boolean isList(Integer flag){
+    public static boolean isList(Integer flag){
         if(flag==null){
             return false;
         }
@@ -355,5 +379,26 @@ public abstract class Operation {
 
     public boolean isOneOp() {
         return oneOp;
+    }
+
+    public String convertOp(String op){
+        Map<String,String> map = new HashMap<>();
+        map.put(Constant.OperationType.GT," > ");//大于
+        map.put(Constant.OperationType.LE," <= ");//小于等于
+
+        map.put(Constant.OperationType.LT," < ");//小于
+        map.put(Constant.OperationType.GE," >= ");//大于等于
+
+        map.put(Constant.OperationType.EQ," = ");//等于
+        map.put(Constant.OperationType.NEQ," != ");//不等于
+
+        map.put(Constant.OperationType.IN," in ");//在集合
+        map.put(Constant.OperationType.NIN," not in ");//不在集合
+
+        map.put(Constant.OperationType.EN," is null ");//为空
+        map.put(Constant.OperationType.NIN," is not null ");//不为空
+
+
+        return map.get(op);
     }
 }

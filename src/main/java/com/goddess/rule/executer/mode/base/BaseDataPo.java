@@ -15,7 +15,7 @@ public class BaseDataPo extends BasePo{
     //data
     private String data;
     private FormulaNode dataFormulaNode;
-    private String complex;
+    private int complex = 0;
     //规则对象编码
     private String metaClassCode;
 
@@ -47,11 +47,11 @@ public class BaseDataPo extends BasePo{
         this.dataFormulaNode = dataFormulaNode;
     }
 
-    public String getComplex() {
+    public int getComplex() {
         return complex;
     }
 
-    public void setComplex(String complex) {
+    public void setComplex(int complex) {
         this.complex = complex;
     }
 

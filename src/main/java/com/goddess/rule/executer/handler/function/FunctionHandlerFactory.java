@@ -36,7 +36,7 @@ public class FunctionHandlerFactory {
         if (handlerMap.containsKey(loaderCode)) {
             return handlerMap.get(loaderCode);
         } else {
-            throw new RuleException("扩展方法："+loaderCode);
+            throw new RuleException("不存在的扩展方法："+loaderCode);
         }
     }
 }

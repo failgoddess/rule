@@ -1,11 +1,9 @@
 package com.goddess.rule.executer.mode;
 
-import com.goddess.rule.constant.RuleException;
-import com.goddess.rule.constant.ExceptionCode;
+import com.alibaba.fastjson.JSONObject;
 import com.goddess.rule.executer.context.DecisionContext;
 import com.goddess.rule.executer.mode.base.BasePo;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,18 +26,21 @@ public class Rule extends BasePo {
 
     public Rule(){}
 
-    public DecisionResult decision(DecisionContext decisionContext){
+    public DecisionResult decision(DecisionContext decisionContext, JSONObject data){
+
         //验证参数
-        checkParam(decisionContext);
+        Param.checkParam(data,this.params);
+        //解析参数
+        decisionContext.putRuleData(Param.buildParams(decisionContext,this.params,data));
         //构建 initDatas 并将 新数据加入到 data
-        buildInitData(decisionContext);
+        decisionContext.putRuleData(buildInitData(decisionContext));
 
         DecisionResult decisionResult = new DecisionResult();
 
         //获得决策图的每一个结果 决策图编码为Key 结果为val
         Map<String,String> graphResult = new HashMap<>();
-        graphs.forEach(graphExecute -> {
-            graphResult.put(graphExecute.getCode(),graphExecute.decision(decisionContext));
+        graphs.forEach(graph -> {
+            graphResult.put(graph.getCode(),graph.decision(decisionContext));
         });
 
         //只有一棵树 直接返回
@@ -55,27 +56,17 @@ public class Rule extends BasePo {
         return decisionResult;
     }
 
-    private void buildInitData(DecisionContext context){
-        for(InitData initData:initDatas){
-            context.putData(initData.getCode(),initData.getDataFormulaNode().apply(context));
-        }
-    }
-    private void checkParam(DecisionContext context){
-        List<String> names = new ArrayList<>();
-        List<Param> params = this.getParams();
-        Map<String,String> nameMap = params.stream().collect(Collectors.toMap(Param::getCode,Param::getName));
-        //筛选出所有需要必须传入的的进行非空校验
-        for(Param param:this.params.stream().filter(o-> o.isNecessary()).collect(Collectors.toList())){
-            Object data = context.getData().get(param.getCode());
-            if(data==null||data.toString().equals("")){
-                names.add(param.getCode()+":"+nameMap.get(param.getCode()));
+    private JSONObject buildInitData(DecisionContext context){
+        JSONObject json = new JSONObject();
+        if(initDatas!=null){
+            for(InitData initData:initDatas){
+                json.put(initData.getCode(),initData.getDataFormulaNode().apply(context));
             }
         }
-        if(!names.isEmpty()){
-            throw new RuleException(ExceptionCode.EC_0107,String.join(",",names));
-        }
-
+        return json;
     }
+
+
 
 
     public List<Param> getParams() {
@@ -104,4 +95,5 @@ public class Rule extends BasePo {
     public void setInitDatas(List<InitData> initDatas) {
         this.initDatas = initDatas;
     }
+
 }

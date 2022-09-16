@@ -23,18 +23,16 @@ public class XMLRuleParser implements RuleParser {
 
 
     private static XMLRuleParser instance = null;
-    private DefaultActionDefaultParser xmlActionDefaultParser = null;
 
-    private XMLRuleParser(DefaultActionDefaultParser xmlActionDefaultParser){
-        this.xmlActionDefaultParser = xmlActionDefaultParser;
+    private XMLRuleParser(){
     }
-    public static XMLRuleParser getInstance(DefaultActionDefaultParser actionParser) {
+    public static XMLRuleParser getInstance() {
         if (instance != null) {
             return instance;
         }else {
             synchronized (XMLRuleParser.class){
                 if(instance==null){
-                    instance=new XMLRuleParser(actionParser);
+                    instance=new XMLRuleParser();
                 }
             }
         }
@@ -132,7 +130,7 @@ public class XMLRuleParser implements RuleParser {
         }
         List<Element> items = element.elements("action");
         for (Element item:items){
-            Action action =xmlActionDefaultParser.parse(item);
+            Action action =DefaultActionDefaultParser.getInstance().parse(item);
             if(action!=null){
                 actions.add(action);
             }
@@ -272,6 +270,9 @@ public class XMLRuleParser implements RuleParser {
      * @return
      */
     private List<InitData> parseInitDatas(Element element){
+        if(element ==null){
+            return null;
+        }
         RuleConfig ruleConfig = RuleConfig.getInstance();
         List<InitData> initDatas = new ArrayList<>();
         List<Element> items = element.elements("initData");

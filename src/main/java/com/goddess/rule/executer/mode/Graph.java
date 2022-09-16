@@ -4,7 +4,7 @@ import com.goddess.rule.constant.RuleException;
 import com.goddess.rule.constant.Constant;
 import com.goddess.rule.constant.ExceptionCode;
 import com.goddess.rule.executer.context.DecisionContext;
-import com.goddess.rule.executer.context.PathNode;
+import com.goddess.rule.executer.context.JudgePath;
 import com.goddess.rule.executer.mode.base.BasePo;
 
 import java.util.List;
@@ -31,6 +31,7 @@ public class Graph extends BasePo {
      * @return
      */
     public String decision(DecisionContext decisionContext){
+        decisionContext.setNowGraph(this);
         //查找第一跳 作为当前处理分支
         Branch thisBranch = branchMap.get(this.getFirstBranchCode());
         if (thisBranch==null) {
@@ -45,14 +46,14 @@ public class Graph extends BasePo {
                 int index = -1;
                 do {
                     //没有找到符合的链接 要考虑进行回溯
-                    PathNode pathNode = decisionContext.revertLink();
-                    if(pathNode == null){
+                    JudgePath judgePath = decisionContext.revertLink();
+                    if(judgePath == null){
                         //没有在可以回溯的分支了
                         throw new RuleException(ExceptionCode.EC_0103,this.getCode(),this.getName());
                     }
-                    Branch branch = branchMap.get(pathNode.getBranchCode());
+                    Branch branch = branchMap.get(judgePath.getBranchCode());
                     //获取当前链接的下一个链接
-                    index = branch.getNextLinkExecuteIndex(pathNode.getLinkCode());
+                    index = branch.getNextLinkExecuteIndex(judgePath.getLinkCode());
                     if(index!=-1){
                         //不为-1表示 回溯栈中的路径节点不是所在分支的最后一个链接可以继续处理这个分支的下一个链接
                         //为-1表示 回溯栈中的路径节点是所在分支的最后一个链接要 继续回溯

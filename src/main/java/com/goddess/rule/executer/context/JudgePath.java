@@ -6,38 +6,34 @@ package com.goddess.rule.executer.context;
  * @email: 18733123202@163.com
  * @date: 2022/6/3 23:02
  */
-public class PathNode {
+public class JudgePath {
     private String branchCode;
     private String linkCode;
     private boolean flag;
-    public PathNode(){}
-    public PathNode(String branchCode, String linkCode,boolean flag) {
+    private String graphCode;
+    public JudgePath(){}
+    public JudgePath(String graphCode, String branchCode, String linkCode, boolean flag) {
+        this.graphCode = graphCode;
         this.branchCode = branchCode;
         this.linkCode = linkCode;
         this.flag = flag;
+    }
+
+    public String getGraphCode() {
+        return graphCode;
     }
 
     public boolean isFlag() {
         return flag;
     }
 
-    public void setFlag(boolean flag) {
-        this.flag = flag;
-    }
-
     public String getBranchCode() {
         return branchCode;
     }
 
-    public void setBranchCode(String branchCode) {
-        this.branchCode = branchCode;
-    }
 
     public String getLinkCode() {
         return linkCode;
     }
 
-    public void setLinkCode(String linkCode) {
-        this.linkCode = linkCode;
-    }
 }

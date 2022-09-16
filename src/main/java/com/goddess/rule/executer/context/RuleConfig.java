@@ -1,21 +1,24 @@
 package com.goddess.rule.executer.context;
 
 import com.alibaba.fastjson.JSONObject;
-import com.goddess.rule.executer.mode.Param;
-import com.goddess.rule.executer.mode.Rule;
 import com.goddess.rule.executer.handler.function.FunctionHandlerFactory;
 import com.goddess.rule.executer.handler.loader.ObjectLoaderFactory;
 import com.goddess.rule.executer.handler.nozzle.Nozzle;
 import com.goddess.rule.executer.handler.source.Source;
 import com.goddess.rule.executer.meta.MetaClass;
 import com.goddess.rule.executer.meta.MetaEnum;
+import com.goddess.rule.executer.mode.Param;
+import com.goddess.rule.executer.mode.Rule;
 import com.goddess.rule.executer.mode.operation.OperationFactory;
 import com.goddess.rule.parser.ActionParser;
 import com.goddess.rule.parser.FormulaBuilder;
 import com.goddess.rule.parser.NozzleParser;
 import com.goddess.rule.parser.SourceParser;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 配置中心
@@ -32,6 +35,7 @@ public class RuleConfig {
 
     //全局共参
     private List<Param> globalParams;
+    private JSONObject globalParamsObject;
     //规则对象类
     private List<MetaClass> metaClasses;
     private Map<String,MetaClass> metaClassMap = new HashMap<>();
@@ -46,6 +50,7 @@ public class RuleConfig {
     private Map<String,Rule> ruleMap = new HashMap<>();
     //公式解析器
     private FormulaBuilder formulaBuilder;
+
 
     private List<Source> sources = new ArrayList<>();
     private Map<String,Source> sourceMap = new HashMap<>();
@@ -81,12 +86,6 @@ public class RuleConfig {
         return instance;
     }
 
-
-
-
-    public DecisionContext buildeDecisionContext(String ruleCode, JSONObject data){
-        return new DecisionContext(this,this.getRuleMap().get(ruleCode),data);
-    }
     public String getRulePath() {
         return rulePath;
     }
@@ -228,8 +227,18 @@ public class RuleConfig {
     }
 
     public void setGlobalParams(List<Param> globalParams) {
+        this.globalParamsObject = new JSONObject();
+        for (Param param:globalParams) {
+            //这里一定当作固定值用
+            this.globalParamsObject.put(param.getCode(),param.getData());
+        }
         this.globalParams = globalParams;
     }
+
+    public JSONObject getGlobalParamsObject() {
+        return globalParamsObject;
+    }
+
 
     public List<Nozzle> getNozzles() {
         return nozzles;
@@ -245,5 +254,12 @@ public class RuleConfig {
 
     public void setNozzleMap(Map<String, Nozzle> nozzleMap) {
         this.nozzleMap = nozzleMap;
+    }
+
+    public Rule getRule(String ruleCode){
+        return getRuleMap().get(ruleCode);
+    }
+    public DecisionContext buildeDecisionContext(String ruleCode){
+        return new DecisionContext(this,this.getRuleMap().get(ruleCode));
     }
 }

@@ -15,15 +15,15 @@ import org.junit.Test;
 public class RuleTest {
     @Test
     public void main() throws Exception {
-        RuleConfig ruleConfig = new XMLRuleConfigBuilder().build("classpath:rule-config.xml");
+        RuleConfig ruleConfig = new XMLRuleConfigBuilder().build("classpath:demo/rule-config.xml");
         Rule rule = ruleConfig.getRuleMap().get("RU001");
         Assert.assertTrue(rule!=null);
         JSONObject dataJson = new JSONObject();
         dataJson.put("buyStoreCode","1002");
         dataJson.put("sendStoreCode","1004");
         dataJson.put("discount","0.88");
-        DecisionContext decisionContext  = ruleConfig.buildeDecisionContext("RU001",dataJson);
-        DecisionResult decisionResult = rule.decision(decisionContext);
+        DecisionContext decisionContext  = ruleConfig.buildeDecisionContext("RU001");
+        DecisionResult decisionResult = rule.decision(decisionContext,dataJson);
 
 //        System.out.println(decisionResult);
     }

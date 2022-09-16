@@ -37,10 +37,8 @@ import java.util.stream.Collectors;
  * @date: 2022/6/4 15:51
  */
 public  class XMLRuleConfigBuilder implements RuleConfigBuilder {
+
     public RuleConfig build(String configPath) throws Exception{
-        return build(configPath,new DefaultActionDefaultParser());
-    }
-    private RuleConfig build(String configPath, DefaultActionDefaultParser actionParser) throws Exception{
         Document document = DocumentHelper.parseText(ResourceUtil.readUtf8Str(configPath));
         if(!document.getRootElement().getName().equals("configuration")){
             throw new RuleException(ExceptionCode.EC_0002);
@@ -60,7 +58,8 @@ public  class XMLRuleConfigBuilder implements RuleConfigBuilder {
         ruleConfig.setSourceParser(parseSourceParser(document.getRootElement().element("metaEnvironment").element("sourceParser")));
 
         //解析自定义 actionParser解析器
-        ruleConfig.setActionParser(parseActionParser(document.getRootElement().element("metaEnvironment").element("actionParser")));
+        ActionParser actionParser = parseActionParser(document.getRootElement().element("metaEnvironment").element("actionParser"));
+        ruleConfig.setActionParser(DefaultActionDefaultParser.getInstance(actionParser));
 
         //解析自定义 nozzleParser解析器
         ruleConfig.setNozzleParser(parseNozzleParser(document.getRootElement().element("metaEnvironment").element("nozzleParser")));
@@ -100,7 +99,7 @@ public  class XMLRuleConfigBuilder implements RuleConfigBuilder {
 
 
         //解析规则配置
-        List<Rule> rules = parseRules(ruleConfig.getRulePath(),actionParser);
+        List<Rule> rules = parseRules(ruleConfig.getRulePath());
         ruleConfig.setRules(rules);
         ruleConfig.setRuleMap(rules.stream().collect(Collectors.toMap(Rule::getCode,o->o)));
 
@@ -117,6 +116,9 @@ public  class XMLRuleConfigBuilder implements RuleConfigBuilder {
      * @return
      */
     public static List<Param> parseParams(Element element){
+        if(element == null){
+            return new ArrayList<>();
+        }
         List<Param> params = new ArrayList<>();
         List<Element> items = element.elements("param");
         for (Element item:items){
@@ -143,6 +145,9 @@ public  class XMLRuleConfigBuilder implements RuleConfigBuilder {
         return params;
     }
     private List<Source> parseSources(Element element,SourceParser sourceParser){
+        if(element==null||element.elements("source")==null){
+            return new ArrayList<>();
+        }
         List<Source> sources = new ArrayList<>();
         List<Element> items = element.elements("source");
         for (Element item:items){
@@ -328,7 +333,7 @@ public  class XMLRuleConfigBuilder implements RuleConfigBuilder {
         }
         return factory;
     }
-    private List<Rule> parseRules(String rulePath, DefaultActionDefaultParser actionParser) throws Exception{
+    private List<Rule> parseRules(String rulePath) throws Exception{
         List<Rule> rules = new ArrayList<>();
         //解析规则
         List<String> rulePaths = Arrays.asList(rulePath.split(","));
@@ -337,7 +342,7 @@ public  class XMLRuleConfigBuilder implements RuleConfigBuilder {
             String type = path.substring(path.lastIndexOf(".")+1).toLowerCase();
             switch (type) {
                 case Constant.ConfigType.XML:
-                    parser = XMLRuleParser.getInstance(actionParser);
+                    parser = XMLRuleParser.getInstance();
                     break;
                 default:
                     throw new RuleException(ExceptionCode.EC_0001,path);

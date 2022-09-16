@@ -17,6 +17,16 @@ public class PathNode extends FormulaNode{
     }
     @Override
     public Object apply(DecisionContext context) {
-        return JSONPath.eval(context.getData(), path,false);
+        Object data = JSONPath.eval(context.getData(), path,false);
+        if(data==null) {
+            data = JSONPath.eval(context.getGraphData(), path, false);
+            if (data == null) {
+                data = JSONPath.eval(context.getRuleData(), path, false);
+                if (data == null) {
+                    data = JSONPath.eval(context.getGlobalParams(), path, false);
+                }
+            }
+        }
+        return data;
     }
 }

@@ -1,6 +1,7 @@
 package com.goddess.rule.executer.mode;
 
 import cn.hutool.core.collection.ListUtil;
+import com.goddess.rule.constant.RuleException;
 import com.goddess.rule.executer.context.DecisionContext;
 import com.goddess.rule.executer.mode.base.BasePo;
 
@@ -27,9 +28,13 @@ public class Branch extends BasePo {
     public Link decision(DecisionContext decisionContext,int start){
         for (Action action:actions) {
             try {
-                action.execute(decisionContext);
-            }catch (Exception e) {
+                Object reData = action.execute(decisionContext);
+                decisionContext.putGraphData(action.getCode(),reData);
+            }catch (RuleException e) {
                 e.printStackTrace();
+                if(action.isBlock()){
+                    throw e;
+                }
             }
         }
         for(int i = 0; i< links.size(); i++){

@@ -1,12 +1,8 @@
-import com.goddess.rule.executer.mode.Rule;
-import com.goddess.rule.executer.context.RuleConfig;
-import com.goddess.rule.parser.impl.xml.XMLRuleConfigBuilder;
-
 public class Main {
     public static void main(String[] args) throws Exception {
 
-        RuleConfig ruleConfig = new XMLRuleConfigBuilder().build("classpath:rule-config.xml");
-        Rule rule = ruleConfig.getRuleMap().get("RU001");
+        //RuleConfig ruleConfig = new XMLRuleConfigBuilder().build("classpath:rule-config.xml");
+        //Rule rule = ruleConfig.getRuleMap().get("RU001");
 
         //RelationFactory relationFactory = RelationFactory.getInstance();
         //RelationOperation handler = relationFactory.getOperation(Constant.OperationType.EQ);
