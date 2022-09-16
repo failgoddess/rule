@@ -18,11 +18,13 @@ import java.util.List;
  * @email: 18733123202@163.com
  * @date: 2022/9/16 18:12
  */
-public abstract class XmlBoundParser implements BoundParser {
-    public Compose boundCompose(Element element){
-        if(element==null){
+public class XmlBoundParser implements BoundParser {
+    public Compose boundCompose(Object object){
+        if(object==null){
             return null;
         }
+        Element element = (Element)object;
+
         List content = element.content();
 
         Compose compose = new Compose();
@@ -55,7 +57,11 @@ public abstract class XmlBoundParser implements BoundParser {
 
         return compose;
     }
-    public Bound boundElement(Element element){
+    public Bound boundElement(Object object){
+        if(object==null){
+            return null;
+        }
+        Element element = (Element)object;
         QName qName = element.getQName();
         String type = qName.getName();
         if("for".equalsIgnoreCase(type)){
@@ -73,30 +79,40 @@ public abstract class XmlBoundParser implements BoundParser {
         }
         return null;
     }
-    public Trim boundTrim(Element element){
-        if(element==null){
+    public Trim boundTrim(Object object){
+        if(object==null){
             return null;
         }
+        Element element = (Element)object;
         Trim bound = new Trim();
         bound.setCompose(boundCompose(element));
         return bound;
     }
-    public Else boundElse(Element element){
-        if(element==null){
+    public Else boundElse(Object object){
+        if(object==null){
             return null;
         }
+        Element element = (Element)object;
         Else bound = new Else();
         bound.setCompose(boundCompose(element));
         return bound;
     }
-    public If boundIf(Element element){
+    public If boundIf(Object object){
+        if(object==null){
+            return null;
+        }
+        Element element = (Element)object;
         If bound = new If();
         bound.setCompose(boundCompose(element));
         Expression expression = XMLRuleParser.parseExpression(element.element("expression"));
         bound.setExpression(expression);
         return bound;
     }
-    public Choice boundChoice(Element element){
+    public Choice boundChoice(Object object){
+        if(object==null){
+            return null;
+        }
+        Element element = (Element)object;
         Choice bound = new Choice();
         List<If> ifs = new ArrayList<>();
         List<Element> elements = element.elements("if");
@@ -107,7 +123,11 @@ public abstract class XmlBoundParser implements BoundParser {
         bound.setElseNode(boundElse(element.element("else")));
         return bound;
     }
-    public Where boundWhere(Element element){
+    public Where boundWhere(Object object){
+        if(object==null){
+            return null;
+        }
+        Element element = (Element)object;
         Where bound = new Where();
         List<If> ifs = new ArrayList<>();
         List<Element> elements = element.elements("if");
@@ -118,7 +138,11 @@ public abstract class XmlBoundParser implements BoundParser {
         bound.setElseNode(boundElse(element.element("else")));
         return bound;
     }
-    public For boundFor(Element element){
+    public For boundFor(Object object){
+        if(object==null){
+            return null;
+        }
+        Element element = (Element)object;
         String dataType,data,itemName,index,start,end;
         dataType = element.attributeValue("dataType");
         data = element.attributeValue("data");

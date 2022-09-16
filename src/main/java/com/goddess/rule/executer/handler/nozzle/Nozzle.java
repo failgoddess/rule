@@ -47,9 +47,11 @@ public abstract class Nozzle extends BasePo {
             return jsonArray;
         }else {
             JSONObject reJson = new JSONObject();
-            Map<String,String> map = reDataset.get(0);
-            for(Mapping mapping:mappings){
-                reJson.put(mapping.getResult(),map.get(mapping.getCode()));
+            if(reDataset.size()>0){
+                Map<String,String> map = reDataset.get(0);
+                for(Mapping mapping:mappings){
+                    reJson.put(mapping.getResult(),map.get(mapping.getCode()));
+                }
             }
             return reJson;
         }
