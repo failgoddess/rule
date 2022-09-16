@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.goddess.rule.constant.Constant;
 import com.goddess.rule.executer.context.DecisionContext;
-import com.goddess.rule.executer.mode.Mapping;
+import com.goddess.rule.executer.mode.action.Mapping;
 import com.goddess.rule.executer.mode.operation.Operation;
 
 import java.util.ArrayList;

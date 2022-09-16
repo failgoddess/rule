@@ -10,17 +10,13 @@ import com.goddess.rule.executer.handler.function.FunctionHandlerFactory;
 import com.goddess.rule.executer.handler.loader.ObjectLoader;
 import com.goddess.rule.executer.handler.loader.ObjectLoaderFactory;
 import com.goddess.rule.executer.handler.nozzle.Nozzle;
-import com.goddess.rule.executer.handler.source.Source;
 import com.goddess.rule.executer.meta.MetaClass;
 import com.goddess.rule.executer.meta.MetaEnum;
 import com.goddess.rule.executer.meta.MetaProperty;
-import com.goddess.rule.executer.mode.Param;
-import com.goddess.rule.executer.mode.Rule;
+import com.goddess.rule.executer.mode.action.Param;
+import com.goddess.rule.executer.mode.graph.Rule;
 import com.goddess.rule.executer.mode.operation.OperationFactory;
 import com.goddess.rule.parser.*;
-import com.goddess.rule.parser.impl.DefaultActionDefaultParser;
-import com.goddess.rule.parser.impl.DefaultNozzleParser;
-import com.goddess.rule.parser.impl.DefaultSourceParser;
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
@@ -54,12 +50,9 @@ public  class XMLRuleConfigBuilder implements RuleConfigBuilder {
         //解析 公式解析器
         ruleConfig.setFormulaBuilder(parseFormulaBuilder(document.getRootElement().element("metaEnvironment").element("formulaBuilder")));
 
-        //解析自定义 sourceParser解析器
-        ruleConfig.setSourceParser(parseSourceParser(document.getRootElement().element("metaEnvironment").element("sourceParser")));
-
         //解析自定义 actionParser解析器
         ActionParser actionParser = parseActionParser(document.getRootElement().element("metaEnvironment").element("actionParser"));
-        ruleConfig.setActionParser(DefaultActionDefaultParser.getInstance(actionParser));
+        ruleConfig.setActionParser(XmlDefaultActionDefaultParser.getInstance(actionParser));
 
         //解析自定义 nozzleParser解析器
         ruleConfig.setNozzleParser(parseNozzleParser(document.getRootElement().element("metaEnvironment").element("nozzleParser")));
@@ -83,11 +76,6 @@ public  class XMLRuleConfigBuilder implements RuleConfigBuilder {
         ObjectLoaderFactory objectLoaderFactory = parseObjectLoaderFactory(document.getRootElement().element("metaEnvironment").element("objectLoaders"));
         ruleConfig.setObjectLoaderFactory(objectLoaderFactory);
 
-        //解析数据源
-        List<Source> sources = parseSources(document.getRootElement().element("metaEnvironment").element("sources"),ruleConfig.getSourceParser());
-        ruleConfig.setSources(sources);
-        ruleConfig.setSourceMap(sources.stream().collect(Collectors.toMap(Source::getCode,o->o)));
-
         //解析管道
         List<Nozzle> nozzles = parseNozzles(document.getRootElement().element("metaEnvironment").element("nozzles"),ruleConfig.getNozzleParser());
         ruleConfig.setNozzles(nozzles);
@@ -102,11 +90,6 @@ public  class XMLRuleConfigBuilder implements RuleConfigBuilder {
         List<Rule> rules = parseRules(ruleConfig.getRulePath());
         ruleConfig.setRules(rules);
         ruleConfig.setRuleMap(rules.stream().collect(Collectors.toMap(Rule::getCode,o->o)));
-
-
-
-
-
 
         return ruleConfig;
     }
@@ -144,31 +127,12 @@ public  class XMLRuleConfigBuilder implements RuleConfigBuilder {
         }
         return params;
     }
-    private List<Source> parseSources(Element element,SourceParser sourceParser){
-        if(element==null||element.elements("source")==null){
-            return new ArrayList<>();
-        }
-        List<Source> sources = new ArrayList<>();
-        List<Element> items = element.elements("source");
-        for (Element item:items){
-            DefaultSourceParser defaultSourceParser = DefaultSourceParser.getInstance(sourceParser);
-            Source source = defaultSourceParser.parse(item);
 
-            String code, name;
-            code = item.attributeValue("code");
-            name = item.attributeValue("name");
-
-            source.setCode(code);
-            source.setName(name);
-            sources.add(source);
-        }
-        return sources;
-    }
     private List<Nozzle> parseNozzles(Element element,NozzleParser nozzleParser){
         List<Nozzle> nozzles = new ArrayList<>();
         List<Element> items = element.elements("nozzle");
         for (Element item:items){
-            DefaultNozzleParser defaultNozzleParser = DefaultNozzleParser.getInstance(nozzleParser);
+            XmlDefaultNozzleParser defaultNozzleParser = XmlDefaultNozzleParser.getInstance(nozzleParser);
             Nozzle nozzle = defaultNozzleParser.parse(item);
 
             String code, name;
@@ -284,19 +248,7 @@ public  class XMLRuleConfigBuilder implements RuleConfigBuilder {
             throw new RuleException(ExceptionCode.EC_0008,classPath);
         }
     }
-    private SourceParser parseSourceParser(Element element){
-        if(element ==null){
-            return null;
-        }
-        String classPath = element.attributeValue("classPath");
-        try {
-            Class<? extends SourceParser> clszz = (Class<? extends SourceParser>) Class.forName(classPath);
-            SourceParser sourceParser = clszz.newInstance();
-            return sourceParser;
-        }catch (Exception e){
-            throw new RuleException(ExceptionCode.EC_0007,classPath);
-        }
-    }
+
     private NozzleParser parseNozzleParser(Element element){
         String classPath = element.attributeValue("classPath");
         try {

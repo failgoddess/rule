@@ -1,4 +1,4 @@
-package com.goddess.rule.executer.mode;
+package com.goddess.rule.executer.mode.graph;
 
 import com.goddess.rule.constant.RuleException;
 import com.goddess.rule.constant.Constant;

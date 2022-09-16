@@ -1,4 +1,4 @@
-package com.goddess.rule.executer.mode;
+package com.goddess.rule.executer.mode.graph;
 
 import com.goddess.rule.executer.context.DecisionContext;
 import com.goddess.rule.executer.mode.base.BaseDataPo;

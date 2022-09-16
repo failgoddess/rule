@@ -1,4 +1,4 @@
-package com.goddess.rule.parser.impl;
+package com.goddess.rule.parser.impl.xml;
 
 import com.goddess.rule.executer.context.DecisionContext;
 import com.goddess.rule.executer.handler.nozzle.Nozzle;
@@ -10,26 +10,26 @@ import org.dom4j.Element;
  * @email: 18733123202@163.com
  * @date: 2022/6/4 15:51
  */
-public class DefaultNozzleParser implements NozzleParser {
+public class XmlDefaultNozzleParser implements NozzleParser {
     private static NozzleParser baseNozzleParser=null;
-    private static DefaultNozzleParser instance=null;
+    private static XmlDefaultNozzleParser instance=null;
 
-    private DefaultNozzleParser(){}
+    private XmlDefaultNozzleParser(){}
 
-    public static DefaultNozzleParser getInstance(NozzleParser nozzleParser) {
+    public static XmlDefaultNozzleParser getInstance(NozzleParser nozzleParser) {
         if (instance != null) {
             return instance;
         }else {
-            synchronized (DefaultNozzleParser.class){
+            synchronized (XmlDefaultNozzleParser.class){
                 if(instance==null){
-                    instance=new DefaultNozzleParser();
+                    instance=new XmlDefaultNozzleParser();
                     baseNozzleParser = nozzleParser;
                 }
             }
         }
         return instance;
     }
-    public static DefaultNozzleParser getInstance(){
+    public static XmlDefaultNozzleParser getInstance(){
         return instance;
     }
 

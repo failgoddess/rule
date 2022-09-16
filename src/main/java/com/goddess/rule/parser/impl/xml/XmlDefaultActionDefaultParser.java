@@ -1,29 +1,28 @@
-package com.goddess.rule.parser.impl;
+package com.goddess.rule.parser.impl.xml;
 
 import com.alibaba.fastjson.JSONObject;
 import com.goddess.rule.executer.context.DecisionContext;
-import com.goddess.rule.executer.mode.Action;
-import com.goddess.rule.executer.mode.Param;
+import com.goddess.rule.executer.mode.action.Action;
+import com.goddess.rule.executer.mode.action.Param;
 import com.goddess.rule.parser.ActionParser;
-import com.goddess.rule.parser.impl.xml.XMLRuleConfigBuilder;
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Element;
 
 import java.util.List;
 
-public class DefaultActionDefaultParser implements ActionParser {
+public class XmlDefaultActionDefaultParser implements ActionParser {
     private static ActionParser baseActionParser=null;
-    private static DefaultActionDefaultParser instance=null;
+    private static XmlDefaultActionDefaultParser instance=null;
 
-    private DefaultActionDefaultParser(){}
+    private XmlDefaultActionDefaultParser(){}
 
     public static ActionParser getInstance(ActionParser actionParser) {
         if (instance != null) {
             return instance;
         }else {
-            synchronized (DefaultActionDefaultParser.class){
+            synchronized (XmlDefaultActionDefaultParser.class){
                 if(instance==null){
-                    instance=new DefaultActionDefaultParser();
+                    instance=new XmlDefaultActionDefaultParser();
                     baseActionParser = actionParser;
                 }
             }

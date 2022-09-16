@@ -1,4 +1,4 @@
-package com.goddess.rule.executer.mode;
+package com.goddess.rule.executer.mode.graph;
 
 /**
  * @author: 失败女神-vinc

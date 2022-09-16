@@ -4,16 +4,14 @@ import com.alibaba.fastjson.JSONObject;
 import com.goddess.rule.executer.handler.function.FunctionHandlerFactory;
 import com.goddess.rule.executer.handler.loader.ObjectLoaderFactory;
 import com.goddess.rule.executer.handler.nozzle.Nozzle;
-import com.goddess.rule.executer.handler.source.Source;
 import com.goddess.rule.executer.meta.MetaClass;
 import com.goddess.rule.executer.meta.MetaEnum;
-import com.goddess.rule.executer.mode.Param;
-import com.goddess.rule.executer.mode.Rule;
+import com.goddess.rule.executer.mode.action.Param;
+import com.goddess.rule.executer.mode.graph.Rule;
 import com.goddess.rule.executer.mode.operation.OperationFactory;
 import com.goddess.rule.parser.ActionParser;
 import com.goddess.rule.parser.FormulaBuilder;
 import com.goddess.rule.parser.NozzleParser;
-import com.goddess.rule.parser.SourceParser;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -52,9 +50,6 @@ public class RuleConfig {
     private FormulaBuilder formulaBuilder;
 
 
-    private List<Source> sources = new ArrayList<>();
-    private Map<String,Source> sourceMap = new HashMap<>();
-    private SourceParser sourceParser;
 
     private ActionParser actionParser;
 
@@ -165,14 +160,6 @@ public class RuleConfig {
         this.formulaBuilder = formulaBuilder;
     }
 
-    public SourceParser getSourceParser() {
-        return sourceParser;
-    }
-
-    public void setSourceParser(SourceParser sourceParser) {
-        this.sourceParser = sourceParser;
-    }
-
     public FunctionHandlerFactory getFunctionHandlerFactory() {
         return functionHandlerFactory;
     }
@@ -203,23 +190,6 @@ public class RuleConfig {
 
     public void setNozzleParser(NozzleParser nozzleParser) {
         this.nozzleParser = nozzleParser;
-    }
-
-
-    public List<Source> getSources() {
-        return sources;
-    }
-
-    public void setSources(List<Source> sources) {
-        this.sources = sources;
-    }
-
-    public Map<String, Source> getSourceMap() {
-        return sourceMap;
-    }
-
-    public void setSourceMap(Map<String, Source> sourceMap) {
-        this.sourceMap = sourceMap;
     }
 
     public List<Param> getGlobalParams() {

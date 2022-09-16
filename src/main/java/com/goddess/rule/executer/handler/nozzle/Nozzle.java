@@ -4,8 +4,8 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.goddess.rule.executer.context.DecisionContext;
 import com.goddess.rule.executer.meta.MetaClass;
-import com.goddess.rule.executer.mode.Mapping;
-import com.goddess.rule.executer.mode.Param;
+import com.goddess.rule.executer.mode.action.Mapping;
+import com.goddess.rule.executer.mode.action.Param;
 import com.goddess.rule.executer.mode.base.BasePo;
 
 import java.util.List;
@@ -17,7 +17,6 @@ public abstract class Nozzle extends BasePo {
     private Map<String,Param> paramsMap;
     private List<Mapping> mappings;
 
-    private String sourceCode;
 
     private int complex;
     private String resultDataType;
@@ -67,14 +66,6 @@ public abstract class Nozzle extends BasePo {
 
     public Map<String, Param> getParamsMap() {
         return paramsMap;
-    }
-
-    public String getSourceCode() {
-        return sourceCode;
-    }
-
-    public void setSourceCode(String sourceCode) {
-        this.sourceCode = sourceCode;
     }
 
     public int getComplex() {

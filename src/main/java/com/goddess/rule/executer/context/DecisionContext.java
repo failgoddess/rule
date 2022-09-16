@@ -2,9 +2,9 @@ package com.goddess.rule.executer.context;
 
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.JSONPath;
-import com.goddess.rule.executer.mode.Graph;
-import com.goddess.rule.executer.mode.Link;
-import com.goddess.rule.executer.mode.Rule;
+import com.goddess.rule.executer.mode.graph.Graph;
+import com.goddess.rule.executer.mode.graph.Link;
+import com.goddess.rule.executer.mode.graph.Rule;
 
 import java.util.LinkedList;
 import java.util.Queue;

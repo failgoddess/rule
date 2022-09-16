@@ -1,6 +1,6 @@
 import com.alibaba.fastjson.JSONObject;
-import com.goddess.rule.executer.mode.DecisionResult;
-import com.goddess.rule.executer.mode.Rule;
+import com.goddess.rule.executer.mode.graph.DecisionResult;
+import com.goddess.rule.executer.mode.graph.Rule;
 import com.goddess.rule.executer.context.DecisionContext;
 import com.goddess.rule.executer.context.RuleConfig;
 import com.goddess.rule.parser.impl.xml.XMLRuleConfigBuilder;

@@ -1,6 +1,6 @@
 package com.goddess.rule.ruleline;
 
-import com.goddess.rule.executer.mode.Expression;
+import com.goddess.rule.executer.mode.ruleLine.Expression;
 
 /**
  * @author: 失败女神-vinc
