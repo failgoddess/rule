@@ -1,10 +1,10 @@
 package com.goddess.rule.executer.mode.ruleLine;
 
 import com.goddess.rule.constant.Constant;
-import com.goddess.rule.executer.context.DecisionContext;
+import com.goddess.rule.executer.context.Context;
 import com.goddess.rule.executer.meta.MetaProperty;
-import com.goddess.rule.executer.mode.operation.Operation;
-import com.goddess.rule.executer.mode.operation.OperationFactory;
+import com.goddess.rule.executer.operation.Operation;
+import com.goddess.rule.executer.operation.OperationFactory;
 import com.google.common.base.Joiner;
 
 import java.util.ArrayList;
@@ -22,7 +22,7 @@ public class SQLActuator {
         this.expression = expression;
     }
 
-    public String execute( DecisionContext context, boolean logFlag){
+    public String execute( Context context, boolean logFlag){
         //逻辑
         if(Constant.ExpressionType.LOGIC.equals(expression.getExpressionType())){
             return execute(expression.getOperationCode(), expression.getSubExpression(),context,logFlag);
@@ -48,7 +48,7 @@ public class SQLActuator {
        return null;
     }
     //逻辑
-    private String execute(String operationCode, List<Expression> subExpressions,DecisionContext context, boolean logFlag){
+    private String execute(String operationCode, List<Expression> subExpressions,Context context, boolean logFlag){
         List<String> sqls = new ArrayList<>();
         if("or".equalsIgnoreCase(operationCode)){
             for (Expression expression :subExpressions){

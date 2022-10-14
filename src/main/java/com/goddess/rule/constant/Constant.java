@@ -65,6 +65,9 @@ public class Constant {
         //时间时分秒  HH:mm:ss
         public static final String TIME_HMS="TIME_HMS";
 
+        //map
+        public static final String MAP = "MAP";
+
     }
 
 
@@ -104,7 +107,7 @@ public class Constant {
         public static final String NBE ="nbe";//不介于(开区间)
 
         public static final String BED ="bed";//介于(开区间)
-        public static final String NBED ="nbed";//介于(开区间)
+        public static final String NBED ="nbed";//不介于(开区间)
 
         public static final String BEL ="bel";//介于(前闭后开)
         public static final String NBEL ="nbel";//介于(前闭后开)

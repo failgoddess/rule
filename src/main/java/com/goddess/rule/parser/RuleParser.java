@@ -1,6 +1,6 @@
 package com.goddess.rule.parser;
 
-import com.goddess.rule.executer.mode.graph.Rule;
+import com.goddess.rule.executer.mode.rule.Rule;
 
 /**
  * @author: 失败女神-vinc

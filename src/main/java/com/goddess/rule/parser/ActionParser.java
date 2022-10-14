@@ -1,6 +1,6 @@
 package com.goddess.rule.parser;
 
-import com.goddess.rule.executer.mode.action.Action;
+import com.goddess.rule.executer.mode.base.action.Action;
 
 /**
  * 行为构建器

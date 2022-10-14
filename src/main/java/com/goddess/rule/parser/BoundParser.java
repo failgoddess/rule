@@ -1,6 +1,6 @@
 package com.goddess.rule.parser;
 
-import com.goddess.rule.executer.mode.bound.*;
+import com.goddess.rule.executer.mode.base.bound.*;
 
 public interface BoundParser {
     Compose boundCompose(Object dataObj);

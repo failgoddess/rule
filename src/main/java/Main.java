@@ -1,7 +1,13 @@
 public class Main {
     public static void main(String[] args) throws Exception {
 
-        //RuleConfig ruleConfig = new XMLRuleConfigBuilder().build("classpath:rule-config.xml");
+        int a = 10;
+        Integer b = new Integer(20);
+        while (true){
+            System.out.println("---");
+            Thread.sleep(1000);
+        }
+        //RuleConfig ruleConfig = new XMLRuleConfigBuilder().build("classpath:demo/rule-config.xml");
         //Rule rule = ruleConfig.getRuleMap().get("RU001");
 
         //RelationFactory relationFactory = RelationFactory.getInstance();
@@ -17,6 +23,6 @@ public class Main {
 //        Rule ruleExecute = new Rule();
 //        System.out.println(XmlTool.documentToJSONObject(ResourceUtil.readUtf8Str("classpath:RULE_RU001.xml")).toJSONString());
 //        System.out.println("----"+handler.execute(0,Constant.DataType.NUMBER,"12",params));
-        System.out.println("----");
+//        System.out.println("----");
     }
 }

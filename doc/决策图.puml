@@ -1,0 +1,45 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+autonumber
+actor 调用方
+调用方 ->Graph: 决策
+Graph ->Graph: 参数验证
+Graph ->Graph: 第一跳作为当前跳
+
+Graph -> Branch: 决策当前跳，指定链接数量
+Branch -> Branch: 执行executes
+loop 循环links
+    Branch -> Link: 调用推理
+    Link -> Expression: 执行推理
+    Expression ->Link:返回条件真假
+    Link -> Branch: 返回推理结果
+    alt 推断 为真
+        Branch -> Graph:返回link的下一跳
+    end
+end
+alt links推断 均为假
+    Branch -> Graph:返回null
+end
+alt 当前跳有下一跳
+    alt 下一跳为结果
+        Graph->Result:结果推断数据
+        Result->Graph:返回结果数据
+        Graph->调用方:返回结果数据
+    else 下一跳为分支
+       Graph ->Graph: 记录分支调用栈
+       Graph ->Graph: 切换下一跳作为当前跳重新决策
+    end
+else 没有下一跳
+    alt 调用栈为空
+        Graph->调用方:返回推理失败
+    else 调用栈不为空
+       Graph ->Graph: 调用栈出栈 作为当前跳
+        Graph ->Graph: 切换下一跳作为当前跳重新决策
+    end
+
+end
+
+
+
+@enduml

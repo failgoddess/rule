@@ -49,6 +49,9 @@ public class RuleException extends RuntimeException {
         this.msg =super.getMessage();
         this.code = code;
     }
+    public RuleException(Throwable e) {
+        super( e);
+    }
 
     public RuleException(String msg, String code, Throwable e) {
         super(msg, e);

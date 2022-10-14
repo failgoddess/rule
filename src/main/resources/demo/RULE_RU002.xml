@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rule code = "RU002" name = "工作流" model="flow">
+    <params>
+        <param code="buyStoreCode" name = "销售门店编码" dataType="STRING" necessary="true"/>
+        <param code="sendStoreCode" name = "发货门店编码" dataType="STRING" necessary="true"/>
+        <param code="discount" name = "活动折扣" dataType="NUMBER"/>
+    </params>
+    <actions>
+        <action code ="loadStkList" name = "查询持仓" type = "SQL">
+            <params>
+                <param code="ACCTID" name = "账户" dataType="STRING" data="${acctid}" />
+                <param code="stkId" name = "基金代码" dataType="STRING" data="${stkId}"/>
+                <param code="tableName" name = "表名称"  dataType="STRING" data="stklist"/>
+            </params>
+            <mappings>
+                <mapping code="usable_qty" result="usablevol"/>
+                <mapping code="going_buy_qty" result="goingBuyQty"/>
+                <mapping code="frozen_qty" result="FrozenQty"/>
+            </mappings>
+        </action>
+        <action code ="loadAccount" name = "查询持仓" type = "SQL">
+            <params>
+                <param code="ACCTID" name = "账户" dataType="STRING" data="${acctid}" />
+                <param code="stkId" name = "基金代码" dataType="STRING" data="${stkId}"/>
+                <param code="tableName" name = "表名称"  dataType="STRING" data="stklist"/>
+            </params>
+            <mappings>
+                <mapping code="usable_qty" result="usablevol"/>
+                <mapping code="going_buy_qty" result="goingBuyQty"/>
+                <mapping code="frozen_qty" result="FrozenQty"/>
+            </mappings>
+        </action>
+
+        <action code ="createOrder" name = "创建订单" type = "APP">
+
+        </action>
+    </actions>
+
+    <flows>
+        <flow code = "RU001G1" name = "店铺底线折扣" >
+            <execute code="stp1" alias="createOrder_pre_loadStkList" actionCode="loadStkList"/>
+            <execute code="stp2" alias="createOrder_pre_loadAccount" actionCode="loadAccount"/>
+            <execute code="stp3" alias="createOrder" actionCode="createOrder"/>
+            <execute code="stp1" alias="createOrder_after_loadStkList" actionCode="loadStkList"/>
+            <execute code="stp2" alias="createOrder_after_loadAccount" actionCode="loadAccount"/>
+        </flow>
+    </flows>
+</rule>

@@ -1,13 +1,12 @@
 package com.goddess.rule.executer.meta;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.goddess.rule.constant.Constant;
-import com.goddess.rule.executer.context.DecisionContext;
-import com.goddess.rule.executer.mode.action.Mapping;
-import com.goddess.rule.executer.mode.operation.Operation;
+import com.goddess.rule.constant.ConstantUtil;
+import com.goddess.rule.executer.context.Context;
+import com.goddess.rule.executer.operation.Operation;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -17,57 +16,46 @@ import java.util.Map;
  * @date: 2022/6/4 18:33
  */
 public class MetaObject {
-
-    public static Object transformation(DecisionContext context, List<Map<String,String>> reDataset, int complex, String dataType, List<Mapping> mappings){
-        if(complex>0){
-            JSONArray jsonArray = new JSONArray();
-            for(Map<String,String> map:reDataset){
-                JSONObject reJson = new JSONObject();
-                for(Mapping mapping:mappings){
-                    reJson.put(mapping.getResult(),map.get(mapping.getCode()));
-                }
-                jsonArray.add(reJson);
-            }
-            return jsonArray;
-        }else {
-            JSONObject reJson = new JSONObject();
-            Map<String,String> map = reDataset.get(0);
-            for(Mapping mapping:mappings){
-                reJson.put(mapping.getResult(),getData(context,0,"",""));
-            }
-            return reJson;
+    public static List<Map<String,Object>> getMetaObjects(Context context,List<Map<String,Object>> datas,String dataType){
+        if (Constant.DataType.MAP.equalsIgnoreCase(dataType)) {
+            return datas;
         }
+        MetaClass metaClass = context.getRuleConfig().getMetaClassByDataType(dataType);
+        List<Map<String,Object>> reDatas = new ArrayList<>();
+        if(metaClass != null){
+            for (Map<String, Object> data:datas) {
+                Map<String,Object> reData = getMetaObject(context,data,dataType);
+                reDatas.add(reData);
+            }
+        }
+        return reDatas;
     }
-    public static Object getData(DecisionContext context,int complex,String dataType,Object data){
+    public static Map<String,Object> getMetaObject(Context context,Map<String,Object> data,String dataType){
+        if (Constant.DataType.MAP.equalsIgnoreCase(dataType)) {
+            return data;
+        }
+        MetaClass metaClass = context.getRuleConfig().getMetaClassByDataType(dataType);
+        Map<String,Object> reData = new HashMap<>();
+        if(metaClass != null){
+            for(MetaProperty property:metaClass.getProperties()){
+                if (ConstantUtil.isBaseDataType(property.getDataType())){
+                    //是基础数据类型
+                    reData.put(property.getCode(), getBaseData(context,property.getComplex(),property.getDataType(),data.get(property.getCode())));
+                }else if (Operation.isList(property.getComplex())){
+                    //是自定义对象 列表
+                    reData.put(property.getCode(),getMetaObjects(context,(List<Map<String,Object>>)data.get(property.getCode()),property.getDataType()));
+                }else {
+                    //是自定义对象 非列表
+                    Map<String,Object> subData = (Map<String,Object>)data.get(property.getCode());
+                    reData.put(property.getCode(),MetaObject.getMetaObject(context,subData,property.getDataType()));
+                }
+            }
+        }
+
+        return  reData;
+    }
+    public static Object getBaseData(Context context, int complex, String dataType, Object data){
        if( Operation.isList(complex)){
-           switch (dataType){
-               case Constant.DataType.BOLL:
-                   return Operation.getBoll(data);
-               case Constant.DataType.NUMBER:
-                   return Operation.getNumber(data);
-               case Constant.DataType.STRING:
-                   return Operation.getList(data).get(0);
-               case Constant.DataType.TIME_YMD:
-                   return Operation.getTimeYdm(data);
-               case Constant.DataType.TIME_YMDHMS:
-                   return Operation.getTimeYdmhms(data);
-               case Constant.DataType.TIME_HMS:
-                   return Operation.getTimeHms(data);
-           }
-           return data;
-           //MetaClass metaClas = context.getRuleConfig().getMetaClassMap().get(dataType);
-           //if(metaClas==null){
-           //    return data;
-           //}else {
-           //    JSONObject reJson = new JSONObject();
-           //    for(MetaProperty property:metaClas.getProperties()){
-           //        Object val =getData(context,property.getComplex(),property.getDataType(),);
-           //        JSONPath.set(reJson,"$."+property.getCode(),)
-           //    }
-           //
-           //    return reJson;
-           //}
-       }else {
            switch (dataType){
                case Constant.DataType.BOLL:
                    return Operation.getBollList(data);
@@ -86,6 +74,22 @@ public class MetaObject {
                    reObjects.add(data);
                    return reObjects;
            }
+       }else {
+           switch (dataType){
+               case Constant.DataType.BOLL:
+                   return Operation.getBoll(data);
+               case Constant.DataType.NUMBER:
+                   return Operation.getNumber(data);
+               case Constant.DataType.STRING:
+                   return Operation.getList(data).get(0);
+               case Constant.DataType.TIME_YMD:
+                   return Operation.getTimeYdm(data);
+               case Constant.DataType.TIME_YMDHMS:
+                   return Operation.getTimeYdmhms(data);
+               case Constant.DataType.TIME_HMS:
+                   return Operation.getTimeHms(data);
+           }
+           return data;
        }
 
     }

@@ -22,7 +22,7 @@ public class MetaProperty {
     private String metaClassCode;
     private MetaClass metaClass;
     //列表 1是0否
-    private Integer complex;
+    private Integer complex = 0;
     //枚举范围
     private String enumCode;
 

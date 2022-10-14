@@ -1,22 +1,25 @@
 package com.goddess.rule.executer.context;
 
 import com.alibaba.fastjson.JSONObject;
-import com.goddess.rule.executer.handler.function.FunctionHandlerFactory;
-import com.goddess.rule.executer.handler.loader.ObjectLoaderFactory;
-import com.goddess.rule.executer.handler.nozzle.Nozzle;
+import com.goddess.rule.constant.Constant;
 import com.goddess.rule.executer.meta.MetaClass;
 import com.goddess.rule.executer.meta.MetaEnum;
-import com.goddess.rule.executer.mode.action.Param;
-import com.goddess.rule.executer.mode.graph.Rule;
-import com.goddess.rule.executer.mode.operation.OperationFactory;
+import com.goddess.rule.executer.mode.base.action.Action;
+import com.goddess.rule.executer.mode.base.action.Param;
+import com.goddess.rule.executer.mode.base.function.FunctionHandlerFactory;
+import com.goddess.rule.executer.mode.rule.Rule;
+import com.goddess.rule.executer.operation.OperationFactory;
+import com.goddess.rule.executer.mode.rule.flow.RuleFlow;
+import com.goddess.rule.executer.mode.rule.graph.RuleGraph;
 import com.goddess.rule.parser.ActionParser;
+import com.goddess.rule.parser.ExecuteParser;
 import com.goddess.rule.parser.FormulaBuilder;
-import com.goddess.rule.parser.NozzleParser;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * 配置中心
@@ -34,13 +37,16 @@ public class RuleConfig {
     //全局共参
     private List<Param> globalParams;
     private JSONObject globalParamsObject;
+    //基础数据类型
+    private List<String> dataTypes = new ArrayList<>();
     //规则对象类
     private List<MetaClass> metaClasses;
     private Map<String,MetaClass> metaClassMap = new HashMap<>();
     private MetaContext metaContext;
-    //执行器
 
-
+    //行为
+    private List<Action> actions;
+    private Map<String,Action> actionMap;
 
 
     //规则缓存
@@ -49,24 +55,24 @@ public class RuleConfig {
     //公式解析器
     private FormulaBuilder formulaBuilder;
 
-
-
     private ActionParser actionParser;
-
-    private List<Nozzle> nozzles = new ArrayList<>();
-    private Map<String,Nozzle> nozzleMap = new HashMap<>();
-    private NozzleParser nozzleParser;
+    private ExecuteParser executeParser;
 
 
     //操作符工厂
     private OperationFactory relationFactory;
-    //加载器工厂
-    private ObjectLoaderFactory objectLoaderFactory;
     //扩展方法工厂
     private FunctionHandlerFactory functionHandlerFactory;
 
 
-    private RuleConfig(){}
+    private RuleConfig(){
+        dataTypes.add(Constant.DataType.NUMBER);
+        dataTypes.add(Constant.DataType.STRING);
+        dataTypes.add(Constant.DataType.BOLL);
+        dataTypes.add(Constant.DataType.TIME_YMD);
+        dataTypes.add(Constant.DataType.TIME_YMDHMS);
+        dataTypes.add(Constant.DataType.TIME_HMS);
+    }
     private static RuleConfig instance = null;
     public static RuleConfig getInstance() {
         if (instance != null) {
@@ -111,14 +117,6 @@ public class RuleConfig {
 
     public void setRelationFactory(OperationFactory relationFactory) {
         this.relationFactory = relationFactory;
-    }
-
-    public ObjectLoaderFactory getObjectLoaderFactory() {
-        return objectLoaderFactory;
-    }
-
-    public void setObjectLoaderFactory(ObjectLoaderFactory objectLoaderFactory) {
-        this.objectLoaderFactory = objectLoaderFactory;
     }
 
     public List<MetaEnum> getMetaEnums() {
@@ -184,14 +182,6 @@ public class RuleConfig {
         this.actionParser = actionParser;
     }
 
-    public NozzleParser getNozzleParser() {
-        return nozzleParser;
-    }
-
-    public void setNozzleParser(NozzleParser nozzleParser) {
-        this.nozzleParser = nozzleParser;
-    }
-
     public List<Param> getGlobalParams() {
         return globalParams;
     }
@@ -209,27 +199,46 @@ public class RuleConfig {
         return globalParamsObject;
     }
 
-
-    public List<Nozzle> getNozzles() {
-        return nozzles;
-    }
-
-    public void setNozzles(List<Nozzle> nozzles) {
-        this.nozzles = nozzles;
-    }
-
-    public Map<String, Nozzle> getNozzleMap() {
-        return nozzleMap;
-    }
-
-    public void setNozzleMap(Map<String, Nozzle> nozzleMap) {
-        this.nozzleMap = nozzleMap;
-    }
-
     public Rule getRule(String ruleCode){
         return getRuleMap().get(ruleCode);
     }
-    public DecisionContext buildeDecisionContext(String ruleCode){
-        return new DecisionContext(this,this.getRuleMap().get(ruleCode));
+    public RuleFlow getRuleFlow(String ruleCode){
+        return (RuleFlow) getRuleMap().get(ruleCode);
     }
+    public RuleGraph getRuleGraph(String ruleCode){
+        return (RuleGraph) getRuleMap().get(ruleCode);
+    }
+    public Context buildeContext(String ruleCode){
+        return new Context(this,this.getRuleMap().get(ruleCode));
+    }
+
+    public ExecuteParser getExecuteParser() {
+        return executeParser;
+    }
+
+    public void setExecuteParser(ExecuteParser executeParser) {
+        this.executeParser = executeParser;
+    }
+
+    public MetaClass getMetaClassByDataType(String dataType){
+        if (dataTypes.contains(dataType)) {
+            return null;
+        }else {
+            return metaClassMap.get(dataType);
+        }
+    }
+    public void setActions(List<Action> actions) {
+        this.actions = actions;
+        this.actionMap = actions.stream().collect(Collectors.toMap(Action::getCode, o->o));
+    }
+    public Action getAction(String code){
+        return actionMap.get(code);
+    }
+    public Map<String, Action> getActionMap() {
+        return actionMap;
+    }
+    public List<Action> getActions() {
+        return actions;
+    }
+
 }

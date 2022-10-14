@@ -6,16 +6,14 @@ import com.goddess.rule.constant.ExceptionCode;
 import com.goddess.rule.constant.RuleException;
 import com.goddess.rule.executer.context.MetaContext;
 import com.goddess.rule.executer.context.RuleConfig;
-import com.goddess.rule.executer.handler.function.FunctionHandlerFactory;
-import com.goddess.rule.executer.handler.loader.ObjectLoader;
-import com.goddess.rule.executer.handler.loader.ObjectLoaderFactory;
-import com.goddess.rule.executer.handler.nozzle.Nozzle;
 import com.goddess.rule.executer.meta.MetaClass;
 import com.goddess.rule.executer.meta.MetaEnum;
 import com.goddess.rule.executer.meta.MetaProperty;
-import com.goddess.rule.executer.mode.action.Param;
-import com.goddess.rule.executer.mode.graph.Rule;
-import com.goddess.rule.executer.mode.operation.OperationFactory;
+import com.goddess.rule.executer.mode.base.action.Action;
+import com.goddess.rule.executer.mode.base.action.Param;
+import com.goddess.rule.executer.mode.base.function.FunctionHandlerFactory;
+import com.goddess.rule.executer.operation.OperationFactory;
+import com.goddess.rule.executer.mode.rule.Rule;
 import com.goddess.rule.parser.*;
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
@@ -50,15 +48,17 @@ public  class XMLRuleConfigBuilder implements RuleConfigBuilder {
         //解析 公式解析器
         ruleConfig.setFormulaBuilder(parseFormulaBuilder(document.getRootElement().element("metaEnvironment").element("formulaBuilder")));
 
-        //解析自定义 actionParser解析器
-        ActionParser actionParser = parseActionParser(document.getRootElement().element("metaEnvironment").element("actionParser"));
-        ruleConfig.setActionParser(XmlDefaultActionDefaultParser.getInstance(actionParser));
-
-        //解析自定义 nozzleParser解析器
-        ruleConfig.setNozzleParser(parseNozzleParser(document.getRootElement().element("metaEnvironment").element("nozzleParser")));
-
         //解析扩展方法
         ruleConfig.setFunctionHandlerFactory(FunctionHandlerFactory.getInstance());
+
+        //解析自定义 actionParser解析器
+        ActionParser actionParser = parseActionParser(document.getRootElement().element("metaEnvironment").element("actionParser"));
+        ruleConfig.setActionParser(new XmlActionDefaultParser(actionParser));
+
+        //解析自定义 executeParser解析器
+        ExecuteParser executeParser = parseExecuteParser(document.getRootElement().element("metaEnvironment").element("executeParser"));
+        ruleConfig.setExecuteParser(executeParser);
+
 
         //解析枚举配置
         List<MetaEnum> metaEnums = parseMetaEnums(document.getRootElement().element("metaEnvironment").element("metaEnums"));
@@ -72,14 +72,8 @@ public  class XMLRuleConfigBuilder implements RuleConfigBuilder {
 
         ruleConfig.setMetaContext(new MetaContext(ruleConfig.getMetaClasses(),ruleConfig.getMetaClassMap()));
 
-        //解析加载器
-        ObjectLoaderFactory objectLoaderFactory = parseObjectLoaderFactory(document.getRootElement().element("metaEnvironment").element("objectLoaders"));
-        ruleConfig.setObjectLoaderFactory(objectLoaderFactory);
-
-        //解析管道
-        List<Nozzle> nozzles = parseNozzles(document.getRootElement().element("metaEnvironment").element("nozzles"),ruleConfig.getNozzleParser());
-        ruleConfig.setNozzles(nozzles);
-        ruleConfig.setNozzleMap(nozzles.stream().collect(Collectors.toMap(Nozzle::getCode,o->o)));
+        // 解析行为
+        ruleConfig.setActions(parseActions(document.getRootElement().element("metaEnvironment").element("actions"),ruleConfig));
 
         //解析公共参数
         List<Param> globalParams = parseParams(document.getRootElement().element("metaEnvironment").element("globalParams"));
@@ -87,7 +81,7 @@ public  class XMLRuleConfigBuilder implements RuleConfigBuilder {
 
 
         //解析规则配置
-        List<Rule> rules = parseRules(ruleConfig.getRulePath());
+        List<Rule> rules = parseRules(ruleConfig.getRulePath(),ruleConfig);
         ruleConfig.setRules(rules);
         ruleConfig.setRuleMap(rules.stream().collect(Collectors.toMap(Rule::getCode,o->o)));
 
@@ -128,23 +122,6 @@ public  class XMLRuleConfigBuilder implements RuleConfigBuilder {
         return params;
     }
 
-    private List<Nozzle> parseNozzles(Element element,NozzleParser nozzleParser){
-        List<Nozzle> nozzles = new ArrayList<>();
-        List<Element> items = element.elements("nozzle");
-        for (Element item:items){
-            XmlDefaultNozzleParser defaultNozzleParser = XmlDefaultNozzleParser.getInstance(nozzleParser);
-            Nozzle nozzle = defaultNozzleParser.parse(item);
-
-            String code, name;
-            code = item.attributeValue("code");
-            name = item.attributeValue("name");
-
-            nozzle.setCode(code);
-            nozzle.setName(name);
-            nozzles.add(nozzle);
-        }
-        return nozzles;
-    }
     private List<MetaClass> parseMetaClasses(Element element){
         List<MetaClass> metaClasses = new ArrayList<>();
         List<Element> items = element.elements("metaClass");
@@ -228,6 +205,26 @@ public  class XMLRuleConfigBuilder implements RuleConfigBuilder {
         }
         return metaEnums;
     }
+    /**
+     * 处理action
+     * @return
+     */
+    private List<Action> parseActions(Element element,RuleConfig ruleConfig){
+        List<Action> actions = new ArrayList<>();
+        if(element==null){
+            return actions;
+        }
+        List<Element> items = element.elements("action");
+        for (Element item:items){
+            Action action = ruleConfig.getActionParser().parse(item);
+            if(action!=null){
+                actions.add(action);
+            }
+
+        }
+        return actions;
+    }
+
     private FormulaBuilder parseFormulaBuilder(Element element){
         String classPath = element.attributeValue("classPath");
         try {
@@ -239,6 +236,9 @@ public  class XMLRuleConfigBuilder implements RuleConfigBuilder {
         }
     }
     private ActionParser parseActionParser(Element element){
+        if(element ==null){
+            return null;
+        }
         String classPath = element.attributeValue("classPath");
         try {
             Class<? extends ActionParser> clszz = (Class<? extends ActionParser>) Class.forName(classPath);
@@ -248,44 +248,22 @@ public  class XMLRuleConfigBuilder implements RuleConfigBuilder {
             throw new RuleException(ExceptionCode.EC_0008,classPath);
         }
     }
-
-    private NozzleParser parseNozzleParser(Element element){
+    private ExecuteParser parseExecuteParser(Element element){
+        if(element ==null){
+            return new XmlExecuteDefaultParser(null);
+        }
         String classPath = element.attributeValue("classPath");
         try {
-            Class<? extends NozzleParser> clszz = (Class<? extends NozzleParser>) Class.forName(classPath);
-            NozzleParser instance = clszz.newInstance();
-            return instance;
+            Class<? extends ExecuteParser> clazz = (Class<? extends ExecuteParser>) Class.forName(classPath);
+            ExecuteParser parser = clazz.newInstance();;
+            return new XmlExecuteDefaultParser(parser);
         }catch (Exception e){
             throw new RuleException(ExceptionCode.EC_0009,classPath);
         }
     }
 
-    private ObjectLoaderFactory parseObjectLoaderFactory(Element element){
-        ObjectLoaderFactory factory = ObjectLoaderFactory.getInstance();
-        List<Element> items = element.elements("objectLoader");
-        for (Element item:items){
-            String code, name,classPath;
-            code = item.attributeValue("code");
-            name = item.attributeValue("name");
-            classPath = item.attributeValue("classPath");
-            try {
-                Class<? extends ObjectLoader> clszz = (Class<? extends ObjectLoader>) Class.forName(classPath);
-                ObjectLoader loader = clszz.newInstance();
-                loader.setCode(code);
-                loader.setName(name);
-                loader.setClassPath(classPath);
-                factory.register(loader);
-            }catch (ClassNotFoundException e){
-                throw new RuleException(ExceptionCode.EC_0003,code,name);
-            } catch (InstantiationException e) {
-                throw new RuleException(ExceptionCode.EC_0004,code,name);
-            } catch (IllegalAccessException e) {
-                throw new RuleException(ExceptionCode.EC_0004,code,name);
-            }
-        }
-        return factory;
-    }
-    private List<Rule> parseRules(String rulePath) throws Exception{
+
+    private List<Rule> parseRules(String rulePath,RuleConfig ruleConfig) throws Exception{
         List<Rule> rules = new ArrayList<>();
         //解析规则
         List<String> rulePaths = Arrays.asList(rulePath.split(","));
@@ -294,7 +272,7 @@ public  class XMLRuleConfigBuilder implements RuleConfigBuilder {
             String type = path.substring(path.lastIndexOf(".")+1).toLowerCase();
             switch (type) {
                 case Constant.ConfigType.XML:
-                    parser = XMLRuleParser.getInstance();
+                    parser = XMLRuleParser.getInstance(ruleConfig);
                     break;
                 default:
                     throw new RuleException(ExceptionCode.EC_0001,path);

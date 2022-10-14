@@ -1,8 +1,7 @@
 import com.alibaba.fastjson.JSONObject;
-import com.goddess.rule.executer.mode.graph.DecisionResult;
-import com.goddess.rule.executer.mode.graph.Rule;
-import com.goddess.rule.executer.context.DecisionContext;
+import com.goddess.rule.executer.context.Context;
 import com.goddess.rule.executer.context.RuleConfig;
+import com.goddess.rule.executer.mode.rule.Rule;
 import com.goddess.rule.parser.impl.xml.XMLRuleConfigBuilder;
 import org.junit.Assert;
 import org.junit.Test;
@@ -22,8 +21,8 @@ public class RuleTest {
         dataJson.put("buyStoreCode","1002");
         dataJson.put("sendStoreCode","1004");
         dataJson.put("discount","0.88");
-        DecisionContext decisionContext  = ruleConfig.buildeDecisionContext("RU001");
-        DecisionResult decisionResult = rule.decision(decisionContext,dataJson);
+        Context Context  = ruleConfig.buildeContext("RU001");
+        //DecisionResult decisionResult = rule.decision(Context,dataJson);
 
 //        System.out.println(decisionResult);
     }

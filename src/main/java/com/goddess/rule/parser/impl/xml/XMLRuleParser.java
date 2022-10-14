@@ -2,10 +2,13 @@ package com.goddess.rule.parser.impl.xml;
 
 import cn.hutool.core.io.resource.ResourceUtil;
 import com.goddess.rule.constant.Constant;
+import com.goddess.rule.constant.RuleException;
 import com.goddess.rule.executer.context.RuleConfig;
-import com.goddess.rule.executer.mode.action.Action;
-import com.goddess.rule.executer.mode.action.Param;
-import com.goddess.rule.executer.mode.graph.*;
+import com.goddess.rule.executer.mode.base.action.Execute;
+import com.goddess.rule.executer.mode.rule.Rule;
+import com.goddess.rule.executer.mode.rule.flow.Flow;
+import com.goddess.rule.executer.mode.rule.flow.RuleFlow;
+import com.goddess.rule.executer.mode.rule.graph.*;
 import com.goddess.rule.executer.mode.ruleLine.Expression;
 import com.goddess.rule.parser.RuleParser;
 import org.apache.commons.lang3.StringUtils;
@@ -23,18 +26,20 @@ import java.util.List;
  */
 public class XMLRuleParser implements RuleParser {
 
+    private static RuleConfig ruleConfig;
 
     private static XMLRuleParser instance = null;
 
-    private XMLRuleParser(){
+    private XMLRuleParser(RuleConfig ruleConfig){
+        this.ruleConfig = ruleConfig;
     }
-    public static XMLRuleParser getInstance() {
+    public static XMLRuleParser getInstance(RuleConfig ruleConfig) {
         if (instance != null) {
             return instance;
         }else {
             synchronized (XMLRuleParser.class){
                 if(instance==null){
-                    instance=new XMLRuleParser();
+                    instance=new XMLRuleParser(ruleConfig);
                 }
             }
         }
@@ -55,23 +60,45 @@ public class XMLRuleParser implements RuleParser {
         Rule rule = null;
         //根结点必须要是 rule
         if(document.getRootElement().getName().equals("rule")){
-            rule = new Rule();
-            String code, name;
+
+            String code, name,model;
             code = document.getRootElement().attributeValue("code");
             name = document.getRootElement().attributeValue("name");
-            List<Graph> graphs = parseGraphs(document.getRootElement().element("graphs"));
-            List<Result> results = parseResults(document.getRootElement().element("results"));
-            List<Param> params = XMLRuleConfigBuilder.parseParams(document.getRootElement().element("params"));
-            List<InitData> initDatas = parseInitDatas(document.getRootElement().element("initDatas"));
+            model = document.getRootElement().attributeValue("model");
 
+            if("Flow".equalsIgnoreCase(model)){
+                RuleFlow ruleFlow = new RuleFlow();
+                ruleFlow.setFlows(parseFlows(document.getRootElement().element("flows")));
+                rule = ruleFlow;
+            }else if ("Graph".equalsIgnoreCase(model)) {
+                RuleGraph ruleGraph = new RuleGraph();
+                ruleGraph.setGraphs(parseGraphs(document.getRootElement().element("graphs")));
+                ruleGraph.setResults(parseResults(document.getRootElement().element("results")));
+            }else {
+                throw new RuleException("不支持模式:"+model);
+            }
             rule.setCode(code);
             rule.setName(name);
-            rule.setParams(params);
-            rule.setInitDatas(initDatas);
-            rule.setGraphs(graphs);
-            rule.setResults(results);
+            rule.setModel(model);
+            rule.setParams(XMLRuleConfigBuilder.parseParams(document.getRootElement().element("params")));
+
         }
         return rule;
+    }
+    private List<Flow> parseFlows(Element element){
+        List<Flow> flows = new ArrayList<>();
+        List<Element> items = element.elements("flow");
+        for (Element item:items){
+            Flow flow = new Flow();
+            String code, name,firstBranchCode;
+            code = item.attributeValue("code");
+            name = item.attributeValue("name");
+            flow.setCode(code);
+            flow.setName(name);
+            flow.setExecutes(parseExecutes(item));
+            flows.add(flow);
+        }
+        return flows;
     }
 
     /**
@@ -115,31 +142,27 @@ public class XMLRuleParser implements RuleParser {
             branch.setCode(code);
             branch.setName(name);
             branch.setLinks(links);
-            branch.setActions(parseActions(item.element("actions")));
+            branch.setExecute(parseExecutes(item.element("executes")));
             branches.add(branch);
         }
         return branches;
     }
 
-    /**
-     * 处理action
-     * @return
-     */
-    private List<Action> parseActions(Element element){
-        List<Action> actions = new ArrayList<>();
+    private List<Execute> parseExecutes(Element element){
+        List<Execute> executers = new ArrayList<>();
         if(element==null){
-            return actions;
+            return executers;
         }
-        List<Element> items = element.elements("action");
+        List<Element> items = element.elements("execute");
         for (Element item:items){
-            Action action = XmlDefaultActionDefaultParser.getInstance().parse(item);
-            if(action!=null){
-                actions.add(action);
+            Execute execute = ruleConfig.getExecuteParser().doParse(item);
+            if(execute!=null){
+                executers.add(execute);
             }
-
         }
-        return actions;
+        return executers;
     }
+
 
     /**
      * 处理链接节点
@@ -262,41 +285,5 @@ public class XMLRuleParser implements RuleParser {
             results.add(result);
         }
         return results;
-    }
-
-
-
-    /**
-     * 处理初始数据节点
-     * @param element
-     * @return
-     */
-    private List<InitData> parseInitDatas(Element element){
-        if(element ==null){
-            return null;
-        }
-        RuleConfig ruleConfig = RuleConfig.getInstance();
-        List<InitData> initDatas = new ArrayList<>();
-        List<Element> items = element.elements("initData");
-        for (Element item:items){
-            InitData initData = new InitData();
-            String code,name,metaClassCode,params;
-            code = item.attributeValue("code");
-            name = item.attributeValue("name");
-            metaClassCode = item.attributeValue("metaClass");
-            params = item.attributeValue("params");
-            initData.setCode(code);
-            initData.setName(name);
-            initData.setMetaClassCode(metaClassCode);
-            initData.setParams(params);
-            if(StringUtils.isEmpty(metaClassCode)){
-                initData.setDataFormulaNode(ruleConfig.getFormulaBuilder().getFormulaNode(params));
-            }else {
-                String text = "@{"+metaClassCode+"("+params+")}";
-                initData.setDataFormulaNode(ruleConfig.getFormulaBuilder().getFormulaNode(text));
-            }
-            initDatas.add(initData);
-        }
-        return initDatas;
     }
 }

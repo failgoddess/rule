@@ -1,15 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<rule code = "RU001" name = "店铺底线折扣">
+<rule code = "RU001" name = "店铺底线折扣"  model="graph">
     <params>
         <param code="buyStoreCode" name = "销售门店编码" dataType="STRING" necessary="true"/>
         <param code="sendStoreCode" name = "发货门店编码" dataType="STRING" necessary="true"/>
         <param code="discount" name = "活动折扣" dataType="NUMBER"/>
     </params>
-    <initDatas>
-        <initData code="buyStore" name="销售门店" metaClass="store" params="code:${buyStoreCode},code2:${buyStoreCode}"/>
-        <initData code="sendStore" name="发货门店" metaClass="store" params="code:${sendStoreCode}"/>
-        <initData code="type" name="类型" params="卖出"/>
-    </initDatas>
 
     <results>
         <result code="RU001R1" name = "7折" dataType="NUMBER" data="0.7"/>
@@ -17,11 +12,15 @@
         <result code="RU001R3" name = "9折" dataType="NUMBER" data="0.9"/>
         <result code="RU001R4" name = "活动折扣" dataType="NUMBER" data="${discount}"/>
     </results>
+    <actions>
+        <action></action>
+    </actions>
 
     <graphs>
         <graph code = "RU001G1" name = "店铺底线折扣" firstBranchCode ="RU001G1B1">
             <branches>
                 <branch code = "RU001G1B1" name = "门店分支">
+                    <executes></executes>
                     <links>
                         <link code="810101" name = "销售门店开业时间 小于  356天 并且1=1" priority="10" nextType = "RESULT" nextResultCode ="RU001R1">
                             <expression expressionType ="logic" operationCode="and" dataType="NUMBER">
