@@ -1,9 +1,20 @@
 @startuml
 'https://plantuml.com/sequence-diagram
-
 autonumber
+
+
+
+
+
 actor 调用方
-调用方 ->Graph: 决策
+participant Graph决策图 as Graph
+participant Branch分支 as Branch
+participant Link链接 as Link
+participant Expression表达式 as Expression
+participant Result结果 as Result
+
+
+调用方 ->Graph: 决策传入入参
 Graph ->Graph: 参数验证
 Graph ->Graph: 第一跳作为当前跳
 
