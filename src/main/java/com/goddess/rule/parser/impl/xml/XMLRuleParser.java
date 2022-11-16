@@ -74,6 +74,7 @@ public class XMLRuleParser implements RuleParser {
                 RuleGraph ruleGraph = new RuleGraph();
                 ruleGraph.setGraphs(parseGraphs(document.getRootElement().element("graphs")));
                 ruleGraph.setResults(parseResults(document.getRootElement().element("results")));
+                rule =ruleGraph;
             }else {
                 throw new RuleException("不支持模式:"+model);
             }

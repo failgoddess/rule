@@ -29,12 +29,12 @@ public class Link extends BasePo {
 
     private Expression expression;
 
-    public boolean decision(Context Context) {
+    public boolean decision(Context context) {
         //永真条件的处理
         if(isEternal()){
             return true;
         }
-        boolean temp = JavaActuator.execute(Context,expression);
+        boolean temp = JavaActuator.execute(context,expression);
         if(temp == false){
             //有不满足的可以直接结束这个链接了
             return false;

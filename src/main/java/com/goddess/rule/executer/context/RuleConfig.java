@@ -8,9 +8,9 @@ import com.goddess.rule.executer.mode.base.action.Action;
 import com.goddess.rule.executer.mode.base.action.Param;
 import com.goddess.rule.executer.mode.base.function.FunctionHandlerFactory;
 import com.goddess.rule.executer.mode.rule.Rule;
-import com.goddess.rule.executer.operation.OperationFactory;
 import com.goddess.rule.executer.mode.rule.flow.RuleFlow;
 import com.goddess.rule.executer.mode.rule.graph.RuleGraph;
+import com.goddess.rule.executer.operation.OperationFactory;
 import com.goddess.rule.parser.ActionParser;
 import com.goddess.rule.parser.ExecuteParser;
 import com.goddess.rule.parser.FormulaBuilder;
@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 /**
@@ -34,9 +35,12 @@ public class RuleConfig {
     private List<MetaEnum> metaEnums;
     private Map<String,MetaEnum> metaEnumMap = new HashMap<>();
 
-    //全局共参
-    private List<Param> globalParams;
-    private JSONObject globalParamsObject;
+    //运行时全局共参
+    private List<Param> runGlobalParams;
+    private JSONObject runGlobalParamsObject;
+
+    private String activate = "ALL";
+    private Map<String,List<Param>> globalParamMap = new ConcurrentHashMap<>();
     //基础数据类型
     private List<String> dataTypes = new ArrayList<>();
     //规则对象类
@@ -182,21 +186,21 @@ public class RuleConfig {
         this.actionParser = actionParser;
     }
 
-    public List<Param> getGlobalParams() {
-        return globalParams;
+    public List<Param> getRunGlobalParams() {
+        return runGlobalParams;
     }
 
-    public void setGlobalParams(List<Param> globalParams) {
-        this.globalParamsObject = new JSONObject();
-        for (Param param:globalParams) {
+    public void setRunGlobalParams(List<Param> runGlobalParams) {
+        this.runGlobalParamsObject = new JSONObject();
+        for (Param param: runGlobalParams) {
             //这里一定当作固定值用
-            this.globalParamsObject.put(param.getCode(),param.getData());
+            this.runGlobalParamsObject.put(param.getCode(),param.getData());
         }
-        this.globalParams = globalParams;
+        this.runGlobalParams = runGlobalParams;
     }
 
-    public JSONObject getGlobalParamsObject() {
-        return globalParamsObject;
+    public JSONObject getRunGlobalParamsObject() {
+        return runGlobalParamsObject;
     }
 
     public Rule getRule(String ruleCode){
@@ -241,4 +245,21 @@ public class RuleConfig {
         return actions;
     }
 
+    public List<Param> getParams(String activate){
+        List<Param> params  = globalParamMap.get(activate);
+        return params;
+    }
+    public void setParams(String activate,List<Param> params){
+        globalParamMap.put(activate,params);
+    }
+
+    public Map<String, List<Param>> getGlobalParamMap() {
+        return globalParamMap;
+    }
+    public String getActivate(){
+        return activate;
+    }
+    public void setActivate(String activate){
+        this.activate = activate;
+    }
 }

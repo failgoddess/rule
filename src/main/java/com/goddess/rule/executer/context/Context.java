@@ -35,7 +35,7 @@ public class Context {
     private Queue<JudgePath> judgePathQueue = new LinkedList<>();
 
     public Context(RuleConfig ruleConfig,Rule rule){
-        this.globalParams = new JSONObject(ruleConfig.getGlobalParamsObject());
+        this.globalParams = new JSONObject(ruleConfig.getRunGlobalParamsObject());
         this.rule = rule;
         this.ruleConfig = ruleConfig;
     }

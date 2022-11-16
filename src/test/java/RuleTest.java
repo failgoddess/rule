@@ -1,7 +1,8 @@
 import com.alibaba.fastjson.JSONObject;
 import com.goddess.rule.executer.context.Context;
 import com.goddess.rule.executer.context.RuleConfig;
-import com.goddess.rule.executer.mode.rule.Rule;
+import com.goddess.rule.executer.mode.rule.graph.DecisionResult;
+import com.goddess.rule.executer.mode.rule.graph.RuleGraph;
 import com.goddess.rule.parser.impl.xml.XMLRuleConfigBuilder;
 import org.junit.Assert;
 import org.junit.Test;
@@ -15,15 +16,15 @@ public class RuleTest {
     @Test
     public void main() throws Exception {
         RuleConfig ruleConfig = new XMLRuleConfigBuilder().build("classpath:demo/rule-config.xml");
-        Rule rule = ruleConfig.getRuleMap().get("RU001");
+        RuleGraph rule = ruleConfig.getRuleGraph("RU001");
         Assert.assertTrue(rule!=null);
         JSONObject dataJson = new JSONObject();
         dataJson.put("buyStoreCode","1002");
         dataJson.put("sendStoreCode","1004");
         dataJson.put("discount","0.88");
-        Context Context  = ruleConfig.buildeContext("RU001");
-        //DecisionResult decisionResult = rule.decision(Context,dataJson);
+        Context context  = ruleConfig.buildeContext("RU001");
+        DecisionResult decisionResult = rule.decision(context,dataJson);
 
-//        System.out.println(decisionResult);
+        System.out.println(decisionResult);
     }
 }

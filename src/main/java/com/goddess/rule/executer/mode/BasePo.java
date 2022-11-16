@@ -1,6 +1,7 @@
 package com.goddess.rule.executer.mode;
 
 public class BasePo {
+    private Long id;
     //编码
     private String code;
     //名称

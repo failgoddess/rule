@@ -77,7 +77,7 @@ public  class XMLRuleConfigBuilder implements RuleConfigBuilder {
 
         //解析公共参数
         List<Param> globalParams = parseParams(document.getRootElement().element("metaEnvironment").element("globalParams"));
-        ruleConfig.setGlobalParams(globalParams);
+        ruleConfig.setRunGlobalParams(globalParams);
 
 
         //解析规则配置

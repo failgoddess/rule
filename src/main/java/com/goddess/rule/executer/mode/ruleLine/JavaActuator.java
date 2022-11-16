@@ -62,17 +62,27 @@ public class JavaActuator {
     private static boolean execute(String operationCode, List<Expression> subExpressions,Context context,Log log){
         if("or".equals(operationCode)){
             for (Expression expression :subExpressions){
-                Log subLog = new Log();
-                log.addSubLog(subLog);
-                boolean flag = JavaActuator.execute(context,expression,subLog);
+                boolean flag;
+                if(log!=null){
+                    Log subLog = new Log();
+                    log.addSubLog(subLog);
+                    flag = JavaActuator.execute(context,expression,subLog);
+                }else {
+                    flag = JavaActuator.execute(context,expression,null);
+                }
                 if (flag){return true;}
             }
             return false;
         }else {
             for (Expression expression :subExpressions){
-                Log subLog = new Log();
-                log.addSubLog(subLog);
-                boolean flag = JavaActuator.execute(context,expression,subLog);
+                boolean flag;
+                if(log!=null){
+                    Log subLog = new Log();
+                    log.addSubLog(subLog);
+                    flag = JavaActuator.execute(context,expression,subLog);
+                }else {
+                    flag = JavaActuator.execute(context,expression,null);
+                }
                 if (!flag){return false;}
             }
             return true;
