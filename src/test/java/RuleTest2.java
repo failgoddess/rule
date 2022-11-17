@@ -12,17 +12,16 @@ import org.junit.Test;
  * @email: 18733123202@163.com
  * @date: 2022/6/4 16:20
  */
-public class RuleTest {
+public class RuleTest2 {
     @Test
     public void main() throws Exception {
         RuleConfig ruleConfig = new XMLRuleConfigBuilder().build("classpath:demo/rule-config.xml");
-        RuleGraph rule = ruleConfig.getRuleGraph("RU001");
+        RuleGraph rule = ruleConfig.getRuleGraph("RU003");
         Assert.assertTrue(rule!=null);
         JSONObject dataJson = new JSONObject();
-        dataJson.put("buyStoreCode","1002");
-        dataJson.put("sendStoreCode","1004");
-        dataJson.put("discount","0.88");
-        Context context  = ruleConfig.buildContext("RU001");
+        dataJson.put("attr1","陆佳1");
+        dataJson.put("attr2",20);
+        Context context  = ruleConfig.buildContext("RU003");
         DecisionResult decisionResult = rule.decision(context,dataJson);
 
         System.out.println(decisionResult);

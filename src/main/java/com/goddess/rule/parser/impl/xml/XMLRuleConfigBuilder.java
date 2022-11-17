@@ -4,7 +4,6 @@ import cn.hutool.core.io.resource.ResourceUtil;
 import com.goddess.rule.constant.Constant;
 import com.goddess.rule.constant.ExceptionCode;
 import com.goddess.rule.constant.RuleException;
-import com.goddess.rule.executer.context.MetaContext;
 import com.goddess.rule.executer.context.RuleConfig;
 import com.goddess.rule.executer.meta.MetaClass;
 import com.goddess.rule.executer.meta.MetaEnum;
@@ -12,8 +11,8 @@ import com.goddess.rule.executer.meta.MetaProperty;
 import com.goddess.rule.executer.mode.base.action.Action;
 import com.goddess.rule.executer.mode.base.action.Param;
 import com.goddess.rule.executer.mode.base.function.FunctionHandlerFactory;
-import com.goddess.rule.executer.operation.OperationFactory;
 import com.goddess.rule.executer.mode.rule.Rule;
+import com.goddess.rule.executer.operation.OperationFactory;
 import com.goddess.rule.parser.*;
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
@@ -63,27 +62,23 @@ public  class XMLRuleConfigBuilder implements RuleConfigBuilder {
         //解析枚举配置
         List<MetaEnum> metaEnums = parseMetaEnums(document.getRootElement().element("metaEnvironment").element("metaEnums"));
         ruleConfig.setMetaEnums(metaEnums);
-        ruleConfig.setMetaEnumMap(metaEnums.stream().collect(Collectors.toMap(MetaEnum::getCode,o->o)));
-
         //解析元数据配置
         List<MetaClass> metaClasses = parseMetaClasses(document.getRootElement().element("metaEnvironment").element("metaClasses"));
         ruleConfig.setMetaClasses(metaClasses);
-        ruleConfig.setMetaClassMap(metaClasses.stream().collect(Collectors.toMap(MetaClass::getCode,o->o)));
 
-        ruleConfig.setMetaContext(new MetaContext(ruleConfig.getMetaClasses(),ruleConfig.getMetaClassMap()));
+        //ruleConfig.setMetaContext();
 
         // 解析行为
         ruleConfig.setActions(parseActions(document.getRootElement().element("metaEnvironment").element("actions"),ruleConfig));
 
         //解析公共参数
-        List<Param> globalParams = parseParams(document.getRootElement().element("metaEnvironment").element("globalParams"));
-        ruleConfig.setRunGlobalParams(globalParams);
+        //List<Param> globalParams = parseParams(document.getRootElement().element("metaEnvironment").element("globalParams"));
+        //ruleConfig.setRunGlobalParams(globalParams);
 
 
         //解析规则配置
         List<Rule> rules = parseRules(ruleConfig.getRulePath(),ruleConfig);
         ruleConfig.setRules(rules);
-        ruleConfig.setRuleMap(rules.stream().collect(Collectors.toMap(Rule::getCode,o->o)));
 
         return ruleConfig;
     }

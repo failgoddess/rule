@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-    <rulePath>classpath:demo/RULE_RU001.xml</rulePath>
+    <rulePath>classpath:demo/RULE_RU003.xml</rulePath>
     <metaEnvironment>
         <formulaBuilder classPath ="com.goddess.rule.parser.impl.DefaultFormulaBuilder"/>
 

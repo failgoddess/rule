@@ -2,9 +2,10 @@ package com.goddess.rule.executer.context;
 
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.JSONPath;
+import com.goddess.rule.executer.mode.base.action.Param;
+import com.goddess.rule.executer.mode.rule.Rule;
 import com.goddess.rule.executer.mode.rule.graph.Graph;
 import com.goddess.rule.executer.mode.rule.graph.Link;
-import com.goddess.rule.executer.mode.rule.Rule;
 
 import java.util.LinkedList;
 import java.util.Map;
@@ -34,8 +35,16 @@ public class Context {
     //执行路径
     private Queue<JudgePath> judgePathQueue = new LinkedList<>();
 
-    public Context(RuleConfig ruleConfig,Rule rule){
-        this.globalParams = new JSONObject(ruleConfig.getRunGlobalParamsObject());
+    public Context(RuleConfig ruleConfig,Rule rule,String paramGroup){
+        this.globalParams = new JSONObject();
+        for (Param param:ruleConfig.getDefGlobalParams()) {
+            this.globalParams.put(param.getCode(),param.getData());
+        }
+        if(paramGroup!=null&&ruleConfig.getParams(paramGroup)!=null){
+            for (Param param:ruleConfig.getParams(paramGroup)) {
+                this.globalParams.put(param.getCode(),param.getData());
+            }
+        }
         this.rule = rule;
         this.ruleConfig = ruleConfig;
     }

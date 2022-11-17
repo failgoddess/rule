@@ -1,19 +1,16 @@
 package com.goddess.rule.executer.meta;
 
+import com.goddess.rule.executer.mode.BasePo;
+
 /**
  * 规则对象属性项
  * @author: 失败女神-vinc
  * @email: 18733123202@163.com
  * @date: 2022/6/3 21:12
  */
-public class MetaProperty {
+public class MetaProperty extends BasePo {
 
-    //编码
-    private String code;
-    //名称
-    private String name;
-    //备注
-    private String remark;
+
     //是否主键 1是0否
     private boolean primary;
     //数据类型
@@ -27,21 +24,6 @@ public class MetaProperty {
     private String enumCode;
 
 
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 
     public boolean isPrimary() {
         return primary;
@@ -51,13 +33,6 @@ public class MetaProperty {
         this.primary = primary;
     }
 
-    public String getRemark() {
-        return remark;
-    }
-
-    public void setRemark(String remark) {
-        this.remark = remark;
-    }
 
 
     public String getDataType() {

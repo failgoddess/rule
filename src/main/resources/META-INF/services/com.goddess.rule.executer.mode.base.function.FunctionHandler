@@ -6,4 +6,3 @@ com.goddess.rule.executer.mode.base.function.impl.FunctionDiv
 
 com.goddess.rule.executer.mode.base.function.impl.FunctionSize
 com.goddess.rule.executer.mode.base.function.impl.FunctionLength
-com.goddess.rule.executer.mode.base.function.impl.FunctionGapNowDay

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rule code = "RU003" name = "测试"  model="graph">
+    <params>
+        <param code="attr1" name = "属性1" dataType="STRING" />
+        <param code="attr2" name = "属性2" dataType="NUMBER"/>
+    </params>
+
+    <results>
+        <result code="RU001R1" name = "10" dataType="NUMBER" data="10"/>
+        <result code="RU001R2" name = "9" dataType="NUMBER" data="9"/>
+        <result code="RU001R3" name = "8" dataType="NUMBER" data="%{sub(attr1:${attr2},attr2:1)}"/>
+    </results>
+
+<!--    or and     +—*/      关系 大于     被除数/除数  -->
+    <graphs>
+        <graph code = "RU001G1" name = "规则测试" firstBranchCode ="RU001G1B1">
+            <branches>
+                <branch code = "RU001G1B1" name = "分支1">
+                    <links>
+                        <link code="001" name = "属性1 等于 陆佳 " priority="1" nextType = "RESULT" nextResultCode ="RU001R1">
+                            <expression expressionType ="relation" operationCode="eq" dataType="STRING" cover="${attr1}" threshold="陆佳" />
+                        </link>
+                        <link code="002"  name = "否则" eternal="true" priority="2" nextType="BRANCH" nextBranchCode="RU001G1B2"/>
+                    </links>
+                </branch>
+                <branch code = "RU001G1B2" name = "分支2">
+                    <links>
+                        <link code="003" name ="负责" priority="10" nextType = "RESULT" nextResultCode ="RU001R2">
+                            <expression expressionType ="logic" operationCode="and" >
+                                <subExpressions>
+                                    <expression expressionType ="relation" operationCode="eq" dataType="STRING" cover="${attr1}" threshold="vinc" />
+                                    <expression expressionType ="relation" operationCode="eq" dataType="NUMBER" cover="${attr2}" threshold="10086" />
+                                </subExpressions>
+                            </expression>
+                        </link>
+                        <link code="004"  name = "否则" eternal="true" priority="2" nextType="RESULT" nextResultCode="RU001R3"/>
+                    </links>
+                </branch>
+            </branches>
+        </graph>
+    </graphs>
+</rule>
