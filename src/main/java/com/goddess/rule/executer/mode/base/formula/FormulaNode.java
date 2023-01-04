@@ -53,20 +53,19 @@ public abstract class FormulaNode {
 
     public static CutObj cut(String params){
         Map<Integer,Integer> lenMap = new TreeMap<>();
-
+        int pos = 0;
         for(String bracket:getBrackets()){
-            int start = -1;
             int index = -1;
             do {
-                index = params.indexOf(bracket,start);
+                index = params.indexOf(bracket,pos);
                 if(index!=-1){
                     //做转义用的
                     if(index>0 && "\\".equals(params.substring(index-1,index))){
-                        start+=1;
+                        pos+=1;
                     }else {
                         lenMap.put(index,bracket.length());
                     }
-                    start+=bracket.length();
+                    pos+=bracket.length();
                 }
             }
             while (index!=-1);

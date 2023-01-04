@@ -19,7 +19,9 @@ public class FormulaCutTest {
         //FormulaNode.CutObj cutObj5 = FormulaNode.cut("\\%{add()\\}");
 
 
-        FormulaNode.CutObj cutObj6 = FormulaNode.cut("\nb${ACCTID}");
+        FormulaNode.CutObj cutObj6 = FormulaNode.cut("{attr1:123}");
+        //String name = "select";
+
 
 
         System.out.println("--");
