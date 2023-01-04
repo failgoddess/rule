@@ -53,23 +53,47 @@ public abstract class FormulaNode {
 
     public static CutObj cut(String params){
         Map<Integer,Integer> lenMap = new TreeMap<>();
+
         int pos = 0;
-        for(String bracket:getBrackets()){
-            int index = -1;
-            do {
-                index = params.indexOf(bracket,pos);
-                if(index!=-1){
-                    //做转义用的
-                    if(index>0 && "\\".equals(params.substring(index-1,index))){
-                        pos+=1;
-                    }else {
-                        lenMap.put(index,bracket.length());
+        List<String> brackets = getBrackets();
+        for(int end=pos+1;end<=params.length();end++){
+            String ch = params.substring(pos,end);
+            if(brackets.contains(ch)){
+                //存在
+                lenMap.put(pos,ch.length());
+                pos = end;
+            }else{
+                //不存在 也不是前缀 指针后移
+                boolean flag = true;
+                for(String bracket:brackets){
+                    if(bracket.startsWith(ch)){
+                        flag = false;
+                        break;
                     }
-                    pos+=bracket.length();
+                }
+                if(flag){
+                    pos = end;
                 }
             }
-            while (index!=-1);
         }
+
+        //for(String bracket:getBrackets()){
+        //    int start = 0;
+        //    int index = -1;
+        //    do {
+        //        index = params.indexOf(bracket,start);
+        //        if(index!=-1){
+        //            //做转义用的
+        //            if(index>0 && "\\".equals(params.substring(index-1,index))){
+        //                start+=1;
+        //            }else {
+        //                lenMap.put(index,bracket.length());
+        //            }
+        //            start+=bracket.length();
+        //        }
+        //    }
+        //    while (index!=-1);
+        //}
 
         //开始结束
         Map<Integer,Integer> startEndMap = new TreeMap<>();
@@ -147,8 +171,8 @@ public abstract class FormulaNode {
         List<String> lefts = new ArrayList<>();
         //lefts.add("@{");
         lefts.add("${");
-        //lefts.add("%{");
-        //lefts.add("(");
+        lefts.add("%{");
+        lefts.add("(");
         lefts.add("{");
         return lefts;
     }

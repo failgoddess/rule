@@ -2,7 +2,7 @@ package com.goddess.rule.executer.mode.base.formula;
 
 import com.goddess.rule.executer.context.Context;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -14,7 +14,9 @@ public class DataNode extends FormulaNode {
     private List<String> datas;
     public DataNode(String text){
         this.type = "DATA";
-        this.datas = Arrays.asList(text.split(","));
+        //this.datas = Arrays.asList(text.split(","));
+        this.datas = new ArrayList<>();
+        datas.add(text);
         this.text = text;
     }
 
