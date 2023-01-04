@@ -10,7 +10,9 @@ public class Where extends Bound {
     private List<If> ifs;
     private Else elseNode;
 
-
+    public Where(){
+        type = "Where";
+    }
     @Override
     public String build(Context context) {
         List<String> strs = new ArrayList<>();

@@ -129,6 +129,7 @@ public abstract class FormulaNode {
         List<Boolean> reFlags = new ArrayList<>();
         reFlags.add(false);
         Map<String,String> matchMap = new TreeMap<>();
+        matchMap.put("{","}");
         matchMap.put("@{","}");
         matchMap.put("${","}");
         matchMap.put("%{","}");
@@ -145,10 +146,11 @@ public abstract class FormulaNode {
     //左括号
     private static List<String> getLeftBrackets(){
         List<String> lefts = new ArrayList<>();
-        lefts.add("@{");
+        //lefts.add("@{");
         lefts.add("${");
-        lefts.add("%{");
-        lefts.add("(");
+        //lefts.add("%{");
+        //lefts.add("(");
+        lefts.add("{");
         return lefts;
     }
     //右括号

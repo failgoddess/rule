@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rule code = "RU001" name = "店铺底线折扣"  model="graph">
+    <params>
+        <param code="buyStoreCode" name = "销售门店编码" dataType="STRING" necessary="true"/>
+        <param code="sendStoreCode" name = "发货门店编码" dataType="STRING" necessary="true"/>
+        <param code="discount" name = "活动折扣" dataType="NUMBER"/>
+    </params>
+
+    <results>
+        <result code="RU001R1" name = "7折" dataType="NUMBER" data="0.7"/>
+        <result code="RU001R2" name = "8折" dataType="NUMBER" data="0.8"/>
+        <result code="RU001R3" name = "9折" dataType="NUMBER" data="0.9"/>
+        <result code="RU001R4" name = "活动折扣" dataType="NUMBER" data="${discount}"/>
+    </results>
+    <actions>
+        <action></action>
+    </actions>
+
+    <graphs>
+        <graph code = "RU001G1" name = "店铺底线折扣" firstBranchCode ="RU001G1B1">
+            <branches>
+                <branch code = "RU001G1B1" name = "门店分支">
+                    <executes></executes>
+                    <links>
+                        <link code="810101" name = "销售门店开业时间 小于  356天 并且1=1" priority="10" nextType = "RESULT" nextResultCode ="RU001R1">
+                            <expression expressionType ="logic" operationCode="and" dataType="NUMBER">
+                                <subExpressions>
+                                    <expression expressionType ="relation" operationCode="lt" dataType="NUMBER" cover="%{gapNowDay(time:${buyStore.startTime})}" threshold="356" />
+                                    <expression expressionType ="relation" operationCode="eq" dataType="NUMBER" cover="1" threshold="356" />
+                                </subExpressions>
+                            </expression>
+                        </link>
+                        <link code="810102"  name = "否则" eternal="true" priority="20" nextType="BRANCH" nextBranchCode="RU001G1B2"/>
+                    </links>
+                </branch>
+                <branch code = "RU001G1B2" name = "区域分支">
+                    <links>
+                        <link code="810201" name ="销售门店区域 包含于 河北,上海" priority="10" nextType = "RESULT" nextResultCode ="RU001R3">
+                            <expression  expressionType ="relation" cover="${buyStore.area}" operationCode="in" dataType="STRING"
+                                       thresholdComplex="1" threshold="河北,上海"/>
+                        </link>
+                        <link code="810202" name = "销售区域 等于 发货区域" priority="20" nextType = "RESULT" nextResultCode ="RU001R2">
+                            <expression expressionType ="relation"  cover="${buyStore.area}" operationCode="eq" dataType="STRING"
+                                       threshold="${sendStore.area}"/>
+                        </link>
+                        <link code="810203"  name = "否则" eternal="true" priority="20" nextType="BRANCH" nextBranchCode="RU001G1B3"/>
+                    </links>
+                </branch>
+                <branch code = "RU001G1B3" name = "活动分支">
+                    <links>
+                        <link code="810301" name = "活动折扣 等于 空" priority="10" nextType = "RESULT" nextResultCode ="RU001R2">
+                            <expression expressionType ="relation" cover="${discount}" operationCode="en" />
+                        </link>
+                        <link code="810302"  name = "活动折扣 不等于 空" priority="20" nextType = "RESULT" nextResultCode ="RU001R4">
+                            <expression expressionType ="relation" cover="${discount}" operationCode="nn" />
+                        </link>
+                    </links>
+                </branch>
+            </branches>
+        </graph>
+    </graphs>
+</rule>

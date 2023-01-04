@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.JSONPath;
 import com.goddess.rule.executer.mode.base.action.Param;
 import com.goddess.rule.executer.mode.rule.Rule;
+import com.goddess.rule.executer.mode.rule.flow.Flow;
 import com.goddess.rule.executer.mode.rule.graph.Graph;
 import com.goddess.rule.executer.mode.rule.graph.Link;
 
@@ -11,6 +12,7 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Stack;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 决策上下文
@@ -35,6 +37,8 @@ public class Context {
     //执行路径
     private Queue<JudgePath> judgePathQueue = new LinkedList<>();
 
+    private Map<Thread, Flow> flowMap = new ConcurrentHashMap<>();
+
     public Context(RuleConfig ruleConfig,Rule rule,String paramGroup){
         this.globalParams = new JSONObject();
         for (Param param:ruleConfig.getDefGlobalParams()) {
@@ -49,6 +53,15 @@ public class Context {
         this.ruleConfig = ruleConfig;
     }
 
+    public Flow getFlow(){
+        return flowMap.get(Thread.currentThread());
+    }
+    public void setFlow(Flow flow){
+        flowMap.put(Thread.currentThread(),flow);
+    }
+    public void removeFlow(){
+        flowMap.remove(Thread.currentThread());
+    }
     /**
      * 回溯栈出栈
      * @return

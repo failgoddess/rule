@@ -9,6 +9,9 @@ public class If extends Bound {
     private Expression expression;
     private Compose compose;
 
+    public If(){
+        type = "If";
+    }
     @Override
     public String build(Context context) {
         boolean flag = JavaActuator.execute(context,expression);

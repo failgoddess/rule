@@ -15,6 +15,10 @@ import java.util.List;
 public class JavaActuator {
 
     public static boolean execute( Context context,Expression expression,Log log){
+        if(log!=null){
+            log.setOperationCode(expression.getOperationCode());
+            log.setOperationType(expression.getExpressionType());
+        }
         if(Constant.ExpressionType.LOGIC.equals(expression.getExpressionType())){
             //逻辑
             return execute(expression.getOperationCode(), expression.getSubExpression(),context,log);
@@ -38,7 +42,7 @@ public class JavaActuator {
                 log.setCover(expression.getCoverFormula().getText());
                 log.setCoverData(cover);
 
-                log.setOperationCode(expression.getOperationCode());
+
 
                 if(!operation.isOneOp()){
                     log.setThresholdComplex(expression.getThresholdComplex());
@@ -59,7 +63,7 @@ public class JavaActuator {
     }
 
     //逻辑
-    private static boolean execute(String operationCode, List<Expression> subExpressions,Context context,Log log){
+    private static boolean execute(String operationCode, List<Expression> subExpressions, Context context, Log log){
         if("or".equals(operationCode)){
             for (Expression expression :subExpressions){
                 boolean flag;
@@ -97,6 +101,7 @@ public class JavaActuator {
         private Object coverData;
 
         private String operationCode;
+        private String operationType;
 
         private int thresholdComplex;
         private String threshold;
@@ -106,6 +111,22 @@ public class JavaActuator {
 
         private List<Log> subLog;
 
+
+        public String getMsg(int l){
+            StringBuilder msg = new StringBuilder();
+            for (int i=0;i<l;i++){
+                msg.append("|\t");
+            }
+            if(Constant.ExpressionType.LOGIC.equalsIgnoreCase(operationType)){
+                msg.append("操作符["+operationCode+"]==结果["+flag+"]\n");
+                for (Log log:subLog){
+                    msg.append(log.getMsg(l+1));
+                }
+            }else {
+                msg.append("数据类型["+dataType+"]被比较数["+coverData+"]操作符["+operationCode+"]比较数["+thresholdData +"]==结果["+flag+"]\n");
+            }
+            return msg.toString();
+        }
         public List<Log> getSubLog() {
             return subLog;
         }
@@ -114,6 +135,14 @@ public class JavaActuator {
                 subLog = new ArrayList<>();
             }
             subLog.add(log);
+        }
+
+        public String getOperationType() {
+            return operationType;
+        }
+
+        public void setOperationType(String operationType) {
+            this.operationType = operationType;
         }
 
         public void setDataType(String dataType) {

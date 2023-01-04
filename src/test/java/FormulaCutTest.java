@@ -12,11 +12,14 @@ public class FormulaCutTest {
         //RuleConfig ruleConfig = new XMLRuleConfigBuilder().build("classpath:demo/rule-config.xml");
 
         //FormulaNode.CutObj cutObj1 = FormulaNode.cut("txt");
-        FormulaNode.CutObj cutObj2 = FormulaNode.cut("%{add()}");
+        //FormulaNode.CutObj cutObj2 = FormulaNode.cut("%{add()}");
 
         //FormulaNode.CutObj cutObj3 = FormulaNode.cut("%{add(attr1:1)}");
         //FormulaNode.CutObj cutObj4 = FormulaNode.cut("%{add(attr1:1,attr2:2)}");
-        FormulaNode.CutObj cutObj5 = FormulaNode.cut("\\%{add()\\}");
+        //FormulaNode.CutObj cutObj5 = FormulaNode.cut("\\%{add()\\}");
+
+
+        FormulaNode.CutObj cutObj6 = FormulaNode.cut("\nb${ACCTID}");
 
 
         System.out.println("--");

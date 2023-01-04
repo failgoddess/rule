@@ -2,13 +2,15 @@ package com.goddess.rule.parser;
 
 import com.goddess.rule.executer.mode.base.bound.*;
 
-public interface BoundParser {
-    Compose boundCompose(Object dataObj);
-    Bound boundElement(Object dataObj);
-    Trim boundTrim(Object dataObj);
-    Else boundElse(Object dataObj);
-    If boundIf(Object dataObj);
-    Choice boundChoice(Object dataObj);
-    Where boundWhere(Object dataObj);
-    For boundFor(Object dataObj);
+public interface BoundParser<T> {
+    Compose boundCompose(T dataObj);
+    Bound boundElement(T dataObj);
+    Trim boundTrim(T dataObj);
+    Else boundElse(T dataObj);
+    If boundIf(T dataObj);
+    Choice boundChoice(T dataObj);
+    Where boundWhere(T dataObj);
+    For boundFor(T dataObj);
+    Str boundStr(T dataObj);
+    Formula boundFormula(T dataObj);
 }

@@ -9,7 +9,9 @@ public class Compose extends Bound{
     public List<Bound> items;
     public Compose(){
         items = new ArrayList<>();
+        type = "Compose";
     }
+
     @Override
     public String build(Context context) {
         StringBuilder sb = new StringBuilder();

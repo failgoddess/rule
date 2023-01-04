@@ -105,10 +105,15 @@ public class Expression  extends BasePo {
         return cover;
     }
 
-    public void setCover(String cover) {
-        RuleConfig ruleConfig = RuleConfig.getInstance();
-        this.coverFormula = ruleConfig.getFormulaBuilder().getFormulaNode(cover);
-        this.cover = cover;
+    public void setCover(Object cover) {
+        if (cover == null) {
+            this.cover = null;
+            this.coverFormula = null;
+        }else {
+            RuleConfig ruleConfig = RuleConfig.getInstance();
+            this.coverFormula = ruleConfig.getFormulaBuilder().getFormulaNode(cover.toString());
+            this.cover = cover.toString();
+        }
     }
 
     public String getOperationCode() {

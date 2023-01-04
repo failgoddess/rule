@@ -2,6 +2,7 @@ package com.goddess.rule.executer.mode;
 
 import com.goddess.rule.executer.context.RuleConfig;
 import com.goddess.rule.executer.mode.base.formula.FormulaNode;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * @author: 失败女神-vinc
@@ -39,8 +40,14 @@ public class BaseDataPo extends BasePo{
 
     public void setData(String data) {
         RuleConfig ruleConfig = RuleConfig.getInstance();
-        this.dataFormulaNode = ruleConfig.getFormulaBuilder().getFormulaNode(data);
-        this.data = data;
+        if(StringUtils.isEmpty(data)){
+            this.dataFormulaNode = null;
+            this.data = null;
+        }else {
+            this.dataFormulaNode = ruleConfig.getFormulaBuilder().getFormulaNode(data);
+            this.data = data;
+        }
+
     }
 
     public void setDataFormulaNode(FormulaNode dataFormulaNode) {

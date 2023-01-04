@@ -8,7 +8,9 @@ import com.goddess.rule.executer.mode.base.action.Execute;
 import com.goddess.rule.executer.mode.base.action.Result;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -20,14 +22,20 @@ public class Flow extends BasePo {
     List<Execute> executes;
 
     public List<Object> decision(Context context){
+        context.setFlow(this);
         List<Object> reData = new ArrayList<>();
+        Map<String,Object> execData = new HashMap<>();
         for (Execute exec : executes) {
             try {
                 Result<Object> result = exec.execute(context);
                 if (exec.isInit()) {
-                    context.putRuleData(exec.getCode(),result.getContent());
+                    execData.put(exec.getCode(),result.getContent());
+                    context.putRuleData(this.getCode(),execData);
+                    //context.putRuleData(exec.getCode(),result.getContent());
                     reData.add(result.getContent());
                 }
+                //System.out.println(exec.getCode());
+                //System.out.println(JSONObject.toJSONString(result));
                 if (result.getException()!=null) {
                     throw result.getException();
                 }
@@ -47,6 +55,7 @@ public class Flow extends BasePo {
             }
 
         }
+        context.removeFlow();
         return reData;
     }
 

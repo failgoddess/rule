@@ -54,7 +54,15 @@ public abstract class Operation {
     public abstract boolean boll(Boolean t1 ,Boolean t2);
 
     public static List<String> getListStr(Object data){
-        return Arrays.asList(data.toString().split(","));
+        List<String> res = new ArrayList<>();
+        if (data instanceof Arrays){
+            for(Object item:(ArrayList)data){
+                res.add(item.toString());
+            }
+        }else {
+            res.add(data.toString());
+        }
+        return res;
     }
     //获取字符串列表
     public static List<String> getList(Object data){

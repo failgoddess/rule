@@ -4,6 +4,9 @@ import com.goddess.rule.executer.context.Context;
 
 public class Else extends Bound {
     public Compose compose;
+    public Else(){
+        type = "Compose";
+    }
 
     @Override
     public String build(Context context) {

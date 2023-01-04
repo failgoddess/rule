@@ -22,7 +22,6 @@ import org.dom4j.Element;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @author: 失败女神-vinc
@@ -72,8 +71,16 @@ public  class XMLRuleConfigBuilder implements RuleConfigBuilder {
         ruleConfig.setActions(parseActions(document.getRootElement().element("metaEnvironment").element("actions"),ruleConfig));
 
         //解析公共参数
-        //List<Param> globalParams = parseParams(document.getRootElement().element("metaEnvironment").element("globalParams"));
-        //ruleConfig.setRunGlobalParams(globalParams);
+        List<Element> items = document.getRootElement().element("metaEnvironment").elements("globalParams");
+        for (Element item:items){
+            String type = item.attributeValue("type");
+            List<Param> globalParams = parseParams(item);
+            if (type.equalsIgnoreCase("all")){
+                ruleConfig.setDefGlobalParams(globalParams);
+            }else {
+                ruleConfig.setParams(type,globalParams);
+            }
+        }
 
 
         //解析规则配置

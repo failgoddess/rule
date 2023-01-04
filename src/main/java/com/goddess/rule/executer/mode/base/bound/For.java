@@ -20,6 +20,9 @@ public class For extends Bound {
     private int end;
     private Compose compose;
 
+    public For(){
+        type = "For";
+    }
     @Override
     public String build(Context context) {
         Object dataObj = dataFormulaNode.apply(context);
@@ -28,7 +31,9 @@ public class For extends Bound {
             dataList = dataList.subList(start,dataList.size());
         }
         if(end!=-1){
-            dataList = dataList.subList(0,end-start);
+            if(end-start<dataList.size()){
+                dataList = dataList.subList(0,end-start);
+            }
         }
         List<String> strs = new ArrayList<>();
         for (int i = 0; i<dataList.size();i++) {

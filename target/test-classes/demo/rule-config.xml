@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <rulePath>classpath:demo/RULE_RU003.xml</rulePath>
+    <metaEnvironment>
+        <formulaBuilder classPath ="com.goddess.rule.parser.impl.DefaultFormulaBuilder"/>
+
+        <metaEnums>
+            <metaEnum code="storeLevel" name="门店等级" type="FIXED">
+                <items>
+                    <item code="10" name="甲"></item>
+                    <item code="20" name="乙"></item>
+                    <item code="30" name="丙"></item>
+                </items>
+            </metaEnum>
+            <metaEnum code="storeArea" name="门店区域" type="DYNAMIC" classPath=""/>
+        </metaEnums>
+        <metaClasses>
+            <metaClass code="store" name="门店" loaderCode="STORE">
+                <properties>
+                    <property code="code" name="门店编码" dataType="STRING" primary="true"/>
+                    <property code="name" name="门店名称" dataType="STRING" />
+                    <property code="startTime" name="开业时间" dataType="TIME_YMD" />
+                    <property code="level" name="门店等级" dataType="STRING" enumCode="storeLevel"/>
+                    <property code="area" name="门店区域" dataType="STRING" enumCode="storeArea"/>
+                </properties>
+            </metaClass>
+        </metaClasses>
+    </metaEnvironment>
+</configuration>

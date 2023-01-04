@@ -6,6 +6,9 @@ import com.goddess.rule.executer.context.Context;
 public class Trim extends Bound {
     private Compose compose;
 
+    public Trim(){
+        type = "Trim";
+    }
     public Compose getCompose() {
         return compose;
     }

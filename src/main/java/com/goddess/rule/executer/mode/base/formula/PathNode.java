@@ -21,7 +21,10 @@ public class PathNode extends FormulaNode{
         if (data == null) {
             data = JSONPath.eval(context.getRuleData(), path, false);
             if (data == null) {
-                data = JSONPath.eval(context.getGlobalParams(), path, false);
+                data = JSONPath.eval(context.getRuleData().getJSONObject(context.getFlow().getCode()), path, false);
+                if (data == null) {
+                    data = JSONPath.eval(context.getGlobalParams(), path, false);
+                }
             }
         }
         return data;

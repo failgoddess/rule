@@ -1,5 +1,7 @@
 package com.goddess.rule.executer.meta;
 
+import com.goddess.rule.executer.mode.BasePo;
+
 import java.util.List;
 
 /**
@@ -8,15 +10,8 @@ import java.util.List;
  * @email: 18733123202@163.com
  * @date: 2022/6/3 21:12
  */
-public class MetaEnum {
-    /**
-     * 编码
-     */
-    private String code;
-    /**
-     * 名称
-     */
-    private String name;
+public class MetaEnum extends BasePo {
+
     /**
      * 类型：固定动态Constant.EnumType
      */
@@ -71,21 +66,7 @@ public class MetaEnum {
         }
     }
 
-    public String getCode() {
-        return code;
-    }
 
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 
     public String getType() {
         return type;

@@ -107,7 +107,7 @@ public class RuleConfig {
         }
         lock.unlock();
     }
-    public void putMetaEnumMap(MetaEnum metaEnum) {
+    public void addMetaEnum(MetaEnum metaEnum) {
         Lock lock = OpLock.metaEnumLock;
         lock.lock();
         this.metaEnumMap.put(metaEnum.getCode(),metaEnum);
@@ -163,10 +163,10 @@ public class RuleConfig {
         List<Param> params  = globalParamMap.get(code);
         return params;
     }
-    public void setParams(String activate,List<Param> params){
+    public void setParams(String type,List<Param> params){
         Lock lock = OpLock.paramsLock;
         lock.lock();
-        globalParamMap.put(activate,params);
+        globalParamMap.put(type,params);
         lock.unlock();
     }
 

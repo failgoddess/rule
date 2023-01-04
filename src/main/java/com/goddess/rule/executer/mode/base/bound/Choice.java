@@ -8,6 +8,9 @@ public class Choice extends Bound {
     private List<If> ifs;
     private Else elseNode;
 
+    public Choice(){
+        type = "Choice";
+    }
 
     @Override
     public String build(Context context) {

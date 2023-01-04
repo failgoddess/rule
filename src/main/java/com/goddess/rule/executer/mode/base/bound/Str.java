@@ -16,6 +16,9 @@ public class Str extends Bound{
         return text;
     }
 
+    public Str(){
+        type = "Str";
+    }
     public void setText(String text, RuleConfig ruleConfig) {
         this.text = text;
         cut(text,ruleConfig);

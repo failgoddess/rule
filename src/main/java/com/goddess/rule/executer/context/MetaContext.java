@@ -41,7 +41,7 @@ public class MetaContext {
             paths.add(property.getCode());
             propertyMap.put(Joiner.on(".").join(paths),property);
             if(property.getMetaClassCode()!=null){
-                init(metaClassMap.get(property.getMetaClassCode()),paths,metaClassMap);
+                //init(metaClassMap.get(property.getMetaClassCode()),paths,metaClassMap);
             }
             paths.remove(paths.size()-1);
         }
