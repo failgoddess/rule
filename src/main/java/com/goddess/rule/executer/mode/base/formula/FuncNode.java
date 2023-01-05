@@ -46,7 +46,6 @@ public class FuncNode extends FormulaNode {
         this.func = cutObj.paragraphs.get(leftIndex).substring(2);
         int startIndex = leftIndex + 1;
         do {
-
             String nowStr = cutObj.paragraphs.get(startIndex);
             if(nowStr.startsWith("},")){
                 nowStr  = nowStr.substring(2);

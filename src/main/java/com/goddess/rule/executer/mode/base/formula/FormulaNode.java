@@ -19,6 +19,7 @@ public abstract class FormulaNode {
     public static class CutObj{
         //开始 结束 括号开始对应的结束 在字符串中的顺序
         public Map<Integer,Integer> startEndMap = new TreeMap<>();
+        public Map<Integer,Integer> endStartMap = new TreeMap<>();
         //每个括号的长度
         public Map<Integer,Integer>  lenMap = new TreeMap<>();
         //按照括号分段
@@ -97,7 +98,9 @@ public abstract class FormulaNode {
 
         //开始结束
         Map<Integer,Integer> startEndMap = new TreeMap<>();
+        Map<Integer,Integer> endStartMap = new TreeMap<>();
         List<Integer> indexs = new ArrayList<>();
+        List<Integer> indexLast = new ArrayList<>();
         Stack<String> stack = new Stack<>();   //创建一个栈 存符号
         Stack<Integer> stackIndex = new Stack<>();   //创建一个栈 存索引
         for(Integer index:lenMap.keySet()){
@@ -110,31 +113,40 @@ public abstract class FormulaNode {
                 stackIndex.push(index);
             }else if(getRightBrackets().contains(bracket)){
                 //右括号
-                if(matching(stack.peek(),bracket)){
-                    int x= stackIndex.pop();
-                    startEndMap.put(x,index);
-                    stack.pop();
+                if(!stack.empty()){
+                    //用来预防只有有括号的情况
+                    if(matching(stack.peek(),bracket)){
+                        int x= stackIndex.pop();
+                        startEndMap.put(x,index);
+                        endStartMap.put(index,x);
+                        stack.pop();
+                    }
                 }
             }
         }
-//        Paragraph paragraph = new Paragraph();
+        //过滤单括号
+
+       for (int i=0;i<indexs.size();i++){
+           if(startEndMap.containsKey(indexs.get(i))||endStartMap.containsKey(indexs.get(i))){
+               indexLast.add(indexs.get(i));
+           }
+       }
+
         List<String> paragraphs = new ArrayList<>();
-//        List<Integer> st = new ArrayList<>();
-        int size = indexs.size()-1;
+        int size = indexLast.size()-1;
         for(int i=0;i<size;i++ ){
-            int start = indexs.get(i);
-            int end = indexs.get(i+1);
+            int start = indexLast.get(i);
+            int end = indexLast.get(i+1);
             paragraphs.add(params.substring(start,end));
-//            st.add(start);
             if(i==size-1){
                 paragraphs.add(params.substring(end));
-//                st.add(end);
             }
         }
         CutObj cutObj = new CutObj();
         cutObj.startEndMap = startEndMap;
+        cutObj.endStartMap = endStartMap;
         cutObj.paragraphs = paragraphs;
-        cutObj.indexs = indexs;
+        cutObj.indexs = indexLast;
         cutObj.lenMap = lenMap;
 
         return cutObj;
