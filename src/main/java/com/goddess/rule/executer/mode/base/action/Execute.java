@@ -30,9 +30,12 @@ public class Execute extends BasePo {
         for (Inject inject:injects) {
             data.put(inject.getCode(),inject.execute(context));
         }
-        Action action = context.getRuleConfig().getAction(actionCode);
+        Action action = context.getRule().getAction(actionCode);
         if(action==null){
-            throw new RuleException(ExceptionCode.EC_0302,getCode(),getActionCode());
+            action = context.getRuleConfig().getAction(actionCode);
+            if(action==null){
+                throw new RuleException(ExceptionCode.EC_0302,getCode(),getActionCode());
+            }
         }
         return action.execute(context,this,new JSONObject(data));
     }

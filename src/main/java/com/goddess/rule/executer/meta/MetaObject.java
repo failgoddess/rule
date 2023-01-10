@@ -28,7 +28,10 @@ public class MetaObject {
         if (Constant.DataType.MAP.equalsIgnoreCase(dataType)) {
             return data;
         }
-        MetaClass metaClass = context.getRuleConfig().getMetaClassByDataType(dataType);
+        MetaClass metaClass = context.getRule().getMetaClassByDataType(dataType);
+        if(metaClass ==null){
+            metaClass = context.getRuleConfig().getMetaClassByDataType(dataType);
+        }
         Map<String,Object> reData = new HashMap<>();
         if(metaClass != null){
             for(MetaProperty property:metaClass.getProperties()){
@@ -61,6 +64,8 @@ public class MetaObject {
                 }
             }
 
+        }else {
+            throw new RuntimeException("数据类型不存在"+dataType);
         }
         return  reData;
     }

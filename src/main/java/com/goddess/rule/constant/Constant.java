@@ -75,9 +75,6 @@ public class Constant {
     }
 
 
-    public class ResultType {
-        //        10固定值20节点值30指标值
-    }
 
     /**
      * 操作符

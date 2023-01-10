@@ -4,6 +4,8 @@ import cn.hutool.core.io.resource.ResourceUtil;
 import com.goddess.rule.constant.Constant;
 import com.goddess.rule.constant.RuleException;
 import com.goddess.rule.executer.context.RuleConfig;
+import com.goddess.rule.executer.meta.MetaEnum;
+import com.goddess.rule.executer.mode.base.action.Action;
 import com.goddess.rule.executer.mode.base.action.Execute;
 import com.goddess.rule.executer.mode.rule.Rule;
 import com.goddess.rule.executer.mode.rule.flow.Flow;
@@ -82,7 +84,11 @@ public class XMLRuleParser implements RuleParser {
             rule.setName(name);
             rule.setModel(model);
             rule.setParams(XMLRuleConfigBuilder.parseParams(document.getRootElement().element("params")));
-
+            List<MetaEnum> metaEnums = XMLRuleConfigBuilder.parseMetaEnums(document.getRootElement().element("metaEnums"));
+            rule.setMetaEnums(metaEnums);
+            rule.setMetaClasses(XMLRuleConfigBuilder.parseMetaClasses(document.getRootElement().element("metaClasses"),metaEnums));
+            List<Action> actions = XMLRuleConfigBuilder.parseActions(document.getRootElement().element("actions"),ruleConfig);
+            rule.setActions(actions);
         }
         return rule;
     }

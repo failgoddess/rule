@@ -9,7 +9,7 @@ import java.util.List;
  * @date: 2022/9/27 18:40
  */
 public class ConstantUtil {
-    private static List<String> dataTypes = new ArrayList<>();
+    public static List<String> dataTypes = new ArrayList<>();
     static {
         dataTypes.add(Constant.DataType.NUMBER);
         dataTypes.add(Constant.DataType.STRING);

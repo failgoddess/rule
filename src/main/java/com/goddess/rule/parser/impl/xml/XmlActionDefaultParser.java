@@ -22,15 +22,12 @@ public class XmlActionDefaultParser implements ActionParser {
 
     public Action parse(Object dataObj){
         Element item =(Element)dataObj;
-        String code, name,block,remark,init,complex,dataType;
+        String code, name,remark,complex,dataType;
         code = item.attributeValue("code");
         name = item.attributeValue("name");
         remark = item.attributeValue("remark");
-        block = item.attributeValue("block");
-        init = item.attributeValue("init");
         complex = item.attributeValue("complex");
         dataType = item.attributeValue("dataType");
-
 
         List<Param> params = XMLRuleConfigBuilder.parseParams(item.element("params"));
         List<Mapping> mappings =  parseMappings(item.element("mappings"));
@@ -51,9 +48,8 @@ public class XmlActionDefaultParser implements ActionParser {
         action.setParams(params);
         action.setMappings(mappings);
         action.setDataType(dataType);
-        action.setMetaClass(RuleConfig.getInstance().getMetaClassByDataType(dataType));
+        action.setMetaClass(dataType==null?null:RuleConfig.getInstance().getMetaClassByDataType(dataType));
         action.setComplex(StringUtils.isNotEmpty(complex)?Integer.parseInt(complex):0);
-
 
         return action;
 

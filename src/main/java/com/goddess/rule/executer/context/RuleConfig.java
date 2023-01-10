@@ -1,6 +1,7 @@
 package com.goddess.rule.executer.context;
 
-import com.goddess.rule.constant.Constant;
+import com.goddess.rule.constant.ConstantUtil;
+import com.goddess.rule.constant.RuleException;
 import com.goddess.rule.executer.meta.MetaClass;
 import com.goddess.rule.executer.meta.MetaEnum;
 import com.goddess.rule.executer.mode.base.action.Action;
@@ -15,10 +16,11 @@ import com.goddess.rule.parser.ExecuteParser;
 import com.goddess.rule.parser.FormulaBuilder;
 import com.goddess.rule.parser.impl.DefaultFormulaBuilder;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
 /**
@@ -35,7 +37,7 @@ public class RuleConfig {
     private Map<String,MetaEnum> metaEnumMap = new ConcurrentHashMap<>();
 
     //规则对象类
-    private Map<String,MetaClass> metaClassMap = new HashMap<>();
+    private Map<String,MetaClass> metaClassMap = new ConcurrentHashMap<>();
     private MetaContext metaContext;
 
     //默认运行时全局公参
@@ -47,7 +49,7 @@ public class RuleConfig {
     private Map<String,Action> actionMap = new ConcurrentHashMap<>();
 
     //规则缓存
-    private Map<String,Rule> ruleMap = new HashMap<>();
+    private Map<String,Rule> ruleMap = new ConcurrentHashMap<>();
 
     //行为解析器
     private ActionParser actionParser;
@@ -62,19 +64,9 @@ public class RuleConfig {
     private FunctionHandlerFactory functionHandlerFactory;
 
     //基础数据类型
-    public static List<String> dataTypes = new ArrayList<>();
-    static {
-        dataTypes.add(Constant.DataType.NUMBER);
-        dataTypes.add(Constant.DataType.STRING);
-        dataTypes.add(Constant.DataType.BOLL);
-        dataTypes.add(Constant.DataType.TIME_YMD);
-        dataTypes.add(Constant.DataType.TIME_YMDHMS);
-        dataTypes.add(Constant.DataType.TIME_HMS);
-    }
+    public static List<String> dataTypes = ConstantUtil.dataTypes;
 
     private RuleConfig(){
-
-
         relationFactory = OperationFactory.getInstance();
         formulaBuilder = new DefaultFormulaBuilder();
         functionHandlerFactory = FunctionHandlerFactory.getInstance();
@@ -102,19 +94,13 @@ public class RuleConfig {
     }
 
     public void setMetaEnums(List<MetaEnum> metaEnums) {
-        Lock lock = OpLock.metaEnumLock;
-        lock.lock();
         this.metaEnumMap = new ConcurrentHashMap<>();
         for (MetaEnum metaEnum : metaEnums) {
             this.metaEnumMap.put(metaEnum.getCode(),metaEnum);
         }
-        lock.unlock();
     }
     public void addMetaEnum(MetaEnum metaEnum) {
-        Lock lock = OpLock.metaEnumLock;
-        lock.lock();
         this.metaEnumMap.put(metaEnum.getCode(),metaEnum);
-        lock.unlock();
     }
     public MetaEnum getMetaEnum(String code){
         return this.metaEnumMap.get(code);
@@ -133,44 +119,31 @@ public class RuleConfig {
         return this.metaClassMap.values().stream().collect(Collectors.toList());
     }
     public void addMetaClass(MetaClass metaClass) {
-        Lock lock = OpLock.metaClassLock;
-        lock.lock();
 
         this.metaClassMap.put(metaClass.getCode(),metaClass);
         metaContext = new MetaContext(this.metaClassMap.values().stream().collect(Collectors.toList()),metaClassMap);
 
-        lock.unlock();
     }
     public void setMetaClasses(List<MetaClass> metaClasses) {
-        Lock lock = OpLock.metaClassLock;
-        lock.lock();
         this.metaClassMap = new ConcurrentHashMap<>();
         for (MetaClass metaClass : metaClasses) {
             this.metaClassMap.put(metaClass.getCode(),metaClass);
         }
         metaContext = new MetaContext(this.metaClassMap.values().stream().collect(Collectors.toList()),metaClassMap);
-
-        lock.unlock();
     }
 
     public List<Param> getDefGlobalParams() {
         return defGlobalParams;
     }
     public void setDefGlobalParams(List<Param> defGlobalParams) {
-        Lock lock = OpLock.paramsLock;
-        lock.lock();
         this.defGlobalParams = Collections.synchronizedList(defGlobalParams);
-        lock.unlock();
     }
     public List<Param> getParams(String code){
         List<Param> params  = globalParamMap.get(code);
         return params;
     }
     public void setParams(String type,List<Param> params){
-        Lock lock = OpLock.paramsLock;
-        lock.lock();
         globalParamMap.put(type,params);
-        lock.unlock();
     }
 
     public Map<String, List<Param>> getGlobalParamMap() {
@@ -178,19 +151,13 @@ public class RuleConfig {
     }
 
     public void setActions(List<Action> actions) {
-        Lock lock = OpLock.actionsLock;
-        lock.lock();
         this.actionMap = new ConcurrentHashMap<>();
         for (Action action : actions) {
             this.actionMap.put(action.getCode(),action);
         }
-        lock.unlock();
     }
     public void addAction(Action action) {
-        Lock lock = OpLock.actionsLock;
-        lock.lock();
         this.actionMap.put(action.getCode(),action);
-        lock.unlock();
     }
     public Action getAction(String code){
         return actionMap.get(code);
@@ -201,21 +168,16 @@ public class RuleConfig {
 
 
     public void addRule(Rule rule) {
-        Lock lock = OpLock.ruleLock;
-        lock.lock();
-
         this.ruleMap.put(rule.getCode(),rule);
-
-        lock.unlock();
     }
     public void setRules(List<Rule> rules) {
-        Lock lock = OpLock.ruleLock;
-        lock.lock();
         this.ruleMap = new ConcurrentHashMap<>();
         for (Rule rule : rules) {
+            if(this.ruleMap.containsKey(rule.getCode())){
+                throw new RuleException("规则编码重复"+rule.getCode());
+            }
             this.ruleMap.put(rule.getCode(),rule);
         }
-        lock.unlock();
     }
     public List<Rule> getRules() {
         return this.ruleMap.values().stream().collect(Collectors.toList());
@@ -287,15 +249,4 @@ public class RuleConfig {
         }
     }
 
-
-
-
-
-    public static class OpLock {
-        public static ReentrantLock actionsLock = new ReentrantLock(true);
-        public static ReentrantLock metaClassLock = new ReentrantLock(true);
-        public static ReentrantLock metaEnumLock = new ReentrantLock(true);
-        public static ReentrantLock ruleLock = new ReentrantLock(true);
-        public static ReentrantLock paramsLock = new ReentrantLock(true);
-    }
 }

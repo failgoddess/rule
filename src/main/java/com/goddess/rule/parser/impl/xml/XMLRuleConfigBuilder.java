@@ -19,6 +19,8 @@ import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 
+import java.io.File;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -62,7 +64,7 @@ public  class XMLRuleConfigBuilder implements RuleConfigBuilder {
         List<MetaEnum> metaEnums = parseMetaEnums(document.getRootElement().element("metaEnvironment").element("metaEnums"));
         ruleConfig.setMetaEnums(metaEnums);
         //解析元数据配置
-        List<MetaClass> metaClasses = parseMetaClasses(document.getRootElement().element("metaEnvironment").element("metaClasses"));
+        List<MetaClass> metaClasses = parseMetaClasses(document.getRootElement().element("metaEnvironment").element("metaClasses"),new ArrayList<>());
         ruleConfig.setMetaClasses(metaClasses);
 
         //ruleConfig.setMetaContext();
@@ -124,8 +126,11 @@ public  class XMLRuleConfigBuilder implements RuleConfigBuilder {
         return params;
     }
 
-    private List<MetaClass> parseMetaClasses(Element element){
+    public static List<MetaClass> parseMetaClasses(Element element,List<MetaEnum> metaEnums){
         List<MetaClass> metaClasses = new ArrayList<>();
+        if(element==null){
+            return metaClasses;
+        }
         List<Element> items = element.elements("metaClass");
         for (Element item:items) {
             String code, name, loaderCode;
@@ -169,8 +174,11 @@ public  class XMLRuleConfigBuilder implements RuleConfigBuilder {
         }
         return metaClasses;
     }
-    private List<MetaEnum> parseMetaEnums(Element element){
+    public static List<MetaEnum> parseMetaEnums(Element element){
         List<MetaEnum> metaEnums = new ArrayList<>();
+        if(element==null){
+            return metaEnums;
+        }
         List<Element> items = element.elements("metaEnum");
         for (Element item:items){
             String code, name,type;
@@ -211,7 +219,7 @@ public  class XMLRuleConfigBuilder implements RuleConfigBuilder {
      * 处理action
      * @return
      */
-    private List<Action> parseActions(Element element,RuleConfig ruleConfig){
+    public static List<Action> parseActions(Element element,RuleConfig ruleConfig){
         List<Action> actions = new ArrayList<>();
         if(element==null){
             return actions;
@@ -269,19 +277,37 @@ public  class XMLRuleConfigBuilder implements RuleConfigBuilder {
         List<Rule> rules = new ArrayList<>();
         //解析规则
         List<String> rulePaths = Arrays.asList(rulePath.split(","));
-        RuleParser parser = null;
+
         for (String path : rulePaths) {
-            String type = path.substring(path.lastIndexOf(".")+1).toLowerCase();
-            switch (type) {
-                case Constant.ConfigType.XML:
-                    parser = XMLRuleParser.getInstance(ruleConfig);
-                    break;
-                default:
-                    throw new RuleException(ExceptionCode.EC_0001,path);
+            ClassLoader classLoader = getClass().getClassLoader();
+            URL url = classLoader.getResource(path);
+
+            File file = new File(url.getPath());
+
+            if(file.isDirectory()){
+                File[] tempList = file.listFiles();
+                for(File f :tempList){
+                    Rule rule = parseRule(f.getPath(),ruleConfig);
+                    rules.add(rule);
+                }
+            }else {
+                Rule rule = parseRule(path,ruleConfig);
+                rules.add(rule);
             }
-            Rule rule = parser.parse(path);
-            rules.add(rule);
         }
         return rules;
+    }
+    private Rule parseRule(String path,RuleConfig ruleConfig) throws Exception{
+        RuleParser parser = null;
+        String type = path.substring(path.lastIndexOf(".")+1).toLowerCase();
+        switch (type) {
+            case Constant.ConfigType.XML:
+                parser = XMLRuleParser.getInstance(ruleConfig);
+                break;
+            default:
+                throw new RuleException(ExceptionCode.EC_0001,path);
+        }
+        Rule rule = parser.parse(path);
+        return rule;
     }
 }

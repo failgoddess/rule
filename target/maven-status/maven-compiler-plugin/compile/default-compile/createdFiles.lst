@@ -17,7 +17,6 @@ com/goddess/rule/executer/mode/base/function/impl/FunctionDiv.class
 com/goddess/rule/executer/mode/base/formula/DataNode.class
 com/goddess/rule/parser/impl/xml/XMLRuleParser.class
 com/goddess/rule/executer/operation/impl/compose/Nn.class
-com/goddess/rule/executer/context/RuleConfig$OpLock.class
 com/goddess/rule/parser/impl/xml/XmlActionDefaultParser$1.class
 com/goddess/rule/constant/Constant$DataType.class
 com/goddess/rule/executer/context/JudgeData.class
@@ -91,6 +90,7 @@ com/goddess/rule/executer/operation/impl/simple/Eq.class
 com/goddess/rule/executer/operation/impl/simple/Lt.class
 com/goddess/rule/executer/operation/Operation.class
 com/goddess/rule/executer/operation/impl/simple/Ber.class
+com/goddess/rule/constant/Constant$RuleModel.class
 com/goddess/rule/parser/FormulaBuilder.class
 com/goddess/rule/constant/Constant.class
 com/goddess/rule/executer/mode/base/function/impl/FunctionSub.class
