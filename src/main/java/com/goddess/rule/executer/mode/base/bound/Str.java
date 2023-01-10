@@ -46,30 +46,38 @@ public class Str extends Bound{
             int key = cutObj.indexs.get(0);
             int val = cutObj.startEndMap.get(key);
             int endIndex = cutObj.indexs.indexOf(val);
-            String formula = Joiner.on("").join(cutObj.paragraphs.subList(0,endIndex))+"}";
-            String endIndexStr = cutObj.paragraphs.get(endIndex);
-            StrItem item = new StrItem();
-            item.setType(StrItem.FORMULA);
-            items.add(item);
-            if(endIndexStr.startsWith("}.")){
-                //}.xxx //}.xxx空格 //}.xxx符号
-                int strat = getIndex(endIndexStr);
-                formula = formula + "."+endIndexStr.substring(2,strat);
-                item.setFormulaNode(ruleConfig.getFormulaBuilder().getFormulaNode(formula));
+            if(this.text.substring(val,val+1).startsWith(")")){
                 StrItem itemStr = new StrItem();
                 itemStr.setType(StrItem.STR);
-                itemStr.setStr(endIndexStr.substring(strat));
+                itemStr.setStr( Joiner.on("").join(cutObj.paragraphs.subList(0, endIndex))+cutObj.paragraphs.get(endIndex));
                 items.add(itemStr);
-            }else if(endIndexStr.startsWith("}")&&endIndexStr.length()==1){
-                //}
-                item.setFormulaNode(ruleConfig.getFormulaBuilder().getFormulaNode(formula));
             }else {
-                //}xxx //}空格 //}符号
-                item.setFormulaNode(ruleConfig.getFormulaBuilder().getFormulaNode(formula));
-                StrItem itemStr = new StrItem();
-                itemStr.setType(StrItem.STR);
-                itemStr.setStr(endIndexStr.substring(1));
-                items.add(itemStr);
+                String formula = Joiner.on("").join(cutObj.paragraphs.subList(0, endIndex)) + "}";
+                //String formula = Joiner.on("").join(cutObj.paragraphs.subList(0,endIndex))+"}";
+                String endIndexStr = cutObj.paragraphs.get(endIndex);
+                StrItem item = new StrItem();
+                item.setType(StrItem.FORMULA);
+                items.add(item);
+                if (endIndexStr.startsWith("}.")) {
+                    //}.xxx //}.xxx空格 //}.xxx符号
+                    int strat = getIndex(endIndexStr);
+                    formula = formula + "." + endIndexStr.substring(2, strat);
+                    item.setFormulaNode(ruleConfig.getFormulaBuilder().getFormulaNode(formula));
+                    StrItem itemStr = new StrItem();
+                    itemStr.setType(StrItem.STR);
+                    itemStr.setStr(endIndexStr.substring(strat));
+                    items.add(itemStr);
+                } else if (endIndexStr.startsWith("}") && endIndexStr.length() == 1) {
+                    //}
+                    item.setFormulaNode(ruleConfig.getFormulaBuilder().getFormulaNode(formula));
+                } else {
+                    //}xxx //}空格 //}符号
+                    item.setFormulaNode(ruleConfig.getFormulaBuilder().getFormulaNode(formula));
+                    StrItem itemStr = new StrItem();
+                    itemStr.setType(StrItem.STR);
+                    itemStr.setStr(endIndexStr.substring(1));
+                    items.add(itemStr);
+                }
             }
             cutObj.indexs = cutObj.indexs.subList(endIndex+1,cutObj.indexs.size());
             cutObj.paragraphs = cutObj.paragraphs.subList(endIndex+1,cutObj.paragraphs.size());

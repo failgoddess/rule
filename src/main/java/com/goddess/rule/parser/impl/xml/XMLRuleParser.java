@@ -66,11 +66,11 @@ public class XMLRuleParser implements RuleParser {
             name = document.getRootElement().attributeValue("name");
             model = document.getRootElement().attributeValue("model");
 
-            if("Flow".equalsIgnoreCase(model)){
+            if(Constant.RuleModel.FLOW.equalsIgnoreCase(model)){
                 RuleFlow ruleFlow = new RuleFlow();
                 ruleFlow.setFlows(parseFlows(document.getRootElement().element("flows")));
                 rule = ruleFlow;
-            }else if ("Graph".equalsIgnoreCase(model)) {
+            }else if (Constant.RuleModel.GRAPH.equalsIgnoreCase(model)) {
                 RuleGraph ruleGraph = new RuleGraph();
                 ruleGraph.setGraphs(parseGraphs(document.getRootElement().element("graphs")));
                 ruleGraph.setResults(parseResults(document.getRootElement().element("results")));

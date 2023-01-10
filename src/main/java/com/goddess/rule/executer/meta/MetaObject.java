@@ -5,10 +5,7 @@ import com.goddess.rule.constant.ConstantUtil;
 import com.goddess.rule.executer.context.Context;
 import com.goddess.rule.executer.operation.Operation;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author: 失败女神-vinc
@@ -20,13 +17,10 @@ public class MetaObject {
         if (Constant.DataType.MAP.equalsIgnoreCase(dataType)) {
             return datas;
         }
-        MetaClass metaClass = context.getRuleConfig().getMetaClassByDataType(dataType);
         List<Map<String,Object>> reDatas = new ArrayList<>();
-        if(metaClass != null){
-            for (Map<String, Object> data:datas) {
-                Map<String,Object> reData = getMetaObject(context,data,dataType);
-                reDatas.add(reData);
-            }
+        for (Map<String, Object> data:datas) {
+            Map<String,Object> reData = getMetaObject(context,data,dataType);
+            reDatas.add(reData);
         }
         return reDatas;
     }
@@ -50,8 +44,24 @@ public class MetaObject {
                     reData.put(property.getCode(),MetaObject.getMetaObject(context,subData,property.getDataType()));
                 }
             }
-        }
+        }else if (ConstantUtil.isBaseDataType(dataType)){
+            //是基础数据类型
+            if(data.isEmpty()){
+                //空的
+                reData.put("val", getBaseData(context,0,dataType,null));
+            }else {
+                boolean flag = true;
+                for(String key:data.keySet()){
+                    if(flag){
+                        flag = false;
+                        Object val = getBaseData(context,0,dataType,data.get(key));
+                        reData.put("val",val );
+                        reData.put(key, val);
+                    }
+                }
+            }
 
+        }
         return  reData;
     }
     public static Object getBaseData(Context context, int complex, String dataType, Object data){

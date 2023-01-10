@@ -9,6 +9,10 @@ import java.time.format.DateTimeFormatter;
  * @date: 2022/6/3 21:29
  */
 public class Constant {
+    public class RuleModel{
+        public static final String FLOW="Flow";//逻辑
+        public static final String GRAPH ="Graph";//关系
+    }
     public class ExpressionType{
         public static final String LOGIC="logic";//逻辑
         public static final String RELATION ="relation";//关系

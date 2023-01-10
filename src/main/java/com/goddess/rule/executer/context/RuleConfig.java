@@ -62,15 +62,18 @@ public class RuleConfig {
     private FunctionHandlerFactory functionHandlerFactory;
 
     //基础数据类型
-    private List<String> dataTypes = new ArrayList<>();
-
-    private RuleConfig(){
+    public static List<String> dataTypes = new ArrayList<>();
+    static {
         dataTypes.add(Constant.DataType.NUMBER);
         dataTypes.add(Constant.DataType.STRING);
         dataTypes.add(Constant.DataType.BOLL);
         dataTypes.add(Constant.DataType.TIME_YMD);
         dataTypes.add(Constant.DataType.TIME_YMDHMS);
         dataTypes.add(Constant.DataType.TIME_HMS);
+    }
+
+    private RuleConfig(){
+
 
         relationFactory = OperationFactory.getInstance();
         formulaBuilder = new DefaultFormulaBuilder();

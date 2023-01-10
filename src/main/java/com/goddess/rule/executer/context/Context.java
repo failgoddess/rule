@@ -62,6 +62,11 @@ public class Context {
     public void removeFlow(){
         flowMap.remove(Thread.currentThread());
     }
+
+    public Graph getNowGraph() {
+        return nowGraph;
+    }
+
     /**
      * 回溯栈出栈
      * @return
@@ -138,6 +143,13 @@ public class Context {
             return null;
         }
         return data.toString();
+    }
+    public int getInteger(String path){
+        Object data = getObject(path);
+        if(data==null){
+            return 0;
+        }
+        return Integer.parseInt(data.toString());
     }
 
     public void setNowGraph(Graph nowGraph) {
